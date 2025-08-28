@@ -1,25 +1,38 @@
 @extends('layouts.app')
 
-@section('title', 'Connexion')
-@section('description', 'Connectez-vous pour participer au concours photo DINOR')
+@section('title', 'Inscription')
+@section('description', 'Inscrivez-vous pour participer au concours photo DINOR')
 
 @section('content')
 <div class="min-h-screen flex items-center justify-center bg-dinor-cream py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-md w-full space-y-8">
         <div class="text-center">
             <h1 class="text-4xl font-retro font-bold text-dinor-brown mb-2">
-                üéØ Connexion DINOR
+                =› Inscription DINOR
             </h1>
             <p class="text-dinor-olive mb-8">
-                Connectez-vous pour voter et participer au concours photo vintage
+                CrÈez votre compte pour participer au concours photo vintage
             </p>
         </div>
 
-        <!-- Formulaire de connexion normale -->
-        <form method="POST" action="{{ route('login') }}" class="space-y-6">
+        <!-- Formulaire d'inscription -->
+        <form method="POST" action="{{ route('register') }}" class="space-y-6">
             @csrf
             
             <div class="space-y-4">
+                <div>
+                    <label for="name" class="block text-sm font-medium text-dinor-brown">
+                        Nom complet
+                    </label>
+                    <input id="name" name="name" type="text" required 
+                           class="mt-1 appearance-none relative block w-full px-3 py-2 border border-dinor-beige placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-dinor-orange focus:border-dinor-orange focus:z-10 @error('name') border-red-500 @enderror" 
+                           placeholder="Votre nom complet"
+                           value="{{ old('name') }}">
+                    @error('name')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+                
                 <div>
                     <label for="email" class="block text-sm font-medium text-dinor-brown">
                         Adresse email
@@ -39,36 +52,29 @@
                     </label>
                     <input id="password" name="password" type="password" required 
                            class="mt-1 appearance-none relative block w-full px-3 py-2 border border-dinor-beige placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-dinor-orange focus:border-dinor-orange focus:z-10 @error('password') border-red-500 @enderror" 
-                           placeholder="‚Ä¢‚Ä¢‚Ä¢‚Ä¢‚Ä¢‚Ä¢‚Ä¢‚Ä¢">
+                           placeholder="""""""""">
                     @error('password')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
-            </div>
-
-            <div class="flex items-center justify-between">
-                <div class="flex items-center">
-                    <input id="remember" name="remember" type="checkbox" 
-                           class="h-4 w-4 text-dinor-orange focus:ring-dinor-orange border-dinor-beige rounded">
-                    <label for="remember" class="ml-2 block text-sm text-dinor-brown">
-                        Se souvenir de moi
-                    </label>
-                </div>
                 
-                <div class="text-sm">
-                    <a href="{{ route('register') }}" class="font-medium text-dinor-orange hover:text-dinor-brown">
-                        Cr√©er un compte
-                    </a>
+                <div>
+                    <label for="password_confirmation" class="block text-sm font-medium text-dinor-brown">
+                        Confirmer le mot de passe
+                    </label>
+                    <input id="password_confirmation" name="password_confirmation" type="password" required 
+                           class="mt-1 appearance-none relative block w-full px-3 py-2 border border-dinor-beige placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-dinor-orange focus:border-dinor-orange focus:z-10" 
+                           placeholder="""""""""">
                 </div>
             </div>
 
             <button type="submit" 
                     class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-dinor-brown hover:bg-dinor-olive focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-dinor-orange transition-all duration-200">
-                Se connecter
+                CrÈer mon compte
             </button>
         </form>
         
-        <!-- S√©parateur -->
+        <!-- SÈparateur -->
         <div class="relative my-6">
             <div class="absolute inset-0 flex items-center">
                 <div class="w-full border-t border-dinor-beige"></div>
@@ -104,12 +110,18 @@
 
         <div class="text-center">
             <p class="text-sm text-dinor-olive">
-                En vous connectant, vous acceptez de participer au concours selon les r√®gles √©tablies.
+                En vous inscrivant, vous acceptez de participer au concours selon les rËgles Ètablies.
             </p>
             
-            <div class="mt-4 pt-4 border-t border-dinor-beige">
+            <div class="mt-4 pt-4 border-t border-dinor-beige space-y-2">
+                <p class="text-sm text-dinor-brown">
+                    DÈj‡ un compte ? 
+                    <a href="{{ route('login') }}" class="font-medium text-dinor-orange hover:text-dinor-brown">
+                        Connectez-vous
+                    </a>
+                </p>
                 <a href="{{ route('contest.home') }}" class="text-dinor-brown hover:text-dinor-orange font-medium">
-                    ‚Üê Retour au concours
+                    ê Retour au concours
                 </a>
             </div>
         </div>

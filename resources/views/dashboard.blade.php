@@ -178,6 +178,9 @@
                     <a href="{{ url('/admin') }}" class="bg-dinor-brown text-white px-6 py-3 rounded-lg font-bold hover:bg-dinor-red-vintage transition-colors">
                         ⚙️ Panel Admin Filament
                     </a>
+                    <a href="{{ url('/admin/whatsapp-test') }}" class="bg-green-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-green-700 transition-colors">
+                        📱 Test WhatsApp
+                    </a>
                 @endif
             @endauth
         </div>

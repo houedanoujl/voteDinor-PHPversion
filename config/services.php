@@ -35,10 +35,23 @@ return [
         ],
     ],
 
-    // Configuration WhatsApp (Green API)
+    // Configuration WhatsApp
     'whatsapp' => [
-        'instance_id' => env('GREEN_API_ID'),
-        'token' => env('GREEN_API_TOKEN'),
+        // Green API (alternative)
+        'green_api' => [
+            'instance_id' => env('GREEN_API_ID'),
+            'token' => env('GREEN_API_TOKEN'),
+            'api_url' => env('GREEN_API_URL', 'https://api.green-api.com'),
+        ],
+        // WhatsApp Business API (Meta/Facebook)
+        'business_api' => [
+            'phone_number_id' => env('WHATSAPP_PHONE_NUMBER_ID'),
+            'access_token' => env('WHATSAPP_ACCESS_TOKEN'),
+            'api_url' => env('WHATSAPP_API_URL', 'https://graph.facebook.com/v18.0'),
+            'verify_token' => env('WHATSAPP_VERIFY_TOKEN'),
+        ],
+        // Configuration par défaut
+        'provider' => env('WHATSAPP_PROVIDER', 'business_api'), // 'green_api' ou 'business_api'
     ],
 
     // Configuration Google OAuth
