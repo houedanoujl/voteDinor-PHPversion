@@ -7,10 +7,10 @@
 <div class="min-h-screen flex items-center justify-center bg-dinor-cream py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-md w-full space-y-8">
         <div class="text-center">
-            <h1 class="text-4xl font-retro font-bold text-dinor-brown mb-2">
-                🎯 Connexion DINOR
+            <h1 class="text-4xl font-bold text-gray-900 mb-2">
+                Connexion DINOR
             </h1>
-            <p class="text-dinor-olive mb-8">
+            <p class="text-gray-600 mb-8">
                 Connectez-vous pour voter et participer au concours photo vintage
             </p>
         </div>
@@ -21,11 +21,11 @@
             
             <div class="space-y-4">
                 <div>
-                    <label for="email" class="block text-sm font-medium text-dinor-brown">
+                    <label for="email" class="block text-sm font-medium text-gray-700">
                         Adresse email
                     </label>
                     <input id="email" name="email" type="email" required 
-                           class="mt-1 appearance-none relative block w-full px-3 py-2 border border-dinor-beige placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-dinor-orange focus:border-dinor-orange focus:z-10 @error('email') border-red-500 @enderror" 
+                           class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 @error('email') border-red-500 @enderror" 
                            placeholder="votre@email.com"
                            value="{{ old('email') }}">
                     @error('email')
@@ -34,11 +34,11 @@
                 </div>
                 
                 <div>
-                    <label for="password" class="block text-sm font-medium text-dinor-brown">
+                    <label for="password" class="block text-sm font-medium text-gray-700">
                         Mot de passe
                     </label>
                     <input id="password" name="password" type="password" required 
-                           class="mt-1 appearance-none relative block w-full px-3 py-2 border border-dinor-beige placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-dinor-orange focus:border-dinor-orange focus:z-10 @error('password') border-red-500 @enderror" 
+                           class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 @error('password') border-red-500 @enderror" 
                            placeholder="••••••••">
                     @error('password')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -49,21 +49,21 @@
             <div class="flex items-center justify-between">
                 <div class="flex items-center">
                     <input id="remember" name="remember" type="checkbox" 
-                           class="h-4 w-4 text-dinor-orange focus:ring-dinor-orange border-dinor-beige rounded">
-                    <label for="remember" class="ml-2 block text-sm text-dinor-brown">
+                           class="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded">
+                    <label for="remember" class="ml-2 block text-sm text-gray-700">
                         Se souvenir de moi
                     </label>
                 </div>
                 
                 <div class="text-sm">
-                    <a href="{{ route('register') }}" class="font-medium text-dinor-orange hover:text-dinor-brown">
+                    <a href="{{ route('register') }}" class="font-medium text-orange-600 hover:text-orange-700">
                         Créer un compte
                     </a>
                 </div>
             </div>
 
             <button type="submit" 
-                    class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-dinor-brown hover:bg-dinor-olive focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-dinor-orange transition-all duration-200">
+                    class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-all duration-200">
                 Se connecter
             </button>
         </form>

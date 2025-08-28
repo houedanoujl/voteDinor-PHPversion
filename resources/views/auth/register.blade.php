@@ -8,10 +8,10 @@
     <div class="max-w-md w-full space-y-8">
         <div class="text-center">
             <h1 class="text-4xl font-retro font-bold text-dinor-brown mb-2">
-                =› Inscription DINOR
+                =ÔøΩ Inscription DINOR
             </h1>
             <p class="text-dinor-olive mb-8">
-                CrÈez votre compte pour participer au concours photo vintage
+                CrÔøΩez votre compte pour participer au concours photo vintage
             </p>
         </div>
 
@@ -70,11 +70,11 @@
 
             <button type="submit" 
                     class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-dinor-brown hover:bg-dinor-olive focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-dinor-orange transition-all duration-200">
-                CrÈer mon compte
+                CrÔøΩer mon compte
             </button>
         </form>
         
-        <!-- SÈparateur -->
+        <!-- SÔøΩparateur -->
         <div class="relative my-6">
             <div class="absolute inset-0 flex items-center">
                 <div class="w-full border-t border-dinor-beige"></div>
@@ -110,18 +110,18 @@
 
         <div class="text-center">
             <p class="text-sm text-dinor-olive">
-                En vous inscrivant, vous acceptez de participer au concours selon les rËgles Ètablies.
+                En vous inscrivant, vous acceptez de participer au concours selon les rÔøΩgles ÔøΩtablies.
             </p>
             
             <div class="mt-4 pt-4 border-t border-dinor-beige space-y-2">
-                <p class="text-sm text-dinor-brown">
-                    DÈj‡ un compte ? 
-                    <a href="{{ route('login') }}" class="font-medium text-dinor-orange hover:text-dinor-brown">
+                <p class="text-sm" style="color: var(--dinor-brown)">
+                    D√©j√† un compte ? 
+                    <a href="{{ route('login') }}" class="font-medium" style="color: var(--dinor-orange)" onmouseover="this.style.color='var(--dinor-brown)'" onmouseout="this.style.color='var(--dinor-orange)'">
                         Connectez-vous
                     </a>
                 </p>
-                <a href="{{ route('contest.home') }}" class="text-dinor-brown hover:text-dinor-orange font-medium">
-                    ê Retour au concours
+                <a href="{{ route('contest.home') }}" class="font-medium" style="color: var(--dinor-brown)" onmouseover="this.style.color='var(--dinor-orange)'" onmouseout="this.style.color='var(--dinor-brown)'">
+                    ‚Üê Retour au concours
                 </a>
             </div>
         </div>
