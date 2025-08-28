@@ -14,6 +14,7 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     libfreetype6-dev \
     libjpeg62-turbo-dev \
+    libicu-dev \
     zip \
     unzip \
     supervisor \
@@ -22,7 +23,7 @@ RUN apt-get update && apt-get install -y \
 
 # Installation des extensions PHP nécessaires
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip intl
 
 # Installation de Redis PHP extension
 RUN pecl install redis && docker-php-ext-enable redis
@@ -47,9 +48,6 @@ RUN composer install --no-dev --optimize-autoloader --no-scripts
 
 # Copie de tous les fichiers de l'application
 COPY --chown=$user:$user . /var/www
-
-# Post-installation des scripts Composer
-RUN composer dump-autoload --optimize
 
 # Configuration des permissions
 RUN chown -R $user:www-data /var/www \
