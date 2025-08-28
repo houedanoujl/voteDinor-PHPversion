@@ -23,6 +23,9 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
 
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
     <!-- reCAPTCHA -->
     <script src="https://www.google.com/recaptcha/api.js?render={{ config('services.recaptcha.site_key') }}" async defer></script>
 
@@ -224,10 +227,10 @@
                 <div class="flex justify-between h-16">
                     <div class="flex items-center">
                         <a href="{{ route('contest.home') }}" class="flex-shrink-0 flex items-center group">
-                            <div class="bg-gradient-dinor p-2 rounded-lg mr-3 group-hover:scale-110 transition-transform">
+                            <div class="bg-orange-600 p-2 rounded-lg mr-3 group-hover:scale-110 transition-transform">
                                 <span class="text-white font-bold text-lg">D</span>
                             </div>
-                            <h1 class="text-2xl font-bold text-dinor-brown group-hover:text-dinor-orange transition-colors">
+                            <h1 class="text-2xl font-bold text-gray-900 group-hover:text-orange-600 transition-colors">
                                 DINOR
                             </h1>
                         </a>
@@ -235,34 +238,19 @@
 
                     <div class="flex items-center space-x-4">
                         @auth
-                            <div class="relative" x-data="{ open: false }">
-                                <button @click="open = !open" class="flex items-center space-x-2 text-dinor-brown hover:text-dinor-orange transition-colors">
-                                    <div class="w-8 h-8 bg-gradient-dinor rounded-full flex items-center justify-center text-white font-bold">
+                            <div class="flex items-center space-x-4">
+                                <a href="{{ route('dashboard') }}" class="flex items-center space-x-2 text-gray-700 hover:text-orange-600 transition-colors">
+                                    <div class="w-8 h-8 bg-orange-600 rounded-full flex items-center justify-center text-white font-bold">
                                         {{ substr(auth()->user()->name, 0, 1) }}
                                     </div>
                                     <span class="font-medium">{{ auth()->user()->name }}</span>
-                                    <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                                    </svg>
-                                </button>
-
-                                <div x-show="open" @click.away="open = false" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100" x-transition:leave-end="transform opacity-0 scale-95" class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg py-2 z-10 border border-gray-200">
-                                    <a href="{{ route('dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
-                                        📊 Dashboard
-                                    </a>
-                                    @if(auth()->user()->email === 'jeanluc@bigfiveabidjan.com')
-                                        <a href="/admin" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors">
-                                            ⚙️ Administration
-                                        </a>
-                                    @endif
-                                    <hr class="my-1">
-                                    <form method="POST" action="{{ route('logout') }}" class="block">
-                                        @csrf
-                                        <button type="submit" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
-                                            🚪 Se déconnecter
-                                        </button>
-                                    </form>
-                                </div>
+                                </a>
+                                <form method="POST" action="{{ route('logout') }}" class="inline">
+                                    @csrf
+                                    <button type="submit" class="text-gray-600 hover:text-gray-800 transition-colors">
+                                        Déconnexion
+                                    </button>
+                                </form>
                             </div>
                         @else
                             <div class="flex space-x-3">

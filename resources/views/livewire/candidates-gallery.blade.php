@@ -123,16 +123,11 @@
                     <p class="text-dinor-gray-600 mb-8 text-lg">Soyez le premier à participer au concours photo vintage DINOR !</p>
 
                     @auth
-                        <button
-                            onclick="openParticipationModal()"
-                            class="btn-dinor px-8 py-4 text-lg"
-                        >
-                            🎯 Participer maintenant
-                        </button>
+                        <livewire:candidate-registration-modal />
                     @else
                         <a
                             href="{{ route('auth.redirect', 'google') }}"
-                            class="btn-dinor px-8 py-4 text-lg inline-block"
+                            class="bg-orange-600 hover:bg-orange-700 text-white px-8 py-4 text-lg inline-block rounded-lg font-medium transition-colors"
                         >
                             🎯 Se connecter pour participer
                         </a>
