@@ -4,12 +4,13 @@ use App\Http\Controllers\Auth\SocialAuthController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\VoteController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
 // Page d'accueil du concours
-Route::get('/', function () {
-    return view('contest.home');
-})->name('contest.home');
+Route::get('/', [HomeController::class, 'index'])->name('contest.home');
+Route::get('/classement', [HomeController::class, 'ranking'])->name('contest.ranking');
 
 // Routes d'authentification standard
 Route::middleware('guest')->group(function () {
@@ -40,7 +41,11 @@ Route::prefix('auth')->group(function () {
         ->name('auth.logout');
 });
 
-// Routes pour les candidats (protection middleware auth)
+// Routes pour les candidats et votes (protection middleware auth)
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::post('/vote/{candidate}', [VoteController::class, 'vote'])->name('vote');
 });
+
+// API publique pour le classement
+Route::get('/api/ranking', [VoteController::class, 'ranking'])->name('api.ranking');

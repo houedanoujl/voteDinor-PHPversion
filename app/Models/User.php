@@ -21,6 +21,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'provider',
+        'provider_id',
     ];
 
     /**
@@ -44,5 +46,25 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function votes()
+    {
+        return $this->hasMany(Vote::class);
+    }
+
+    public function hasVotedToday()
+    {
+        return $this->votes()
+            ->whereDate('created_at', today())
+            ->exists();
+    }
+
+    public function canVoteForCandidate($candidateId)
+    {
+        return !$this->votes()
+            ->where('candidate_id', $candidateId)
+            ->whereDate('created_at', today())
+            ->exists();
     }
 }

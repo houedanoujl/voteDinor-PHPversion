@@ -43,9 +43,8 @@ class CandidatesGallery extends Component
     public function checkUserVotesToday()
     {
         if (Auth::check()) {
-            $today = now()->toDateString();
             $this->userVotesToday = Vote::where('user_id', Auth::id())
-                ->where('vote_date', $today)
+                ->whereDate('created_at', today())
                 ->pluck('candidate_id')
                 ->toArray();
         }
@@ -76,7 +75,7 @@ class CandidatesGallery extends Component
             // Vérifier les limites de vote
             $existingVote = Vote::where('candidate_id', $candidateId)
                 ->where('user_id', $user->id)
-                ->where('vote_date', $today)
+                ->whereDate('created_at', today())
                 ->first();
 
             if ($existingVote) {
@@ -84,35 +83,13 @@ class CandidatesGallery extends Component
                 return;
             }
 
-            // Vérifier aussi par IP (double sécurité)
-            $existingIpVote = Vote::where('candidate_id', $candidateId)
-                ->where('ip_address', $ipAddress)
-                ->where('vote_date', $today)
-                ->first();
-
-            if ($existingIpVote) {
-                session()->flash('error', 'Un vote a déjà été enregistré depuis cette adresse IP aujourd\'hui !');
-                return;
-            }
-
             // Transaction pour éviter les votes multiples
-            \DB::transaction(function () use ($candidateId, $user, $today, $ipAddress) {
+            \DB::transaction(function () use ($candidateId, $user, $ipAddress) {
                 // Créer le vote
                 Vote::create([
                     'candidate_id' => $candidateId,
                     'user_id' => $user->id,
                     'ip_address' => $ipAddress,
-                    'user_agent' => request()->userAgent(),
-                    'vote_date' => $today,
-                ]);
-
-                // Créer la limite de vote
-                VoteLimit::create([
-                    'candidate_id' => $candidateId,
-                    'user_id' => $user->id,
-                    'ip_address' => $ipAddress,
-                    'vote_date' => $today,
-                    'vote_count' => 1,
                 ]);
 
                 // Incrémenter le compteur du candidat

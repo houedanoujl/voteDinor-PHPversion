@@ -84,19 +84,19 @@
         <div class="max-w-6xl mx-auto">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div class="text-center">
-                    <div class="text-4xl font-bold text-dinor-orange mb-2">📷</div>
+                    <div class="text-5xl font-bold text-dinor-orange mb-2">{{ $stats['total_candidates'] }}</div>
                     <h3 class="text-2xl font-bold text-dinor-brown mb-2">Candidats</h3>
                     <p class="text-dinor-gray-600">Photos soumises</p>
                 </div>
                 <div class="text-center">
-                    <div class="text-4xl font-bold text-dinor-orange mb-2">❤️</div>
+                    <div class="text-5xl font-bold text-dinor-orange mb-2">{{ $stats['total_votes'] }}</div>
                     <h3 class="text-2xl font-bold text-dinor-brown mb-2">Votes</h3>
                     <p class="text-dinor-gray-600">Total des votes</p>
                 </div>
                 <div class="text-center">
                     <div class="text-4xl font-bold text-dinor-orange mb-2">🏆</div>
-                    <h3 class="text-2xl font-bold text-dinor-brown mb-2">Prix</h3>
-                    <p class="text-dinor-gray-600">À gagner</p>
+                    <h3 class="text-2xl font-bold text-dinor-brown mb-2">Classement</h3>
+                    <p class="text-dinor-gray-600"><a href="{{ route('contest.ranking') }}" class="text-dinor-orange hover:underline">Voir le classement</a></p>
                 </div>
             </div>
         </div>
