@@ -19,9 +19,7 @@
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
                 @auth
-                    <button onclick="openParticipationModal()" class="btn-dinor text-lg px-8 py-4">
-                        🎯 Participer au concours
-                    </button>
+                    <livewire:candidate-registration-modal />
                 @else
                     <a href="{{ route('auth.redirect', 'google') }}" class="btn-dinor text-lg px-8 py-4 inline-block text-center">
                         🎯 Participer avec Google
