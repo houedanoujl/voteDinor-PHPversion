@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\VoteController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
+use Livewire\Livewire;
 
 // Page d'accueil du concours
 Route::get('/', [HomeController::class, 'index'])->name('contest.home');

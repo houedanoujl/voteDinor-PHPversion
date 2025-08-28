@@ -16,12 +16,12 @@
     <!-- Modal moderne -->
     @if($showModal)
         <div class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-            <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                <!-- Background overlay avec blur -->
-                <div class="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity" wire:click="closeModal"></div>
-
+            <!-- Background overlay avec blur -->
+            <div class="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity" wire:click="closeModal"></div>
+            
+            <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:p-0">
                 <!-- Modal panel moderne -->
-                <div class="inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
+                <div class="inline-block w-full max-w-2xl bg-white rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all relative z-10">
                     <form wire:submit.prevent="submit" class="bg-white">
                         <!-- Header -->
                         <div class="bg-gray-900 px-6 py-4">
@@ -120,6 +120,25 @@
                                     @enderror
                                 </div>
 
+                                <!-- Email -->
+                                @guest
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                        ✉️ Email *
+                                    </label>
+                                    <input
+                                        type="email"
+                                        wire:model="email"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500"
+                                        placeholder="votre@email.com"
+                                    >
+                                    @error('email')
+                                        <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
+                                    @enderror
+                                    <p class="text-xs text-gray-500 mt-1">Un compte sera créé automatiquement avec cet email</p>
+                                </div>
+                                @endguest
+
                                 <!-- WhatsApp -->
                                 <div>
                                     <label class="block text-sm font-semibold text-gray-700 mb-2">
@@ -205,6 +224,13 @@ document.addEventListener('livewire:init', function () {
         if (typeof trackRegistration !== 'undefined') {
             trackRegistration(event.candidateName);
         }
+    });
+    
+    Livewire.on('userRegistered', () => {
+        // Rafraîchir la page pour montrer que l'utilisateur est maintenant connecté
+        setTimeout(() => {
+            window.location.reload();
+        }, 2000); // Délai pour laisser le temps de voir le message de succès
     });
 });
 </script>
