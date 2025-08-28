@@ -1,0 +1,97 @@
+version: '3.8'
+
+services:
+  # Application Laravel
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        user: dinor
+        uid: 1000
+    container_name: dinor_app
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+      - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      - dinor
+    depends_on:
+      - mysql
+      - redis
+
+  # Serveur Web Nginx
+  webserver:
+    image: nginx:alpine
+    container_name: dinor_webserver
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
+    networks:
+      - dinor
+    depends_on:
+      - app
+
+  # Base de données MySQL
+  mysql:
+    image: mysql:8.0
+    container_name: dinor_mysql
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: dinor_vote
+      MYSQL_USER: dinor_user
+      MYSQL_PASSWORD: dinor_password
+      MYSQL_ROOT_PASSWORD: root_password
+    volumes:
+      - dbdata:/var/lib/mysql
+      - ./docker/mysql/my.cnf:/etc/mysql/my.cnf
+    networks:
+      - dinor
+
+  # Redis pour cache et sessions
+  redis:
+    image: redis:alpine
+    container_name: dinor_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - dinor
+
+  # Node.js pour Vite (assets)
+  node:
+    image: node:18-alpine
+    container_name: dinor_node
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+    command: sh -c "npm install && npm run dev -- --host"
+    ports:
+      - "5173:5173"
+    networks:
+      - dinor
+
+  # MailHog pour tester les emails
+  mailhog:
+    image: mailhog/mailhog
+    container_name: dinor_mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    networks:
+      - dinor
+
+networks:
+  dinor:
+    driver: bridge
+
+volumes:
+  dbdata:
+    driver: local
