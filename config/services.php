@@ -35,4 +35,30 @@ return [
         ],
     ],
 
+    // Configuration WhatsApp (Green API)
+    'whatsapp' => [
+        'instance_id' => env('GREEN_API_ID'),
+        'token' => env('GREEN_API_TOKEN'),
+    ],
+
+    // Configuration Google OAuth
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect' => env('GOOGLE_REDIRECT_URI', '/auth/google/callback'),
+    ],
+
+    // Configuration Facebook OAuth  
+    'facebook' => [
+        'client_id' => env('FACEBOOK_CLIENT_ID'),
+        'client_secret' => env('FACEBOOK_CLIENT_SECRET'),
+        'redirect' => env('FACEBOOK_REDIRECT_URI', '/auth/facebook/callback'),
+    ],
+
+    // Configuration reCAPTCHA
+    'recaptcha' => [
+        'site_key' => env('RECAPTCHA_SITE_KEY'),
+        'secret_key' => env('RECAPTCHA_SECRET_KEY'),
+    ],
+
 ];
