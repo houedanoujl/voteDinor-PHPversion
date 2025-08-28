@@ -137,3 +137,13 @@
         </div>
     @endif
 </div>
+
+<script>
+document.addEventListener('livewire:init', function () {
+    Livewire.on('track-registration', (event) => {
+        if (typeof trackRegistration !== 'undefined') {
+            trackRegistration(event.candidateName);
+        }
+    });
+});
+</script>

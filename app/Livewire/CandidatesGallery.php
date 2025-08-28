@@ -27,6 +27,16 @@ class CandidatesGallery extends Component
         $this->candidates = Candidate::approved()
             ->orderByVotes()
             ->get()
+            ->map(function ($candidate) {
+                return [
+                    'id' => $candidate->id,
+                    'prenom' => $candidate->prenom,
+                    'nom' => $candidate->nom,
+                    'votes_count' => $candidate->votes_count,
+                    'photo_url' => $candidate->getPhotoUrl() ?: '/images/placeholder-avatar.svg',
+                    'description' => $candidate->description,
+                ];
+            })
             ->toArray();
     }
 

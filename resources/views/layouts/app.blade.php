@@ -25,6 +25,9 @@
     <!-- reCAPTCHA -->
     <script src="https://www.google.com/recaptcha/api.js?render={{ config('services.recaptcha.site_key') }}" async defer></script>
     
+    <!-- Google Analytics -->
+    <x-google-analytics :title="$title ?? null" />
+    
     <style>
         :root {
             --dinor-orange: #FF8C00;
@@ -79,7 +82,7 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between h-16">
                     <div class="flex items-center">
-                        <a href="{{ route('home') }}" class="flex-shrink-0 flex items-center">
+                        <a href="{{ route('contest.home') }}" class="flex-shrink-0 flex items-center">
                             <h1 class="text-2xl font-retro font-bold text-dinor-cream">DINOR</h1>
                         </a>
                     </div>
@@ -99,7 +102,7 @@
                                 
                                 <div id="userMenu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
                                     <a href="{{ route('dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Dashboard</a>
-                                    @if(auth()->user()->is_admin)
+                                    @if(auth()->user()->email === 'jeanluc@bigfiveabidjan.com')
                                         <a href="/admin" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50">Administration</a>
                                     @endif
                                     <form method="POST" action="{{ route('logout') }}" class="block">

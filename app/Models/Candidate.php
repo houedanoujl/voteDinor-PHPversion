@@ -7,10 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Storage;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class Candidate extends Model
+class Candidate extends Model implements HasMedia
 {
-    use HasFactory;
+    use HasFactory, InteractsWithMedia;
 
     protected $fillable = [
         'nom',
@@ -75,6 +78,36 @@ class Candidate extends Model
     public function getFullNameAttribute(): string
     {
         return "{$this->prenom} {$this->nom}";
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('photos')
+            ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/gif', 'image/webp'])
+            ->singleFile();
+    }
+
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        $this->addMediaConversion('thumb')
+            ->width(400)
+            ->height(400)
+            ->sharpen(10);
+
+        $this->addMediaConversion('medium')
+            ->width(800)
+            ->height(600)
+            ->sharpen(10);
+    }
+
+    public function getPhotoUrl(): ?string
+    {
+        return $this->getFirstMediaUrl('photos') ?: $this->photo_url;
+    }
+
+    public function getPhotoThumbUrl(): ?string
+    {
+        return $this->getFirstMediaUrl('photos', 'thumb') ?: $this->photo_url;
     }
 
     public function getPhotoUrlAttribute($value): ?string

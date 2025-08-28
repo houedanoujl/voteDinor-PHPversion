@@ -36,6 +36,7 @@
                         @guest
                             <!-- Utilisateur non connecté -->
                             <a href="{{ route('auth.redirect', 'google') }}" 
+                               onclick="if(typeof trackLogin !== 'undefined') trackLogin('google');"
                                class="block w-full bg-dinor-beige text-dinor-brown py-2 px-4 rounded-lg text-center font-medium hover:bg-dinor-cream transition-colors">
                                 🔒 Se connecter pour voter
                             </a>
@@ -49,6 +50,7 @@
                                 <!-- Bouton de vote -->
                                 <button 
                                     wire:click="vote({{ $candidate['id'] }})"
+                                    onclick="if(typeof trackVote !== 'undefined') trackVote({{ $candidate['id'] }}, '{{ $candidate['prenom'] }} {{ substr($candidate['nom'], 0, 1) }}.');"
                                     @if($this->isLoading($candidate['id'])) disabled @endif
                                     class="w-full btn-dinor text-white py-2 px-4 rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                                 >

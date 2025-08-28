@@ -1,12 +1,13 @@
 <?php
 
 use App\Http\Controllers\Auth\SocialAuthController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 // Page d'accueil du concours
 Route::get('/', function () {
     return view('contest.home');
-})->name('home');
+})->name('contest.home');
 
 // Routes d'authentification sociale
 Route::prefix('auth')->group(function () {
@@ -27,9 +28,7 @@ Route::prefix('auth')->group(function () {
 
 // Routes pour les candidats (protection middleware auth)
 Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });
 
 // Route alternative pour la connexion simple
