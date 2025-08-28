@@ -39,7 +39,7 @@ class CandidateRegistrationModal extends Component
 
     public function openModal()
     {
-        \Log::info('openModal called in CandidateRegistrationModal');
+        \Log::info('openModal called in CandidateRegistrationModal - Success!');
         $this->showModal = true;
         $this->dispatch('modal-opened');
     }

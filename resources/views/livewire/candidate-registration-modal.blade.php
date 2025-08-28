@@ -1,23 +1,8 @@
-<div wire:key="candidate-modal-{{ uniqid() }}">
-    <!-- Debug info -->
-    <div class="text-xs text-gray-500 mb-2">
-        Modal state: {{ $showModal ? 'OPEN' : 'CLOSED' }}
-        <br>Component ID: {{ $this->getId() }}
-    </div>
-    
+<div>
     <!-- Bouton pour ouvrir le modal -->
     <button
         wire:click="openModal"
         wire:loading.attr="disabled"
-        onclick="
-            console.log('Button clicked!'); 
-            console.log('Livewire component:', @this);
-            if (typeof @this !== 'undefined') {
-                @this.call('openModal');
-            } else {
-                alert('Livewire n\'est pas initialisé');
-            }
-        "
         class="bg-orange-600 text-white px-8 py-4 font-bold rounded-lg shadow-lg hover:shadow-xl hover:bg-orange-700 transition-all duration-300 group disabled:opacity-50"
     >
         <span class="flex items-center">
@@ -213,6 +198,7 @@
     @endif
 </div>
 
+@push('scripts')
 <script>
 document.addEventListener('livewire:init', function () {
     Livewire.on('track-registration', (event) => {
@@ -222,3 +208,4 @@ document.addEventListener('livewire:init', function () {
     });
 });
 </script>
+@endpush

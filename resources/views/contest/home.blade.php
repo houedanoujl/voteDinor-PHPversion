@@ -28,7 +28,6 @@
             <!-- Boutons d'action épurés -->
             <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
                 @auth
-                    <livewire:test-modal />
                     <livewire:candidate-registration-modal />
                 @else
                     <div class="flex flex-col sm:flex-row gap-3 justify-center">
