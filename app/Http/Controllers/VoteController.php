@@ -5,38 +5,61 @@ namespace App\Http\Controllers;
 use App\Models\Candidate;
 use App\Models\Vote;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\JsonResponse;
 
 class VoteController extends Controller
 {
-    public function vote(Request $request, Candidate $candidate)
+    public function vote(Request $request, $candidateId): JsonResponse
     {
-        $user = Auth::user();
-        
-        if (!$user) {
-            return response()->json(['error' => 'Vous devez être connecté pour voter'], 401);
+        // Vérifier que l'utilisateur est connecté
+        if (!auth()->check()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Vous devez être connecté pour voter'
+            ], 401);
         }
 
-        // Vérifier si l'utilisateur peut voter pour ce candidat aujourd'hui
-        if (!$user->canVoteForCandidate($candidate->id)) {
-            return response()->json(['error' => 'Vous avez déjà voté pour ce candidat aujourd\'hui'], 409);
+        try {
+            // Récupérer le candidat
+            $candidate = Candidate::where('status', 'approved')->findOrFail($candidateId);
+
+            // Vérifier si l'utilisateur a déjà voté aujourd'hui pour ce candidat
+            $existingVote = Vote::where('candidate_id', $candidateId)
+                ->where('user_id', auth()->id())
+                ->whereDate('created_at', today())
+                ->first();
+
+            if ($existingVote) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Vous avez déjà voté pour ce candidat aujourd\'hui'
+                ], 400);
+            }
+
+            // Créer le vote
+            Vote::create([
+                'candidate_id' => $candidateId,
+                'user_id' => auth()->id(),
+                'ip_address' => $request->ip(),
+            ]);
+
+            // Mettre à jour le compteur de votes du candidat
+            $candidate->increment('votes_count');
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Vote enregistré avec succès !',
+                'votes_count' => $candidate->fresh()->votes_count
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Erreur lors du vote: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Une erreur est survenue lors du vote'
+            ], 500);
         }
-
-        // Créer le vote
-        Vote::create([
-            'user_id' => $user->id,
-            'candidate_id' => $candidate->id,
-            'ip_address' => $request->ip(),
-        ]);
-
-        // Incrémenter le compteur de votes du candidat
-        $candidate->increment('votes_count');
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Vote enregistré avec succès',
-            'votes_count' => $candidate->refresh()->votes_count
-        ]);
     }
 
     public function ranking()

@@ -13,6 +13,9 @@ use Livewire\Livewire;
 Route::get('/', [HomeController::class, 'index'])->name('contest.home');
 Route::get('/classement', [HomeController::class, 'ranking'])->name('contest.ranking');
 Route::get('/regles', [\App\Http\Controllers\ContestRulesController::class, 'index'])->name('contest.rules');
+Route::get('/inscription/confirmation', [\App\Http\Controllers\RegistrationConfirmationController::class, 'show'])->name('registration.confirmation');
+Route::get('/candidat/{id}', [\App\Http\Controllers\CandidateDetailController::class, 'show'])->name('candidate.detail');
+Route::post('/vote/{id}', [\App\Http\Controllers\VoteController::class, 'vote'])->name('vote.candidate');
 
 // Routes d'authentification standard
 Route::middleware('guest')->group(function () {

@@ -90,9 +90,12 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <!-- Prénom -->
                                 <div>
-                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                        👤 Prénom *
-                                    </label>
+                                                                    <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                    </svg>
+                                    Prénom *
+                                </label>
                                     <input
                                         type="text"
                                         wire:model="prenom"
@@ -106,9 +109,12 @@
 
                                 <!-- Nom -->
                                 <div>
-                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                        📝 Nom *
-                                    </label>
+                                                                    <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                    </svg>
+                                    Nom *
+                                </label>
                                     <input
                                         type="text"
                                         wire:model="nom"
@@ -141,9 +147,12 @@
 
                                 <!-- WhatsApp -->
                                 <div>
-                                    <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                        📱 WhatsApp *
-                                    </label>
+                                                                    <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                                    </svg>
+                                    WhatsApp *
+                                </label>
                                     <input
                                         type="tel"
                                         wire:model="whatsapp"
@@ -160,7 +169,12 @@
 
                             <!-- Informations -->
                             <div class="mt-6 p-4 bg-gray-50 rounded-xl">
-                                <h4 class="font-semibold text-gray-700 mb-2">ℹ️ Informations importantes</h4>
+                                <h4 class="font-semibold text-gray-700 mb-2 flex items-center">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                Informations importantes
+                            </h4>
                                 <ul class="text-sm text-gray-600 space-y-1">
                                     <li>• Votre photo sera visible par tous les visiteurs</li>
                                     <li>• Vous recevrez une notification WhatsApp lors de l'approbation</li>
@@ -185,7 +199,10 @@
                                 class="bg-orange-600 hover:bg-orange-700 text-white px-8 py-3 rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                             >
                                 <span wire:loading.remove wire:target="submit">
-                                    🚀 Soumettre ma candidature
+                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                    </svg>
+                                    Soumettre ma candidature
                                 </span>
                                 <span wire:loading wire:target="submit" class="flex items-center">
                                     <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

@@ -31,7 +31,7 @@ class RegisterController extends Controller
             $baseEmail = Str::slug($request->prenom . '.' . $request->nom) . '@dinor-concours.com';
             $email = $baseEmail;
             $counter = 1;
-            
+
             while (User::where('email', $email)->exists()) {
                 $email = Str::slug($request->prenom . '.' . $request->nom) . $counter . '@dinor-concours.com';
                 $counter++;
@@ -60,7 +60,7 @@ class RegisterController extends Controller
                 $message .= "Connectez-vous avec votre email : {$email}\n";
                 $message .= "Mot de passe temporaire : {$password}\n\n";
                 $message .= "Bonne chance !";
-                
+
                 $whatsappService->sendMessage($request->whatsapp, $message);
             } catch (\Exception $e) {
                 \Log::error('Erreur WhatsApp bienvenue: ' . $e->getMessage());
@@ -74,7 +74,7 @@ class RegisterController extends Controller
                 $adminMessage .= "WhatsApp : {$request->whatsapp}\n";
                 $adminMessage .= "Email : {$email}\n";
                 $adminMessage .= "Date : " . now()->format('d/m/Y H:i');
-                
+
                 $whatsappService->sendMessage('+2250545029721', $adminMessage);
             } catch (\Exception $e) {
                 \Log::error('Erreur WhatsApp admin: ' . $e->getMessage());

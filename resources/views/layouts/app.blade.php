@@ -9,10 +9,23 @@
 
     <!-- Meta pour SEO et réseaux sociaux -->
     <meta name="description" content="@yield('description', 'Participez au concours photo vintage DINOR - Cuisine des années 60. Votez pour vos photos préférées !')">
-    <meta property="og:title" content="{{ config('app.name') }} - @yield('title', 'Concours Photo Rétro')">
-    <meta property="og:description" content="@yield('description', 'Participez au concours photo vintage DINOR')">
-    <meta property="og:image" content="{{ asset('images/dinor-logo.png') }}">
-    <meta property="og:url" content="{{ url()->current() }}">
+
+    @hasSection('og_meta')
+        @yield('og_meta')
+    @else
+        <meta property="og:title" content="{{ config('app.name') }} - @yield('title', 'Concours Photo Rétro')">
+        <meta property="og:description" content="@yield('description', 'Participez au concours photo vintage DINOR')">
+        <meta property="og:image" content="{{ asset('images/dinor-logo.png') }}">
+        <meta property="og:url" content="{{ url()->current() }}">
+        <meta property="og:type" content="website">
+        <meta property="og:site_name" content="Concours Photo DINOR">
+
+        <!-- Twitter Card -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="{{ config('app.name') }} - @yield('title', 'Concours Photo Rétro')">
+        <meta name="twitter:description" content="@yield('description', 'Participez au concours photo vintage DINOR')">
+        <meta name="twitter:image" content="{{ asset('images/dinor-logo.png') }}">
+    @endif
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
