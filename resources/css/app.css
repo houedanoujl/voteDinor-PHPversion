@@ -9,3 +9,13 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+/* Cursor pointer pour tous les boutons */
+button:hover,
+.btn:hover,
+[role="button"]:hover,
+input[type="button"]:hover,
+input[type="submit"]:hover,
+.cursor-pointer:hover {
+    cursor: pointer;
+}

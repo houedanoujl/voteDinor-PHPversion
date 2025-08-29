@@ -3,7 +3,6 @@
 namespace App\Providers\Filament;
 
 use Filament\Http\Middleware\Authenticate;
-use App\Http\Middleware\AdminOnly;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -30,9 +29,12 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Amber,
             ])
+            ->discoverResources(in: app_path('Filament/Admin/Resources'), for: 'App\Filament\Admin\Resources')
+            ->discoverPages(in: app_path('Filament/Admin/Pages'), for: 'App\Filament\Admin\Pages')
             ->pages([
                 Dashboard::class,
             ])
+            ->discoverWidgets(in: app_path('Filament/Admin/Widgets'), for: 'App\Filament\Admin\Widgets')
             ->widgets([
                 AccountWidget::class,
                 FilamentInfoWidget::class,
@@ -50,7 +52,9 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-                AdminOnly::class,
-            ]);
+                \App\Http\Middleware\AdminOnly::class,
+            ])
+            ->authGuard('web')
+            ->login();
     }
 }

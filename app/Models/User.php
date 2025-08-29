@@ -23,6 +23,7 @@ class User extends Authenticatable
         'password',
         'provider',
         'provider_id',
+        'role',
     ];
 
     /**
@@ -66,5 +67,10 @@ class User extends Authenticatable
             ->where('candidate_id', $candidateId)
             ->whereDate('created_at', today())
             ->exists();
+    }
+
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
     }
 }
