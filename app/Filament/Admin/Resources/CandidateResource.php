@@ -81,7 +81,7 @@ class CandidateResource extends Resource
                         $message = "Bonjour {$record->prenom} {$record->nom}, nous avons bien reçu votre candidature pour le concours DINOR. Nous vous tiendrons informé de la suite.";
                         $whatsappUrl = "https://wa.me/{$cleanWhatsapp}?text=" . urlencode($message);
 
-                                                                        $whatsappButton = "<button onclick='sendWhatsAppMessage({$record->id})' 
+                                                                        $whatsappButton = "<button onclick='sendWhatsAppMessage({$record->id})'
                             class='inline-flex items-center gap-1 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-4 py-2 rounded-lg text-xs font-semibold transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 border border-green-400'
                             title='Envoyer un message WhatsApp via Green API'>
                             <svg class='w-4 h-4' fill='currentColor' viewBox='0 0 24 24'>
@@ -92,7 +92,7 @@ class CandidateResource extends Resource
 
                                                 // Bouton de détail
                         $viewUrl = route('filament.admin.resources.candidates.view', $record);
-                        $detailButton = "<a href='{$viewUrl}' 
+                        $detailButton = "<a href='{$viewUrl}'
                             class='inline-flex items-center gap-1 bg-blue-500 hover:bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 shadow-sm hover:shadow-lg transform hover:-translate-y-0.5'
                             title='Voir les détails du candidat'>
                             <svg class='w-3 h-3' fill='currentColor' viewBox='0 0 20 20'>
@@ -108,7 +108,7 @@ class CandidateResource extends Resource
                             return "
                             <div class='flex flex-col gap-2 min-w-max'>
                                 <div class='flex gap-1 flex-wrap'>
-                                    <a href='{$approveUrl}' 
+                                    <a href='{$approveUrl}'
                                        class='inline-flex items-center gap-1 bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-lg text-xs font-semibold transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 border border-emerald-400'
                                        title='Approuver le candidat'>
                                         <svg class='w-4 h-4' fill='currentColor' viewBox='0 0 20 20'>
@@ -116,8 +116,8 @@ class CandidateResource extends Resource
                                         </svg>
                                         Approuver
                                     </a>
-                                    <a href='{$rejectUrl}' 
-                                       onclick='return confirm(\"Êtes-vous sûr de vouloir rejeter ce candidat ?\")' 
+                                    <a href='{$rejectUrl}'
+                                       onclick='return confirm(\"Êtes-vous sûr de vouloir rejeter ce candidat ?\")'
                                        class='inline-flex items-center gap-1 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-xs font-semibold transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 border border-red-400'
                                        title='Rejeter le candidat'>
                                         <svg class='w-4 h-4' fill='currentColor' viewBox='0 0 20 20'>

@@ -7,9 +7,13 @@ use Filament\Widgets\Widget;
 
 class CandidatesRankingWidget extends Widget
 {
-    protected static string $view = 'filament.admin.widgets.candidates-ranking';
     protected int | string | array $columnSpan = 'full';
     protected static ?int $sort = 2;
+
+    public static function getView(): string
+    {
+        return 'filament.admin.widgets.candidates-ranking';
+    }
 
     public function getCandidatesRanking()
     {
