@@ -21,11 +21,35 @@ class WhatsAppService
      */
     public function sendMessage(string $phoneNumber, string $message): array
     {
+        // Formater le numéro de téléphone pour Green API (sans le +)
+        $formattedPhone = $this->formatPhoneNumber($phoneNumber);
+
         if ($this->provider === 'business_api') {
-            return $this->sendViaBusinessAPI($phoneNumber, $message);
+            return $this->sendViaBusinessAPI($formattedPhone, $message);
         } else {
-            return $this->sendViaGreenAPI($phoneNumber, $message);
+            return $this->sendViaGreenAPI($formattedPhone, $message);
         }
+    }
+
+    /**
+     * Formater le numéro de téléphone pour Green API
+     */
+    private function formatPhoneNumber(string $phoneNumber): string
+    {
+        // Supprimer le + et les espaces
+        $phone = preg_replace('/[^0-9]/', '', $phoneNumber);
+
+        // Si le numéro commence par 225, le garder tel quel
+        if (strpos($phone, '225') === 0) {
+            return $phone;
+        }
+
+        // Si le numéro commence par 00, supprimer les 00
+        if (strpos($phone, '00') === 0) {
+            return substr($phone, 2);
+        }
+
+        return $phone;
     }
 
     /**
@@ -37,13 +61,13 @@ class WhatsAppService
         $phoneNumberId = $config['phone_number_id'];
         $accessToken = $config['access_token'];
         $apiUrl = $config['api_url'];
-        
+
         if (!$accessToken || !$phoneNumberId) {
             throw new \Exception('Configuration WhatsApp Business API incomplète. Vérifiez WHATSAPP_PHONE_NUMBER_ID et WHATSAPP_ACCESS_TOKEN.');
         }
-        
+
         $endpoint = "{$apiUrl}/{$phoneNumberId}/messages";
-        
+
         $payload = [
             'messaging_product' => 'whatsapp',
             'to' => $phoneNumber,
@@ -52,18 +76,18 @@ class WhatsAppService
                 'body' => $message
             ]
         ];
-        
+
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $accessToken,
             'Content-Type' => 'application/json',
         ])->post($endpoint, $payload);
-        
+
         Log::info('WhatsApp Business API Response', [
             'phone' => $phoneNumber,
             'status' => $response->status(),
             'body' => $response->body(),
         ]);
-        
+
         return [
             'status' => $response->status(),
             'body' => $response->json(),
@@ -81,28 +105,34 @@ class WhatsAppService
         $instanceId = $config['instance_id'];
         $token = $config['token'];
         $apiUrl = $config['api_url'];
-        
+
         if (!$instanceId || !$token) {
             throw new \Exception('Configuration Green API incomplète. Vérifiez GREEN_API_ID et GREEN_API_TOKEN.');
         }
-        
+
         $endpoint = "{$apiUrl}/waInstance{$instanceId}/SendMessage/{$token}";
-        
+
         $payload = [
             'chatId' => $phoneNumber . '@c.us',
             'message' => $message,
         ];
-        
+
+        Log::info('Green API Request', [
+            'endpoint' => $endpoint,
+            'phone' => $phoneNumber,
+            'payload' => $payload,
+        ]);
+
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
         ])->post($endpoint, $payload);
-        
+
         Log::info('Green API Response', [
             'phone' => $phoneNumber,
             'status' => $response->status(),
             'body' => $response->body(),
         ]);
-        
+
         return [
             'status' => $response->status(),
             'body' => $response->json(),
@@ -118,7 +148,7 @@ class WhatsAppService
     {
         $businessApiConfig = $this->config['business_api'];
         $greenApiConfig = $this->config['green_api'];
-        
+
         return [
             'business_api' => [
                 'configured' => !empty($businessApiConfig['phone_number_id']) && !empty($businessApiConfig['access_token']),
