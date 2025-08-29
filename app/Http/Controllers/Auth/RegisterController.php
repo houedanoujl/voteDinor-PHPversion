@@ -54,12 +54,14 @@ class RegisterController extends Controller
             // Envoyer le message WhatsApp de bienvenue
             try {
                 $whatsappService = new WhatsAppService();
+                $dashboardUrl = url('/dashboard');
                 $message = "🎉 Bienvenue sur le concours photo DINOR !\n\n";
                 $message .= "Votre compte a été créé avec succès.\n";
                 $message .= "Vous pouvez maintenant voter pour vos candidats préférés ou soumettre votre propre photo.\n\n";
-                $message .= "Connectez-vous avec votre email : {$email}\n";
-                $message .= "Mot de passe temporaire : {$password}\n\n";
-                $message .= "Bonne chance !";
+                $message .= "🔗 Accédez à votre dashboard : {$dashboardUrl}\n\n";
+                $message .= "📧 Email : {$email}\n";
+                $message .= "🔑 Mot de passe temporaire : {$password}\n\n";
+                $message .= "Bonne chance pour le concours !";
 
                 $whatsappService->sendMessage($request->whatsapp, $message);
             } catch (\Exception $e) {

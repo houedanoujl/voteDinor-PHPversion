@@ -119,6 +119,10 @@ class ViewCandidate extends ViewRecord
                         })
                         ->html()
                         ->columnSpanFull(),
+                    Placeholder::make('photo_url')
+                        ->label('URL de la photo')
+                        ->content(fn ($record) => $record->getPhotoUrl())
+                        ->columnSpanFull(),
                 ]),
 
             Section::make('Statistiques')
@@ -179,6 +183,24 @@ class ViewCandidate extends ViewRecord
                         })
                         ->html()
                         ->columnSpanFull(),
+                ])
+                ->collapsible()
+                ->collapsed(),
+
+            Section::make('Statistiques des votes')
+                ->schema([
+                    Grid::make(3)
+                        ->schema([
+                            Placeholder::make('total_votes')
+                                ->label('Total des votes')
+                                ->content(fn ($record) => $record->votes()->count()),
+                            Placeholder::make('votes_today')
+                                ->label('Votes aujourd\'hui')
+                                ->content(fn ($record) => $record->votes()->whereDate('created_at', today())->count()),
+                            Placeholder::make('votes_this_week')
+                                ->label('Votes cette semaine')
+                                ->content(fn ($record) => $record->votes()->whereBetween('created_at', [now()->startOfWeek(), now()])->count()),
+                        ]),
                 ])
                 ->collapsible()
                 ->collapsed(),

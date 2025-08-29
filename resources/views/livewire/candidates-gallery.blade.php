@@ -241,10 +241,10 @@
                 // Update vote count immediately for better UX
                 currentCandidateVotes = data.votes_count;
                 document.getElementById('lightbox-votes').textContent = currentCandidateVotes;
-                
+
                 // Show success message
                 showNotification('Vote enregistré avec succès !', 'success');
-                
+
                 // Update the vote button to show "already voted"
                 updateVoteButton();
             } else {

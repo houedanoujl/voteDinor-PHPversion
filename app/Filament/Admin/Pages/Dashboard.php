@@ -7,6 +7,8 @@ use App\Filament\Widgets\StatsOverview;
 use App\Filament\Widgets\AnalyticsChart;
 use App\Filament\Widgets\LatestCandidates;
 use App\Filament\Widgets\LatestVotes;
+use App\Filament\Widgets\CandidatesRanking;
+use App\Filament\Widgets\DetailedStats;
 
 class Dashboard extends BaseDashboard
 {
@@ -22,6 +24,8 @@ class Dashboard extends BaseDashboard
     protected function getFooterWidgets(): array
     {
         return [
+            DetailedStats::class,
+            CandidatesRanking::class,
             AnalyticsChart::class,
             LatestCandidates::class,
             LatestVotes::class,
