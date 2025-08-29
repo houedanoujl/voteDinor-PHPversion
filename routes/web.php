@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Auth\SocialAuthController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\DashboardController;
@@ -13,6 +12,7 @@ use Livewire\Livewire;
 // Page d'accueil du concours
 Route::get('/', [HomeController::class, 'index'])->name('contest.home');
 Route::get('/classement', [HomeController::class, 'ranking'])->name('contest.ranking');
+Route::get('/regles', [\App\Http\Controllers\ContestRulesController::class, 'index'])->name('contest.rules');
 
 // Routes d'authentification standard
 Route::middleware('guest')->group(function () {
@@ -26,22 +26,7 @@ Route::post('/logout', [LoginController::class, 'logout'])
     ->middleware('auth')
     ->name('logout');
 
-// Routes d'authentification sociale
-Route::prefix('auth')->group(function () {
-    // Redirection vers les fournisseurs OAuth
-    Route::get('{provider}/redirect', [SocialAuthController::class, 'redirect'])
-        ->where('provider', 'google|facebook')
-        ->name('auth.redirect');
-    
-    // Callbacks OAuth
-    Route::get('{provider}/callback', [SocialAuthController::class, 'callback'])
-        ->where('provider', 'google|facebook')
-        ->name('auth.callback');
-    
-    // Déconnexion sociale
-    Route::post('logout', [SocialAuthController::class, 'logout'])
-        ->name('auth.logout');
-});
+
 
 // Routes pour les candidats et votes (protection middleware auth)
 Route::middleware('auth')->group(function () {
@@ -56,4 +41,16 @@ Route::get('/api/ranking', [VoteController::class, 'ranking'])->name('api.rankin
 Route::middleware(['auth', \App\Http\Middleware\AdminOnly::class])->prefix('admin')->group(function () {
     Route::get('/candidates/{candidate}/approve', [CandidateController::class, 'approve'])->name('admin.candidates.approve');
     Route::get('/candidates/{candidate}/reject', [CandidateController::class, 'reject'])->name('admin.candidates.reject');
+});
+
+// Routes pour le streaming vidéo
+Route::prefix('video')->group(function () {
+    Route::get('/player', [\App\Http\Controllers\VideoController::class, 'player'])->name('video.player');
+    Route::get('/stream/{filename?}', [\App\Http\Controllers\VideoController::class, 'stream'])->name('video.stream');
+    Route::get('/hls/{filename?}', [\App\Http\Controllers\VideoController::class, 'streamHLS'])->name('video.hls');
+    Route::get('/info/{filename?}', [\App\Http\Controllers\VideoController::class, 'info'])->name('video.info');
+
+    // Routes HLS pour les segments et playlists
+    Route::get('/hls/{quality}/playlist.m3u8', [\App\Http\Controllers\VideoController::class, 'serveHLSPlaylist'])->name('video.hls.playlist');
+    Route::get('/hls/{quality}/{segment}', [\App\Http\Controllers\VideoController::class, 'serveHLSSegment'])->name('video.hls.segment');
 });

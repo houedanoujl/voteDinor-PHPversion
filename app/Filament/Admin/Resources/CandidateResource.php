@@ -7,7 +7,7 @@ use App\Services\WhatsAppService;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Tables\Actions;
+use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -80,13 +80,13 @@ class CandidateResource extends Resource
                                 <a href='{$approveUrl}' class='bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm'>
                                     ✓ Approuver
                                 </a>
-                                <a href='{$rejectUrl}' class='bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm' 
+                                <a href='{$rejectUrl}' class='bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm'
                                    onclick='return confirm(\"Êtes-vous sûr de vouloir rejeter ce candidat ?\")'>
                                     ✗ Rejeter
                                 </a>
                             </div>";
                         }
-                        
+
                         return match ($record->status) {
                             'approved' => '<span class="text-green-600 font-medium">✓ Approuvé</span>',
                             'rejected' => '<span class="text-red-600 font-medium">✗ Rejeté</span>',
@@ -95,6 +95,13 @@ class CandidateResource extends Resource
                     })
                     ->html(),
             ])
+            ->actions([
+                Action::make('view')
+                    ->label('Voir détail')
+                    ->url(fn (Candidate $record): string => route('filament.admin.resources.candidates.view', $record))
+                    ->icon('heroicon-o-eye'),
+            ])
+
             ->defaultSort('created_at', 'desc')
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
@@ -118,6 +125,7 @@ class CandidateResource extends Resource
         return [
             'index' => \App\Filament\Admin\Resources\CandidateResource\Pages\ListCandidates::route('/'),
             'create' => \App\Filament\Admin\Resources\CandidateResource\Pages\CreateCandidate::route('/create'),
+            'view' => \App\Filament\Admin\Resources\CandidateResource\Pages\ViewCandidate::route('/{record}'),
             'edit' => \App\Filament\Admin\Resources\CandidateResource\Pages\EditCandidate::route('/{record}/edit'),
         ];
     }

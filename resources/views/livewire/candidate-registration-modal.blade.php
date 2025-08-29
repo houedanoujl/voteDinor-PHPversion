@@ -18,7 +18,7 @@
         <div class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
             <!-- Background overlay avec blur -->
             <div class="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity" wire:click="closeModal"></div>
-            
+
             <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:p-0">
                 <!-- Modal panel moderne -->
                 <div class="inline-block w-full max-w-2xl bg-white rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all relative z-10">
@@ -156,21 +156,7 @@
                                 </div>
                             </div>
 
-                            <!-- Description -->
-                            <div class="mt-6">
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                    📖 Description de votre plat
-                                </label>
-                                <textarea
-                                    wire:model="description"
-                                    rows="4"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500 resize-none"
-                                    placeholder="Décrivez votre plat, les ingrédients utilisés, l'inspiration..."
-                                ></textarea>
-                                @error('description')
-                                    <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
-                                @enderror
-                            </div>
+
 
                             <!-- Informations -->
                             <div class="mt-6 p-4 bg-gray-50 rounded-xl">
@@ -225,7 +211,7 @@ document.addEventListener('livewire:init', function () {
             trackRegistration(event.candidateName);
         }
     });
-    
+
     Livewire.on('userRegistered', () => {
         // Rafraîchir la page pour montrer que l'utilisateur est maintenant connecté
         setTimeout(() => {

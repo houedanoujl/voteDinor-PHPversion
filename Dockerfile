@@ -19,6 +19,7 @@ RUN apt-get update && apt-get install -y \
     unzip \
     supervisor \
     cron \
+    ffmpeg \
     && rm -rf /var/lib/apt/lists/*
 
 # Installation des extensions PHP nécessaires

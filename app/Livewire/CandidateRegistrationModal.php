@@ -13,25 +13,24 @@ use Illuminate\Support\Facades\Auth;
 class CandidateRegistrationModal extends Component
 {
     use WithFileUploads;
-    
+
     public $showModal = false;
     public $prenom = '';
     public $nom = '';
     public $email = '';
     public $whatsapp = '';
-    public $description = '';
+
     public $photo = null;
     public $tempPhotoUrl = null;
-    
+
     protected $rules = [
         'prenom' => 'required|min:2|max:255',
         'nom' => 'required|min:2|max:255',
         'email' => 'required|email|unique:users,email',
         'whatsapp' => 'required|regex:/^\+225[0-9]{8}$/',
-        'description' => 'nullable|max:500',
         'photo' => 'required|image|max:2048',
     ];
-    
+
     protected $messages = [
         'prenom.required' => 'Le prénom est obligatoire.',
         'nom.required' => 'Le nom est obligatoire.',
@@ -55,14 +54,14 @@ class CandidateRegistrationModal extends Component
     public function closeModal()
     {
         $this->showModal = false;
-        $this->reset(['prenom', 'nom', 'email', 'whatsapp', 'description', 'photo', 'tempPhotoUrl']);
+        $this->reset(['prenom', 'nom', 'email', 'whatsapp', 'photo', 'tempPhotoUrl']);
         $this->resetErrorBag();
     }
 
     public function updatedPhoto()
     {
         $this->validate(['photo' => 'image|max:2048']);
-        
+
         if ($this->photo) {
             $this->tempPhotoUrl = $this->photo->temporaryUrl();
         }
@@ -75,7 +74,6 @@ class CandidateRegistrationModal extends Component
             'prenom' => 'required|min:2|max:255',
             'nom' => 'required|min:2|max:255',
             'whatsapp' => 'required|regex:/^\+225[0-9]{8}$/',
-            'description' => 'nullable|max:500',
             'photo' => 'required|image|max:2048',
         ];
 
@@ -92,7 +90,7 @@ class CandidateRegistrationModal extends Component
             if (!auth()->check()) {
                 // Générer un mot de passe temporaire
                 $password = Str::random(12);
-                
+
                 $user = User::create([
                     'name' => $this->prenom . ' ' . $this->nom,
                     'email' => $this->email,
@@ -110,7 +108,6 @@ class CandidateRegistrationModal extends Component
                 'prenom' => $this->prenom,
                 'nom' => $this->nom,
                 'whatsapp' => $this->whatsapp,
-                'description' => $this->description,
                 'status' => 'pending',
                 'votes_count' => 0,
                 'user_id' => $user->id,
@@ -124,18 +121,18 @@ class CandidateRegistrationModal extends Component
                     ->toMediaCollection('photos');
             }
 
-            session()->flash('success', '✅ Inscription réussie ! ' . 
-                (!auth()->guest() ? 'Votre candidature sera validée sous 24h.' : 
+            session()->flash('success', '✅ Inscription réussie ! ' .
+                (!auth()->guest() ? 'Votre candidature sera validée sous 24h.' :
                 'Un compte a été créé et vous êtes maintenant connecté. Votre candidature sera validée sous 24h.'));
-            
+
             // Tracker l'inscription avec Google Analytics
             $this->dispatch('track-registration', candidateName: $this->prenom . ' ' . $this->nom);
-            
+
             $this->closeModal();
-            
+
             // Rafraîchir la page pour afficher le nouveau statut de connexion
             $this->dispatch('userRegistered');
-            
+
         } catch (\Exception $e) {
             \Log::error('Erreur lors de l\'inscription: ' . $e->getMessage());
             session()->flash('error', '❌ Erreur lors de l\'inscription. Veuillez réessayer.');

@@ -24,7 +24,7 @@
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         @forelse($candidates as $candidate)
-            <div class="group card-dinor bg-white overflow-hidden hover:shadow-2xl transition-all duration-500 transform hover:scale-105 animate-fade-in-up">
+            <div class="group card-dinor bg-white overflow-hidden hover:shadow-2xl transition-all duration-500 transform hover:scale-105 animate-fade-in-up cursor-pointer" onclick="openLightbox({{ $candidate['id'] }})">
                 <!-- Image avec overlay -->
                 <div class="relative overflow-hidden">
                     <img
@@ -53,8 +53,7 @@
                     <div class="space-y-3">
                         @guest
                             <!-- Utilisateur non connecté -->
-                            <a href="{{ route('auth.redirect', 'google') }}"
-                               onclick="if(typeof trackLogin !== 'undefined') trackLogin('google');"
+                            <a href="{{ route('login') }}"
                                class="block w-full bg-dinor-gray-100 text-dinor-brown py-3 px-4 rounded-xl text-center font-medium hover:bg-dinor-gray-200 transition-all duration-300 group-hover:bg-dinor-orange group-hover:text-white">
                                 <span class="flex items-center justify-center">
                                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -126,7 +125,7 @@
                         <livewire:candidate-registration-modal />
                     @else
                         <a
-                            href="{{ route('auth.redirect', 'google') }}"
+                            href="{{ route('login') }}"
                             class="bg-orange-600 hover:bg-orange-700 text-white px-8 py-4 text-lg inline-block rounded-lg font-medium transition-colors"
                         >
                             🎯 Se connecter pour participer

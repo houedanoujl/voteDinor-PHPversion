@@ -5,64 +5,82 @@
 
 @section('content')
 <div class="min-h-screen">
-    <!-- Hero Section simple et épuré -->
+    <!-- Hero Section avec vidéo multistream -->
     <section class="relative bg-white py-20 px-4">
-        <div class="max-w-4xl mx-auto text-center">
-            <!-- Badge discret -->
-            <div class="inline-flex items-center px-3 py-1 bg-gray-100 rounded-full text-sm text-gray-600 mb-8">
-                <span class="w-1.5 h-1.5 bg-orange-500 rounded-full mr-2"></span>
-                Concours Photo 2024
-            </div>
+        <div class="max-w-6xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <!-- Contenu texte -->
+                <div class="text-center lg:text-left">
+                    <!-- Titre principal épuré -->
+                    <h1 class="text-4xl md:text-6xl font-bold text-gray-900 mb-6 tracking-tight">
+                        Concours Photo
+                        <span class="block text-orange-600">DINOR</span>
+                    </h1>
 
-            <!-- Titre principal épuré -->
-            <h1 class="text-4xl md:text-6xl font-bold text-gray-900 mb-6 tracking-tight">
-                Concours Photo
-                <span class="block text-orange-600">DINOR</span>
-            </h1>
+                    <!-- Sous-titre simple -->
+                    <p class="text-xl text-gray-600 mb-12 max-w-2xl mx-auto lg:mx-0">
+                        Participez au concours photo cuisine vintage. Votez pour vos créations préférées.
+                    </p>
 
-            <!-- Sous-titre simple -->
-            <p class="text-xl text-gray-600 mb-12 max-w-2xl mx-auto">
-                Participez au concours photo cuisine vintage. Votez pour vos créations préférées.
-            </p>
+                    <!-- Boutons d'action épurés -->
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start items-center">
+                        @auth
+                            <livewire:candidate-registration-modal />
+                        @else
+                            <div class="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
+                                <a href="{{ route('login') }}" class="bg-gray-900 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors">
+                                    Connexion
+                                </a>
+                                <a href="{{ route('register') }}" class="bg-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-orange-700 transition-colors">
+                                    Participer au concours
+                                </a>
+                            </div>
+                        @endauth
 
-            <!-- Boutons d'action épurés -->
-            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                @auth
-                    <livewire:candidate-registration-modal />
-                @else
-                    <div class="flex flex-col sm:flex-row gap-3 justify-center">
-                        <a href="{{ route('login') }}" class="bg-gray-900 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors">
-                            Connexion
-                        </a>
-                        <a href="{{ route('register') }}" class="bg-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-orange-700 transition-colors">
-                            Inscription
-                        </a>
+                        <!-- Bouton voir candidats avec mêmes dimensions -->
+                        <button onclick="scrollToGallery()" class="bg-gray-100 text-gray-900 px-6 py-3 rounded-lg font-medium hover:bg-gray-200 transition-colors">
+                            Voir les candidats →
+                        </button>
                     </div>
+                </div>
 
-                    <!-- OAuth épuré -->
-                    <div class="text-center mt-6">
-                        <div class="flex gap-2 justify-center">
-                            <a href="{{ route('auth.redirect', 'google') }}" class="flex items-center justify-center w-10 h-10 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors">
-                                <svg class="w-5 h-5" viewBox="0 0 24 24">
-                                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                                </svg>
-                            </a>
-                            <a href="{{ route('auth.redirect', 'facebook') }}" class="flex items-center justify-center w-10 h-10 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors">
-                                <svg class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                                </svg>
-                            </a>
+                <!-- Section vidéo multistream -->
+                <div class="relative">
+                    <div class="bg-gray-100 rounded-2xl p-6 shadow-lg">
+                        <div class="aspect-video rounded-xl overflow-hidden bg-black">
+                            <video
+                                id="hero-video"
+                                class="w-full h-full object-cover"
+                                controls
+                                preload="metadata"
+                                poster="{{ asset('images/video-poster.jpg') }}">
+                                <source src="{{ route('video.stream', 'video.mp4') }}" type="video/mp4">
+                                <source src="{{ route('video.hls', 'video.mp4') }}" type="application/x-mpegURL">
+                                Votre navigateur ne supporte pas la lecture vidéo.
+                            </video>
+                        </div>
+
+                        <!-- Contrôles de streaming -->
+                        <div class="mt-4 space-y-3">
+                            <div class="flex gap-2">
+                                <button onclick="loadStream('standard')" class="flex-1 bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-orange-700 transition-colors">
+                                    📺 Streaming Standard
+                                </button>
+                                <button onclick="loadStream('hls')" class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
+                                    📱 Streaming HLS
+                                </button>
+                            </div>
+
+                            <!-- Informations vidéo -->
+                            <div id="video-info" class="text-sm text-gray-600 bg-white p-3 rounded-lg border">
+                                <div class="flex justify-between items-center">
+                                    <span>🎥 Chargement des informations...</span>
+                                    <span id="video-status" class="text-green-500">● En ligne</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                @endauth
-
-                <!-- Bouton voir candidats simplifié -->
-                <button onclick="scrollToGallery()" class="mt-6 bg-gray-100 text-gray-900 px-6 py-3 rounded-lg font-medium hover:bg-gray-200 transition-colors">
-                    Voir les candidats →
-                </button>
+                </div>
             </div>
         </div>
     </section>
@@ -122,6 +140,39 @@
         });
     }
 
+    // Fonctions pour le streaming vidéo
+    function loadStream(type) {
+        const video = document.getElementById('hero-video');
+        const videoInfo = document.getElementById('video-info');
+
+        if (type === 'standard') {
+            video.src = '{{ route("video.stream", "video.mp4") }}';
+            videoInfo.innerHTML = '<div class="flex justify-between items-center"><span>🎥 Streaming Standard</span><span id="video-status" class="text-green-500">● En ligne</span></div>';
+        } else if (type === 'hls') {
+            video.src = '{{ route("video.hls", "video.mp4") }}';
+            videoInfo.innerHTML = '<div class="flex justify-between items-center"><span>📱 Streaming HLS</span><span id="video-status" class="text-green-500">● En ligne</span></div>';
+        }
+
+        video.load();
+    }
+
+    // Charger les informations de la vidéo
+    async function loadVideoInfo() {
+        try {
+            const response = await fetch('{{ route("video.info", "video.mp4") }}');
+            const data = await response.json();
+
+            const videoInfo = document.getElementById('video-info');
+            videoInfo.innerHTML = `
+                <div class="flex justify-between items-center">
+                    <span>🎥 ${data.size_formatted} - ${data.mime_type}</span>
+                    <span id="video-status" class="text-green-500">● En ligne</span>
+                </div>
+            `;
+        } catch (error) {
+            console.log('Erreur lors du chargement des informations vidéo:', error);
+        }
+    }
 
     // Intersection Observer pour les animations
     const observerOptions = {
@@ -141,6 +192,9 @@
     document.addEventListener('DOMContentLoaded', () => {
         const elements = document.querySelectorAll('.card-dinor');
         elements.forEach(el => observer.observe(el));
+
+        // Charger les informations de la vidéo
+        loadVideoInfo();
     });
 </script>
 @endpush

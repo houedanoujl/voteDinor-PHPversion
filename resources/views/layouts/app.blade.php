@@ -253,17 +253,15 @@
                                 </form>
                             </div>
                         @else
-                            <div class="flex space-x-3" x-data>
-                                <button 
-                                    @click="$dispatch('open-auth-modal', { mode: 'login' })"
-                                    class="bg-white text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors border border-gray-200">
+                            <div class="flex space-x-3">
+                                <a href="{{ route('login') }}"
+                                   class="bg-white text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors border border-gray-200">
                                     Connexion
-                                </button>
-                                <button 
-                                    @click="$dispatch('open-auth-modal', { mode: 'register' })"
-                                    class="bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-orange-700 transition-colors">
+                                </a>
+                                <a href="{{ route('register') }}"
+                                   class="bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-orange-700 transition-colors">
                                     Inscription
-                                </button>
+                                </a>
                             </div>
                         @endauth
                     </div>
@@ -276,10 +274,7 @@
             @yield('content')
         </main>
 
-        <!-- Auth Modal Component -->
-        @if (!auth()->check())
-            @livewire('auth-modal')
-        @endif
+
 
         <!-- Footer moderne -->
         <footer class="bg-gradient-dinor-dark text-white py-12 mt-16">
