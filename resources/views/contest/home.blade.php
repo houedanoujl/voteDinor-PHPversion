@@ -24,18 +24,23 @@
 
                     <!-- Boutons d'action épurés -->
                     <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start items-center">
-                        @auth
-                            <livewire:candidate-registration-modal />
-                        @else
-                            <div class="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
+                        <div class="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
+                            <button onclick="scrollToInscription()" class="bg-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-orange-700 transition-colors flex items-center">
+                                🎯 Participer au concours
+                                <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+                                </svg>
+                            </button>
+                            @guest
                                 <a href="{{ route('login') }}" class="bg-gray-900 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors">
                                     Connexion
                                 </a>
-                                <a href="{{ route('register') }}" class="bg-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-orange-700 transition-colors">
-                                    Participer au concours
+                            @else
+                                <a href="{{ route('dashboard') }}" class="bg-gray-900 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors">
+                                    Mon tableau de bord
                                 </a>
-                            </div>
-                        @endauth
+                            @endguest
+                        </div>
 
                         <!-- Bouton voir candidats avec mêmes dimensions -->
                         <button onclick="scrollToGallery()" class="bg-gray-100 text-gray-900 px-6 py-3 rounded-lg font-medium hover:bg-gray-200 transition-colors">
@@ -105,8 +110,58 @@
         </div>
     </section>
 
+    <!-- Formulaire d'inscription -->
+    <section id="inscription" class="py-16 px-4 bg-white">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 text-gray-900">
+                    Rejoignez le concours
+                </h2>
+                <p class="text-xl text-gray-600 mb-8">
+                    Partagez votre passion culinaire et tentez de gagner de superbes prix !
+                </p>
+            </div>
+
+            @guest
+                <!-- Formulaire pour les invités -->
+                @livewire('candidate-registration-form')
+            @else
+                <!-- Formulaire pour les utilisateurs connectés -->
+                @if(auth()->user()->candidate)
+                    <div class="text-center bg-green-50 border border-green-200 rounded-xl p-8">
+                        <div class="mb-4">
+                            <svg class="mx-auto h-16 w-16 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-2">Vous participez déjà ! 🎉</h3>
+                        <p class="text-gray-600 mb-6">
+                            Votre candidature a été soumise avec succès. 
+                            @if(auth()->user()->candidate->status === 'pending')
+                                Elle est actuellement en cours de validation.
+                            @elseif(auth()->user()->candidate->status === 'approved')
+                                Elle a été approuvée et vous pouvez recevoir des votes !
+                            @else
+                                Elle a été rejetée. Contactez-nous pour plus d'informations.
+                            @endif
+                        </p>
+                        <a href="{{ route('dashboard') }}" class="inline-flex items-center px-6 py-3 bg-orange-600 text-white font-medium rounded-lg hover:bg-orange-700 transition-colors">
+                            Voir mon tableau de bord
+                            <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                            </svg>
+                        </a>
+                    </div>
+                @else
+                    <!-- L'utilisateur est connecté mais n'a pas encore participé -->
+                    @livewire('candidate-registration-form')
+                @endif
+            @endguest
+        </div>
+    </section>
+
     <!-- Candidats Gallery simple -->
-    <section id="gallery" class="py-16 px-4 bg-white">
+    <section id="gallery" class="py-16 px-4 bg-gray-50">
         <div class="max-w-6xl mx-auto">
             <div class="text-center mb-12">
                 <h2 class="text-3xl md:text-4xl font-bold mb-4 text-gray-900">
@@ -119,16 +174,20 @@
         </div>
     </section>
 
-    <!-- Modal de participation -->
-    @auth
-        @livewire('candidate-registration-modal')
-    @endauth
+
 </div>
 
 @push('scripts')
 <script>
     function scrollToGallery() {
         document.getElementById('gallery').scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+    }
+
+    function scrollToInscription() {
+        document.getElementById('inscription').scrollIntoView({
             behavior: 'smooth',
             block: 'start'
         });

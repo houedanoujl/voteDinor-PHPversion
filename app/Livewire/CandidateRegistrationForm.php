@@ -20,7 +20,6 @@ class CandidateRegistrationForm extends Component
     public $nom = '';
     public $email = '';
     public $whatsapp = '';
-    public $description = '';
     public $photo = null;
     public $tempPhotoUrl = null;
     public $isSubmitting = false;
@@ -30,7 +29,6 @@ class CandidateRegistrationForm extends Component
         'nom' => 'required|min:2|max:255',
         'email' => 'required|email|unique:users,email',
         'whatsapp' => 'required|regex:/^\+225[0-9]{8}$/|unique:candidates,whatsapp',
-        'description' => 'nullable|string|max:500',
         'photo' => 'required|image|max:3072',
     ];
 
@@ -43,7 +41,6 @@ class CandidateRegistrationForm extends Component
         'whatsapp.required' => 'Le numéro WhatsApp est obligatoire.',
         'whatsapp.regex' => 'Format: +225XXXXXXXX',
         'whatsapp.unique' => 'Ce numéro WhatsApp est déjà utilisé.',
-        'description.max' => 'La description ne doit pas dépasser 500 caractères.',
         'photo.required' => 'Une photo est obligatoire.',
         'photo.image' => 'Le fichier doit être une image.',
         'photo.max' => 'La photo ne doit pas dépasser 3MB.',
@@ -81,7 +78,6 @@ class CandidateRegistrationForm extends Component
                 'nom' => $this->nom,
                 'email' => $this->email,
                 'whatsapp' => $this->whatsapp,
-                'description' => $this->description,
                 'photo' => $photoPath,
                 'status' => 'pending',
             ]);
@@ -123,7 +119,6 @@ class CandidateRegistrationForm extends Component
         $this->nom = '';
         $this->email = '';
         $this->whatsapp = '';
-        $this->description = '';
         $this->photo = null;
         $this->tempPhotoUrl = null;
         $this->isSubmitting = false;

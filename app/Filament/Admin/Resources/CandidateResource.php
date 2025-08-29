@@ -75,9 +75,9 @@ class CandidateResource extends Resource
                                 Tables\Columns\TextColumn::make('id')
                     ->label('Actions')
                     ->formatStateUsing(function ($state, $record) {
-                        // Bouton WhatsApp avec Green API
+                        // Bouton WhatsApp avec Green API et logs de débogage
                         $whatsappButton = "
-                        <button onclick='sendWhatsAppMessage({$record->id})'
+                        <button onclick='console.log(\"🟢 Clic sur bouton WhatsApp candidat {$record->id}\"); sendWhatsAppMessage({$record->id})'
                                style='background: linear-gradient(45deg, #10b981, #059669); border: none; color: white; padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: inline-flex; align-items: center; gap: 4px;'
                                onmouseover='this.style.transform=\"translateY(-1px)\"; this.style.boxShadow=\"0 4px 8px rgba(0,0,0,0.2)\"'
                                onmouseout='this.style.transform=\"translateY(0)\"; this.style.boxShadow=\"0 2px 4px rgba(0,0,0,0.1)\"'
@@ -146,9 +146,9 @@ class CandidateResource extends Resource
                             </div>";
                         }
 
-                        // Bouton de suppression (pour tous les candidats)
+                        // Bouton de suppression (pour tous les candidats) avec logs de débogage
                         $deleteButton = "
-                        <button onclick='return confirm(\"Êtes-vous sûr de vouloir supprimer définitivement ce candidat et tous ses votes ?\") && deleteCandidate({$record->id})'
+                        <button onclick='console.log(\"🟢 Clic sur bouton Supprimer candidat {$record->id}\"); if(confirm(\"Êtes-vous sûr de vouloir supprimer définitivement ce candidat et tous ses votes ?\")) { deleteCandidate({$record->id}); }'
                                style='background: linear-gradient(45deg, #ef4444, #dc2626); border: none; color: white; padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: inline-flex; align-items: center; gap: 4px;'
                                onmouseover='this.style.transform=\"translateY(-1px)\"; this.style.boxShadow=\"0 4px 8px rgba(0,0,0,0.2)\"'
                                onmouseout='this.style.transform=\"translateY(0)\"; this.style.boxShadow=\"0 2px 4px rgba(0,0,0,0.1)\"'
@@ -227,10 +227,13 @@ class CandidateResource extends Resource
                         if (!$scriptLoaded) {
                             $scriptLoaded = true;
                             return new HtmlString('
-                                <script>
+                                                                <script>
+                                console.log("🟢 Script CandidateResource - Début du chargement");
+                                
                                 if (!window.scriptsLoaded) {
                                     window.scriptsLoaded = true;
-
+                                    console.log("🟢 Scripts non encore chargés, initialisation...");
+                                    
                                     // Configuration globale
                                     window.WhatsAppService = {
                                         baseUrl: "/admin/whatsapp",
@@ -238,7 +241,19 @@ class CandidateResource extends Resource
 
                                         async sendMessage(candidateId, messageType = "notification", customMessage = null) {
                                             try {
+                                                console.log("🟢 WhatsApp Service - Début sendMessage", { candidateId, messageType, customMessage });
+                                                
                                                 this.showLoader("Envoi du message WhatsApp...");
+                                                
+                                                const requestData = {
+                                                    candidate_id: candidateId,
+                                                    message_type: messageType,
+                                                    message: customMessage
+                                                };
+                                                console.log("🟢 Données à envoyer:", requestData);
+                                                console.log("🟢 URL cible:", `${this.baseUrl}/send`);
+                                                console.log("🟢 CSRF Token:", this.csrfToken);
+                                                
                                                 const response = await fetch(`${this.baseUrl}/send`, {
                                                     method: "POST",
                                                     headers: {
@@ -246,13 +261,16 @@ class CandidateResource extends Resource
                                                         "X-CSRF-TOKEN": this.csrfToken,
                                                         "Accept": "application/json"
                                                     },
-                                                    body: JSON.stringify({
-                                                        candidate_id: candidateId,
-                                                        message_type: messageType,
-                                                        message: customMessage
-                                                    })
+                                                    body: JSON.stringify(requestData)
                                                 });
+                                                
+                                                console.log("🟢 Réponse HTTP:", response);
+                                                console.log("🟢 Status:", response.status);
+                                                console.log("🟢 Headers:", Object.fromEntries(response.headers.entries()));
+                                                
                                                 const result = await response.json();
+                                                console.log("🟢 Résultat JSON:", result);
+                                                
                                                 this.hideLoader();
                                                 if (result.success) {
                                                     this.showNotification("✅ Message WhatsApp envoyé avec succès !", "success");
@@ -261,8 +279,9 @@ class CandidateResource extends Resource
                                                 }
                                                 return result;
                                             } catch (error) {
+                                                console.error("🔴 Erreur lors de l envoi WhatsApp:", error);
+                                                console.error("🔴 Stack trace:", error.stack);
                                                 this.hideLoader();
-                                                console.error("Erreur lors de l envoi WhatsApp:", error);
                                                 this.showNotification("❌ Erreur technique lors de l envoi du message", "error");
                                                 return { success: false, message: error.message };
                                             }
@@ -294,52 +313,76 @@ class CandidateResource extends Resource
                                         }
                                     };
 
-                                    // Fonction globale pour envoyer un message WhatsApp
-                                    window.sendWhatsAppMessage = function(candidateId) {
-                                        console.log("🟢 Bouton WhatsApp cliqué pour candidat:", candidateId);
-                                        if (window.WhatsAppService) {
-                                            window.WhatsAppService.sendMessage(candidateId, "notification");
-                                        } else {
-                                            console.error("WhatsAppService not available");
-                                            alert("Service WhatsApp non disponible");
-                                        }
-                                    };
+                                                                    // Fonction globale pour envoyer un message WhatsApp
+                                window.sendWhatsAppMessage = function(candidateId) {
+                                    console.log("🟢 sendWhatsAppMessage - Fonction appelée pour candidat:", candidateId);
+                                    console.log("🟢 WhatsAppService disponible:", !!window.WhatsAppService);
+                                    console.log("🟢 État complet de window.WhatsAppService:", window.WhatsAppService);
+                                    
+                                    if (window.WhatsAppService) {
+                                        console.log("🟢 Appel de sendMessage...");
+                                        window.WhatsAppService.sendMessage(candidateId, "notification");
+                                    } else {
+                                        console.error("🔴 WhatsAppService non disponible");
+                                        alert("Service WhatsApp non disponible - Vérifiez la console");
+                                    }
+                                };
 
-                                    // Fonction pour supprimer un candidat
-                                    window.deleteCandidate = async function(candidateId) {
-                                        try {
-                                            console.log("🗑️ Suppression du candidat:", candidateId);
-                                            if (window.WhatsAppService) window.WhatsAppService.showLoader("Suppression du candidat...");
-                                            const response = await fetch(`/admin/candidates/${candidateId}`, {
-                                                method: "DELETE",
-                                                headers: {
-                                                    "X-CSRF-TOKEN": document.querySelector("meta[name=csrf-token]")?.getAttribute("content") || "' . csrf_token() . '",
-                                                    "Accept": "application/json",
-                                                    "Content-Type": "application/json"
-                                                }
-                                            });
-                                            if (window.WhatsAppService) window.WhatsAppService.hideLoader();
-                                            if (response.ok) {
-                                                if (window.WhatsAppService) window.WhatsAppService.showNotification("✅ Candidat supprimé avec succès !", "success");
-                                                setTimeout(() => window.location.reload(), 1500);
-                                                return true;
-                                            } else {
-                                                throw new Error("Erreur lors de la suppression");
+                                                                    // Fonction pour supprimer un candidat
+                                window.deleteCandidate = async function(candidateId) {
+                                    try {
+                                        console.log("🟢 deleteCandidate - Fonction appelée pour candidat:", candidateId);
+                                        console.log("🟢 URL de suppression:", `/admin/candidates/${candidateId}`);
+                                        console.log("🟢 CSRF Token:", document.querySelector("meta[name=csrf-token]")?.getAttribute("content") || "' . csrf_token() . '");
+                                        
+                                        if (window.WhatsAppService) window.WhatsAppService.showLoader("Suppression du candidat...");
+                                        
+                                        const response = await fetch(`/admin/candidates/${candidateId}`, {
+                                            method: "DELETE",
+                                            headers: {
+                                                "X-CSRF-TOKEN": document.querySelector("meta[name=csrf-token]")?.getAttribute("content") || "' . csrf_token() . '",
+                                                "Accept": "application/json",
+                                                "Content-Type": "application/json"
                                             }
-                                        } catch (error) {
-                                            if (window.WhatsAppService) {
-                                                window.WhatsAppService.hideLoader();
-                                                window.WhatsAppService.showNotification("❌ Erreur lors de la suppression du candidat", "error");
-                                            } else {
-                                                alert("Erreur lors de la suppression du candidat");
-                                            }
-                                            console.error("Erreur suppression candidat:", error);
-                                            return false;
+                                        });
+                                        
+                                        console.log("🟢 Réponse suppression:", response);
+                                        console.log("🟢 Status:", response.status);
+                                        
+                                        if (window.WhatsAppService) window.WhatsAppService.hideLoader();
+                                        
+                                        if (response.ok) {
+                                            const result = await response.json();
+                                            console.log("🟢 Résultat suppression:", result);
+                                            if (window.WhatsAppService) window.WhatsAppService.showNotification("✅ Candidat supprimé avec succès !", "success");
+                                            setTimeout(() => window.location.reload(), 1500);
+                                            return true;
+                                        } else {
+                                            const errorResult = await response.text();
+                                            console.error("🔴 Erreur HTTP:", response.status, errorResult);
+                                            throw new Error(`Erreur HTTP ${response.status}: ${errorResult}`);
                                         }
-                                    };
+                                    } catch (error) {
+                                        console.error("🔴 Erreur suppression candidat:", error);
+                                        if (window.WhatsAppService) {
+                                            window.WhatsAppService.hideLoader();
+                                            window.WhatsAppService.showNotification("❌ Erreur lors de la suppression du candidat: " + error.message, "error");
+                                        } else {
+                                            alert("Erreur lors de la suppression du candidat: " + error.message);
+                                        }
+                                        return false;
+                                    }
+                                };
 
                                     console.log("🟢 WhatsApp Service avec Green API initialisé (Script Loader)");
+                                } else {
+                                    console.log("🟠 Scripts déjà chargés, pas de re-initialisation");
                                 }
+                                
+                                console.log("🟢 Script CandidateResource - Fin du chargement");
+                                console.log("🟢 État final - window.WhatsAppService:", window.WhatsAppService);
+                                console.log("🟢 État final - window.sendWhatsAppMessage:", window.sendWhatsAppMessage);
+                                console.log("🟢 État final - window.deleteCandidate:", window.deleteCandidate);
                                 </script>
                             ');
                         }
