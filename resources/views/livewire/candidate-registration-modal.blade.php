@@ -41,7 +41,7 @@
                             <!-- Photo Upload moderne -->
                             <div class="mb-6">
                                 <label class="block text-sm font-semibold text-gray-700 mb-3">
-                                    📸 Photo du plat *
+                                    Votre photo
                                 </label>
 
                                 <div class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-orange-500 transition-colors cursor-pointer relative overflow-hidden">
