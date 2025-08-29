@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Pages;
 
 use Filament\Pages\Dashboard as BaseDashboard;
 use App\Filament\Widgets\StatsOverview;
+use App\Filament\Widgets\GoogleAnalyticsWidget;
 use App\Filament\Widgets\AnalyticsChart;
 use App\Filament\Widgets\LatestCandidates;
 use App\Filament\Widgets\LatestVotes;
@@ -17,6 +18,7 @@ class Dashboard extends BaseDashboard
     protected function getHeaderWidgets(): array
     {
         return [
+            GoogleAnalyticsWidget::class,
             StatsOverview::class,
         ];
     }

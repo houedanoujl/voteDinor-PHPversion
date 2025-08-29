@@ -33,11 +33,11 @@
 </div>
 @else
 <div class="flex space-x-4">
-    <a href="{{ route('auth.redirect', 'google') }}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors">
-        Google
+    <a href="{{ route('login') }}" class="bg-gray-900 text-white px-4 py-2 rounded hover:bg-gray-800 transition-colors">
+        Connexion
     </a>
-    <a href="{{ route('auth.redirect', 'facebook') }}" class="bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-800 transition-colors">
-        Facebook
+    <a href="{{ route('register') }}" class="bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700 transition-colors">
+        Inscription
     </a>
 </div>
 @endauth

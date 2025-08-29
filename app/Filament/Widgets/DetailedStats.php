@@ -10,7 +10,10 @@ use Carbon\Carbon;
 
 class DetailedStats extends Widget
 {
-    protected static string $view = 'filament.widgets.detailed-stats';
+    public function getView(): string
+    {
+        return 'filament.widgets.detailed-stats';
+    }
 
     protected static ?string $heading = 'Statistiques Détaillées';
     protected static ?string $description = 'Analyses approfondies du concours';

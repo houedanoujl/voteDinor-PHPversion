@@ -36,7 +36,7 @@
                 </div>
                 <p class="text-sm text-gray-600 mb-2">Position</p>
                 <p class="text-3xl font-bold text-gray-900">
-                    @if($personalStats['ranking_position'])
+                    @if(isset($personalStats['ranking_position']) && $personalStats['ranking_position'])
                         #{{ $personalStats['ranking_position'] }}
                     @else
                         -

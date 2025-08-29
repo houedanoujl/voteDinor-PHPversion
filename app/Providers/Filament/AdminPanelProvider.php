@@ -29,16 +29,16 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Amber,
             ])
+            ->renderHook(
+                'panels::body.end',
+                fn (): string => view('filament.whatsapp-scripts')->render()
+            )
+
             ->discoverResources(in: app_path('Filament/Admin/Resources'), for: 'App\Filament\Admin\Resources')
             ->discoverPages(in: app_path('Filament/Admin/Pages'), for: 'App\Filament\Admin\Pages')
             ->pages([
                 Dashboard::class,
             ])
-            ->navigationItems([
-                // Masquer les menus par défaut
-            ])
-            ->sidebarCollapsibleOnDesktop()
-            ->maxContentWidth('full')
             ->discoverWidgets(in: app_path('Filament/Admin/Widgets'), for: 'App\Filament\Admin\Widgets')
             ->widgets([
                 AccountWidget::class,
@@ -57,9 +57,6 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-                \App\Http\Middleware\AdminOnly::class,
-            ])
-            ->authGuard('web')
-            ->login();
+            ]);
     }
 }

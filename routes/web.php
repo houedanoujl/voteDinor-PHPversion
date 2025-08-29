@@ -44,6 +44,15 @@ Route::get('/api/ranking', [VoteController::class, 'ranking'])->name('api.rankin
 Route::middleware(['auth', \App\Http\Middleware\AdminOnly::class])->prefix('admin')->group(function () {
     Route::get('/candidates/{candidate}/approve', [CandidateController::class, 'approve'])->name('admin.candidates.approve');
     Route::get('/candidates/{candidate}/reject', [CandidateController::class, 'reject'])->name('admin.candidates.reject');
+    Route::delete('/candidates/{candidate}', [CandidateController::class, 'destroy'])->name('admin.candidates.destroy');
+
+    // Routes WhatsApp avec Green API
+    Route::prefix('whatsapp')->group(function () {
+        Route::post('/send', [\App\Http\Controllers\Admin\WhatsAppGreenApiController::class, 'sendMessage'])->name('admin.whatsapp.send');
+        Route::post('/send-status-notification', [\App\Http\Controllers\Admin\WhatsAppGreenApiController::class, 'sendStatusNotification'])->name('admin.whatsapp.send-status');
+        Route::post('/send-bulk', [\App\Http\Controllers\Admin\WhatsAppGreenApiController::class, 'sendBulkMessage'])->name('admin.whatsapp.send-bulk');
+        Route::get('/status', [\App\Http\Controllers\Admin\WhatsAppGreenApiController::class, 'checkStatus'])->name('admin.whatsapp.status');
+    });
 });
 
 // Routes pour le streaming vidéo

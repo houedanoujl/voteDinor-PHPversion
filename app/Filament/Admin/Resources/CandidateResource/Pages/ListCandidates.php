@@ -13,7 +13,15 @@ class ListCandidates extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            // CreateAction removed - form not available in this Filament version
         ];
+    }
+    
+    public function getViewData(): array
+    {
+        return array_merge(parent::getViewData(), [
+            'whatsappSendRoute' => route('admin.whatsapp.send'),
+            'csrfToken' => csrf_token(),
+        ]);
     }
 }

@@ -6,7 +6,6 @@ use App\Models\Vote;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Forms;
 use Illuminate\Database\Eloquent\Builder;
 
 class VoteResource extends Resource
@@ -50,23 +49,28 @@ class VoteResource extends Resource
                 Tables\Filters\SelectFilter::make('candidate')
                     ->relationship('candidate', 'nom')
                     ->getOptionLabelFromRecordUsing(fn ($record) => $record->full_name),
-                Tables\Filters\Filter::make('vote_date')
-                    ->form([
-                        Forms\Components\DatePicker::make('voted_from')
-                            ->label('Voté depuis'),
-                        Forms\Components\DatePicker::make('voted_until')
-                            ->label('Voté jusqu\'à'),
+                Tables\Filters\SelectFilter::make('vote_period')
+                    ->label('Période de vote')
+                    ->options([
+                        'today' => 'Aujourd\'hui',
+                        'yesterday' => 'Hier',
+                        'this_week' => 'Cette semaine',
+                        'last_week' => 'Semaine dernière',
+                        'this_month' => 'Ce mois',
+                        'last_month' => 'Mois dernier',
                     ])
                     ->query(function (Builder $query, array $data): Builder {
-                        return $query
-                            ->when(
-                                $data['voted_from'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('vote_date', '>=', $date),
-                            )
-                            ->when(
-                                $data['voted_until'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('vote_date', '<=', $date),
-                            );
+                        return $query->when($data['value'] ?? null, function (Builder $query, string $period) {
+                            return match ($period) {
+                                'today' => $query->whereDate('created_at', today()),
+                                'yesterday' => $query->whereDate('created_at', today()->subDay()),
+                                'this_week' => $query->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()]),
+                                'last_week' => $query->whereBetween('created_at', [now()->subWeek()->startOfWeek(), now()->subWeek()->endOfWeek()]),
+                                'this_month' => $query->whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()]),
+                                'last_month' => $query->whereBetween('created_at', [now()->subMonth()->startOfMonth(), now()->subMonth()->endOfMonth()]),
+                                default => $query,
+                            };
+                        });
                     }),
                 Tables\Filters\TernaryFilter::make('user_id')
                     ->label('Avec utilisateur')

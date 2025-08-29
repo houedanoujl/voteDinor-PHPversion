@@ -8,7 +8,10 @@ use Carbon\Carbon;
 
 class AnalyticsChart extends Widget
 {
-    protected static string $view = 'filament.widgets.analytics-chart';
+    public function getView(): string
+    {
+        return 'filament.widgets.analytics-chart';
+    }
 
     protected int | string | array $columnSpan = 'full';
 

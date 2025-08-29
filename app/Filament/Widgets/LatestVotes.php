@@ -47,13 +47,15 @@ class LatestVotes extends BaseWidget
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                Tables\Columns\BadgeColumn::make('status')
+                Tables\Columns\TextColumn::make('status')
                     ->label('Statut')
-                    ->colors([
-                        'success' => 'valid',
-                        'warning' => 'pending',
-                        'danger' => 'invalid',
-                    ])
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'valid' => 'success',
+                        'pending' => 'warning',
+                        'invalid' => 'danger',
+                        default => 'gray',
+                    })
                     ->formatStateUsing(fn (string $state): string => match ($state) {
                         'valid' => 'Valide',
                         'pending' => 'En attente',

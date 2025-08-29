@@ -13,7 +13,7 @@ class CandidateController extends Controller
     public function approve(Candidate $candidate)
     {
         $candidate->update(['status' => 'approved']);
-        
+
         // Envoyer le message WhatsApp
         try {
             $whatsappService = new WhatsAppService();
@@ -22,14 +22,30 @@ class CandidateController extends Controller
         } catch (\Exception $e) {
             Log::error('Erreur WhatsApp: ' . $e->getMessage());
         }
-        
+
         return back()->with('success', 'Candidat approuvé avec succès !');
     }
-    
+
     public function reject(Candidate $candidate)
     {
         $candidate->update(['status' => 'rejected']);
-        
+
         return back()->with('success', 'Candidat rejeté avec succès !');
+    }
+
+    public function destroy(Candidate $candidate)
+    {
+        try {
+            // Supprimer les votes associés
+            $candidate->votes()->delete();
+
+            // Supprimer le candidat
+            $candidate->delete();
+
+            return back()->with('success', 'Candidat supprimé avec succès !');
+        } catch (\Exception $e) {
+            Log::error('Erreur lors de la suppression du candidat: ' . $e->getMessage());
+            return back()->with('error', 'Erreur lors de la suppression du candidat.');
+        }
     }
 }

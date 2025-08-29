@@ -58,6 +58,7 @@
                                             <div>
                                                 <p class="text-lg font-medium text-gray-700 mb-2">Ajoutez votre photo</p>
                                                 <p class="text-sm text-gray-500">Cliquez ou glissez-déposez votre image</p>
+                                                <p class="text-xs text-gray-400 mt-1">Taille maximum: 3MB</p>
                                             </div>
                                         </div>
                                     @endif

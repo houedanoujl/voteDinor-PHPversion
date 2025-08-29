@@ -70,11 +70,6 @@
                             <span class="text-gray-600 mr-3">👥</span>
                             <span class="text-sm font-medium">Gérer les candidats</span>
                         </a>
-                        <a href="{{ route('filament.admin.resources.candidates.create') }}"
-                           class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                            <span class="text-gray-600 mr-3">➕</span>
-                            <span class="text-sm font-medium">Ajouter un candidat</span>
-                        </a>
                         <a href="{{ route('contest.home') }}"
                            class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                             <span class="text-gray-600 mr-3">🌐</span>

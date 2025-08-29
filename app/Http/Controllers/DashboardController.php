@@ -33,6 +33,12 @@ class DashboardController extends Controller
             return $candidate;
         });
 
+        // Meilleure position de l'utilisateur dans le classement
+        $bestRankingPosition = null;
+        if ($candidatesWithRanking->isNotEmpty()) {
+            $bestRankingPosition = $candidatesWithRanking->min('ranking_position');
+        }
+
         // Statistiques personnelles
         $personalStats = [
             'photos_submitted' => $userCandidates->count(),
@@ -42,6 +48,7 @@ class DashboardController extends Controller
             'votes_given_today' => Vote::where('user_id', $user->id)
                 ->whereDate('created_at', today())
                 ->count(),
+            'ranking_position' => $bestRankingPosition,
         ];
 
         // Statistiques générales du concours

@@ -1,7 +1,6 @@
 <x-filament-widgets::widget>
-    <x-filament-widgets::widget-header>
-        {{ $this->getHeading() }}
-    </x-filament-widgets::widget-header>
+    <div class="p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-6">{{ $this->getHeading() }}</h2>
 
     @php
         $stats = $this->getStats();

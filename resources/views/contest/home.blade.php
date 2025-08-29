@@ -112,13 +112,7 @@
                 <h2 class="text-3xl md:text-4xl font-bold mb-4 text-gray-900">
                     Votez pour vos photos préférées
                 </h2>
-                <p class="text-xl text-dinor-gray-600 max-w-2xl mx-auto">
-                    @auth
-                        🔒 1 vote par candidat par jour par compte connecté
-                    @else
-                        🔒 Connectez-vous pour pouvoir voter
-                    @endauth
-                </p>
+
             </div>
 
             @livewire('candidates-gallery')
