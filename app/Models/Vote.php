@@ -11,7 +11,21 @@ class Vote extends Model
         'user_id',
         'candidate_id',
         'ip_address',
+        'vote_date',
     ];
+
+    protected $casts = [
+        'vote_date' => 'date',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
+    protected static function booted()
+    {
+        static::creating(function ($vote) {
+            $vote->vote_date = $vote->vote_date ?: now()->toDateString();
+        });
+    }
 
     public function user(): BelongsTo
     {

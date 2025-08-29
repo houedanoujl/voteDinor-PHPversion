@@ -97,12 +97,17 @@ class CandidatesGallery extends Component
                 $candidate->incrementVoteCount();
             });
 
-            // Mettre à jour l'état local
+            // Mettre à jour l'état local immédiatement
             $this->userVotesToday[] = $candidateId;
             
-            // Recharger les candidats pour voir le nouveau compteur
-            $this->loadCandidates();
-
+            // Mettre à jour le compteur de votes localement pour un feedback immédiat
+            foreach ($this->candidates as &$candidate) {
+                if ($candidate['id'] == $candidateId) {
+                    $candidate['votes_count'] = $candidate['votes_count'] + 1;
+                    break;
+                }
+            }
+            
             session()->flash('success', 'Vote enregistré avec succès !');
             
             Log::info("Vote enregistré", [

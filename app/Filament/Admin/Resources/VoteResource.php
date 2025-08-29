@@ -3,18 +3,15 @@
 namespace App\Filament\Admin\Resources;
 
 use App\Models\Vote;
-use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Forms;
 use Illuminate\Database\Eloquent\Builder;
 
 class VoteResource extends Resource
 {
     protected static ?string $model = Vote::class;
-
-    protected static ?string $navigationIcon = null;
 
     protected static ?string $navigationLabel = 'Votes';
 
@@ -80,15 +77,6 @@ class VoteResource extends Resource
                         true: fn (Builder $query) => $query->whereNotNull('user_id'),
                         false: fn (Builder $query) => $query->whereNull('user_id'),
                     ),
-            ])
-            ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\DeleteAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
             ]);
     }
 

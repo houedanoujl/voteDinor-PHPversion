@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\VoteController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Admin\CandidateController;
 use Illuminate\Support\Facades\Route;
 use Livewire\Livewire;
 
@@ -50,3 +51,9 @@ Route::middleware('auth')->group(function () {
 
 // API publique pour le classement
 Route::get('/api/ranking', [VoteController::class, 'ranking'])->name('api.ranking');
+
+// Routes admin pour approbation des candidats
+Route::middleware(['auth', \App\Http\Middleware\AdminOnly::class])->prefix('admin')->group(function () {
+    Route::get('/candidates/{candidate}/approve', [CandidateController::class, 'approve'])->name('admin.candidates.approve');
+    Route::get('/candidates/{candidate}/reject', [CandidateController::class, 'reject'])->name('admin.candidates.reject');
+});

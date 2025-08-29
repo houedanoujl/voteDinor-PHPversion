@@ -4,12 +4,10 @@ namespace App\Filament\Admin\Resources;
 
 use App\Models\Candidate;
 use App\Services\WhatsAppService;
-use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -17,62 +15,11 @@ class CandidateResource extends Resource
 {
     protected static ?string $model = Candidate::class;
 
-    protected static ?string $navigationIcon = null;
-
     protected static ?string $navigationLabel = 'Candidats';
 
     protected static ?string $pluralModelLabel = 'Candidats';
 
     protected static ?int $navigationSort = 1;
-
-    public static function form(Form $form): Form
-    {
-        return $form
-            ->schema([
-                Forms\Components\Section::make('Informations personnelles')
-                    ->schema([
-                        Forms\Components\TextInput::make('prenom')
-                            ->label('Prénom')
-                            ->required()
-                            ->maxLength(255),
-                        Forms\Components\TextInput::make('nom')
-                            ->label('Nom')
-                            ->required()
-                            ->maxLength(255),
-                        Forms\Components\TextInput::make('email')
-                            ->label('Email')
-                            ->email()
-                            ->maxLength(255),
-                        Forms\Components\TextInput::make('whatsapp')
-                            ->label('WhatsApp')
-                            ->tel()
-                            ->required()
-                            ->maxLength(255),
-                    ])->columns(2),
-                
-                Forms\Components\Section::make('Description et statut')
-                    ->schema([
-                        Forms\Components\Textarea::make('description')
-                            ->label('Description')
-                            ->rows(4)
-                            ->maxLength(500),
-                        Forms\Components\Select::make('status')
-                            ->label('Statut')
-                            ->options([
-                                'pending' => 'En attente',
-                                'approved' => 'Approuvé',
-                                'rejected' => 'Rejeté',
-                            ])
-                            ->required()
-                            ->default('pending'),
-                        Forms\Components\TextInput::make('votes_count')
-                            ->label('Nombre de votes')
-                            ->numeric()
-                            ->default(0)
-                            ->disabled(),
-                    ])->columns(2),
-            ]);
-    }
 
     public static function table(Table $table): Table
     {
@@ -115,6 +62,38 @@ class CandidateResource extends Resource
                     ->label('Créé le')
                     ->dateTime('d/m/Y H:i')
                     ->sortable(),
+                Tables\Columns\ImageColumn::make('photo')
+                    ->label('Photo')
+                    ->getStateUsing(function ($record) {
+                        return $record->getPhotoUrl();
+                    })
+                    ->height(60)
+                    ->width(60)
+                    ->circular(),
+                Tables\Columns\TextColumn::make('id')
+                    ->label('Actions')
+                    ->formatStateUsing(function ($state, $record) {
+                        if ($record->status === 'pending') {
+                            $approveUrl = route('admin.candidates.approve', $record);
+                            $rejectUrl = route('admin.candidates.reject', $record);
+                            return "<div class='flex space-x-2'>
+                                <a href='{$approveUrl}' class='bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm'>
+                                    ✓ Approuver
+                                </a>
+                                <a href='{$rejectUrl}' class='bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm' 
+                                   onclick='return confirm(\"Êtes-vous sûr de vouloir rejeter ce candidat ?\")'>
+                                    ✗ Rejeter
+                                </a>
+                            </div>";
+                        }
+                        
+                        return match ($record->status) {
+                            'approved' => '<span class="text-green-600 font-medium">✓ Approuvé</span>',
+                            'rejected' => '<span class="text-red-600 font-medium">✗ Rejeté</span>',
+                            default => '-'
+                        };
+                    })
+                    ->html(),
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([
@@ -125,52 +104,6 @@ class CandidateResource extends Resource
                         'approved' => 'Approuvé',
                         'rejected' => 'Rejeté',
                     ]),
-            ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-                Action::make('approve')
-                    ->label('Approuver')
-                    ->icon('heroicon-o-check-circle')
-                    ->color('success')
-                    ->visible(fn (Candidate $record): bool => $record->status === 'pending')
-                    ->action(function (Candidate $record) {
-                        $record->update(['status' => 'approved']);
-                        
-                        // Envoyer le message WhatsApp
-                        try {
-                            $whatsappService = new WhatsAppService();
-                            $message = "🎉 Félicitations ! Votre candidature pour le concours photo DINOR a été approuvée. Vous pouvez maintenant recevoir des votes. Bonne chance !";
-                            $whatsappService->sendMessage($record->whatsapp, $message);
-                        } catch (\Exception $e) {
-                            \Log::error('Erreur WhatsApp: ' . $e->getMessage());
-                        }
-                        
-                        Notification::make()
-                            ->title('Candidat approuvé')
-                            ->body('Le candidat a été approuvé et un message WhatsApp a été envoyé.')
-                            ->success()
-                            ->send();
-                    }),
-                Action::make('reject')
-                    ->label('Rejeter')
-                    ->icon('heroicon-o-x-circle')
-                    ->color('danger')
-                    ->visible(fn (Candidate $record): bool => $record->status === 'pending')
-                    ->requiresConfirmation()
-                    ->action(function (Candidate $record) {
-                        $record->update(['status' => 'rejected']);
-                        
-                        Notification::make()
-                            ->title('Candidat rejeté')
-                            ->body('Le candidat a été rejeté.')
-                            ->success()
-                            ->send();
-                    }),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
             ]);
     }
 
