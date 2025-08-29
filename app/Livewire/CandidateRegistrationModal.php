@@ -10,6 +10,7 @@ use Livewire\WithFileUploads;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use App\Models\SiteSetting;
 
 class CandidateRegistrationModal extends Component
 {
@@ -82,6 +83,12 @@ class CandidateRegistrationModal extends Component
 
     public function submit()
     {
+        // Respect site settings (applications open)
+        $settings = SiteSetting::first();
+        if ($settings && !$settings->applications_open) {
+            session()->flash('error', '❌ Les candidatures sont actuellement fermées.');
+            return;
+        }
         // Validation conditionnelle selon le statut de connexion
         $rules = [
             'prenom' => 'required|min:2|max:255',

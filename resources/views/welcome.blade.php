@@ -29,6 +29,10 @@
                            class="inline-flex items-center px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium transition-colors">
                             🗳️ Voter
                         </a>
+                        <button onclick="openCandidateModal()"
+                           class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors">
+                            📸 Poster une photo
+                        </button>
                         <a href="{{ route('dashboard') }}"
                            class="inline-flex items-center px-4 py-2 border border-orange-200 hover:border-orange-300 text-orange-700 dark:text-orange-300 rounded-lg font-medium transition-colors">
                             Dashboard
@@ -37,6 +41,14 @@
                         <button onclick="openVoterModal()"
                                 class="inline-flex items-center px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium transition-colors">
                             🗳️ Voter
+                        </button>
+                        <a href="{{ route('register') }}"
+                           class="inline-flex items-center px-4 py-2 border border-orange-200 hover:border-orange-300 text-orange-700 dark:text-orange-300 rounded-lg font-medium transition-colors">
+                            Inscription
+                        </a>
+                        <button onclick="openCandidateModal()"
+                                class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors">
+                            📸 Poster une photo
                         </button>
                         <a href="{{ route('login') }}"
                            class="inline-flex items-center px-4 py-2 border border-orange-200 hover:border-orange-300 text-orange-700 dark:text-orange-300 rounded-lg font-medium transition-colors">

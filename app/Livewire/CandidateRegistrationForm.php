@@ -11,6 +11,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use App\Models\SiteSetting;
 
 class CandidateRegistrationForm extends Component
 {
@@ -58,6 +59,13 @@ class CandidateRegistrationForm extends Component
         $this->isSubmitting = true;
 
         try {
+            // Check if applications are open
+            $settings = SiteSetting::first();
+            if ($settings && !$settings->applications_open) {
+                $this->isSubmitting = false;
+                session()->flash('error', 'Les candidatures sont actuellement fermées.');
+                return;
+            }
             $this->validate();
 
             // Créer un utilisateur candidat
@@ -75,7 +83,7 @@ class CandidateRegistrationForm extends Component
 
             // Stocker la photo
             $photoPath = $this->photo->store('candidates', 'public');
-            
+
             // Formater le numéro WhatsApp avec préfixe +225
             $whatsappWithPrefix = '+225' . $this->whatsapp;
 
