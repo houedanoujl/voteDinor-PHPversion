@@ -23,14 +23,14 @@ class VoterRegistrationModal extends Component
     protected $rules = [
         'prenom' => 'required|min:2|max:255',
         'nom' => 'required|min:2|max:255',
-        'whatsapp' => 'required|regex:/^[0-9]{10}$/|unique:users,whatsapp',
+        'whatsapp' => 'required|regex:/^\+225[0-9]{10}$/|unique:users,whatsapp',
     ];
 
     protected $messages = [
         'prenom.required' => 'Le prénom est obligatoire.',
         'nom.required' => 'Le nom est obligatoire.',
         'whatsapp.required' => 'Le numéro WhatsApp est obligatoire.',
-        'whatsapp.regex' => 'Le numéro doit contenir exactement 10 chiffres',
+        'whatsapp.regex' => 'Format requis: +225 suivi de 10 chiffres',
         'whatsapp.unique' => 'Ce numéro WhatsApp est déjà utilisé.',
     ];
 
@@ -53,21 +53,13 @@ class VoterRegistrationModal extends Component
         try {
             $this->validate();
 
-            // Générer un email unique basé sur le prénom et nom
-            $baseEmail = Str::slug($this->prenom . '.' . $this->nom) . '@dinor-voters.com';
-            $email = $baseEmail;
-            $counter = 1;
-
-            while (User::where('email', $email)->exists()) {
-                $email = Str::slug($this->prenom . '.' . $this->nom) . $counter . '@dinor-voters.com';
-                $counter++;
-            }
+            // Plus d'email: on stocke un placeholder interne
+            $email = (string) Str::uuid().'@dinor.local';
 
             // Générer un mot de passe aléatoire
             $password = Str::random(12);
 
-            // Formater le numéro WhatsApp avec préfixe +225
-            $whatsappWithPrefix = '+225' . $this->whatsapp;
+            $whatsappWithPrefix = $this->whatsapp;
 
             // Créer l'utilisateur votant
             $user = User::create([
@@ -93,7 +85,6 @@ class VoterRegistrationModal extends Component
                 $message .= "Votre compte VOTANT a été créé avec succès.\n";
                 $message .= "Vous pouvez maintenant voter pour vos candidats préférés.\n\n";
                 $message .= "🔗 Accédez à votre dashboard : {$dashboardUrl}\n\n";
-                $message .= "📧 Email : {$email}\n";
                 $message .= "🔑 Mot de passe : {$password}\n\n";
                 $message .= "Bon vote ! 🗳️";
 

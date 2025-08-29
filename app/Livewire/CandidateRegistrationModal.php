@@ -30,19 +30,15 @@ class CandidateRegistrationModal extends Component
     protected $rules = [
         'prenom' => 'required|min:2|max:255',
         'nom' => 'required|min:2|max:255',
-        'email' => 'required|email|unique:users,email',
-        'whatsapp' => 'required|regex:/^\+225[0-9]{8}$/|unique:candidates,whatsapp',
+        'whatsapp' => 'required|regex:/^\+225[0-9]{10}$/|unique:candidates,whatsapp',
         'photo' => 'required|image|max:3072',
     ];
 
     protected $messages = [
         'prenom.required' => 'Le prénom est obligatoire.',
         'nom.required' => 'Le nom est obligatoire.',
-        'email.required' => 'L\'email est obligatoire.',
-        'email.email' => 'L\'email doit être valide.',
-        'email.unique' => 'Cet email est déjà utilisé.',
         'whatsapp.required' => 'Le numéro WhatsApp est obligatoire.',
-        'whatsapp.regex' => 'Format: +225XXXXXXXX',
+        'whatsapp.regex' => 'Format requis: +225 suivi de 10 chiffres',
         'whatsapp.unique' => 'Ce numéro WhatsApp est déjà utilisé.',
         'photo.required' => 'Une photo est obligatoire.',
         'photo.image' => 'Le fichier doit être une image.',
@@ -93,14 +89,12 @@ class CandidateRegistrationModal extends Component
         $rules = [
             'prenom' => 'required|min:2|max:255',
             'nom' => 'required|min:2|max:255',
-            'whatsapp' => 'required|regex:/^\+225[0-9]{8}$/|unique:candidates,whatsapp',
+            'whatsapp' => 'required|regex:/^\+225[0-9]{10}$/|unique:candidates,whatsapp',
             'photo' => 'required|image|max:3072',
         ];
 
         // Ajouter la validation email seulement si l'utilisateur n'est pas connecté
-        if (!auth()->check()) {
-            $rules['email'] = 'required|email|unique:users,email';
-        }
+        // Pas d'email requis désormais
 
         $this->validate($rules);
 
@@ -111,29 +105,46 @@ class CandidateRegistrationModal extends Component
             $isNewUser = false;
 
             if (!auth()->check()) {
-                // Générer un mot de passe temporaire
-                $password = Str::random(12);
-                $isNewUser = true;
+                // Vérifier si un utilisateur existe déjà avec ce numéro WhatsApp
+                $existingUser = User::where('whatsapp', $this->whatsapp)->first();
 
-                $user = User::create([
-                    'name' => $this->prenom . ' ' . $this->nom,
-                    'prenom' => $this->prenom,
-                    'nom' => $this->nom,
-                    'email' => $this->email,
-                    'password' => Hash::make($password),
-                    'email_verified_at' => now(), // Auto-vérifier l'email
-                    'type' => 'candidate',
-                    'role' => 'user',
-                ]);
+                if ($existingUser) {
+                    $user = $existingUser;
+                    $isNewUser = false;
+                    // Connecter l'utilisateur existant
+                    Auth::login($user);
+                } else {
+                    // Générer un mot de passe temporaire et créer un nouvel utilisateur
+                    $password = Str::random(12);
+                    $isNewUser = true;
 
-                // Connecter l'utilisateur automatiquement
-                Auth::login($user);
+                    $user = User::create([
+                        'name' => $this->prenom . ' ' . $this->nom,
+                        'prenom' => $this->prenom,
+                        'nom' => $this->nom,
+                        'email' => (string) Str::uuid().'@dinor.local',
+                        'whatsapp' => $this->whatsapp,
+                        'password' => Hash::make($password),
+                        'email_verified_at' => now(), // Auto-vérifier l'email
+                        'type' => 'candidate',
+                        'role' => 'user',
+                    ]);
+
+                    // Connecter l'utilisateur automatiquement
+                    Auth::login($user);
+                }
             } else {
                 $user = auth()->user();
                 // Mettre à jour le type d'utilisateur vers candidat s'il ne l'est pas déjà
                 if ($user->type !== 'candidate') {
                     $user->update(['type' => 'candidate']);
                 }
+            }
+
+            // Empêcher la création d'un doublon de candidature
+            if ($user->candidate) {
+                session()->flash('error', '❌ Ce numéro est déjà enregistré et une candidature existe déjà.');
+                return;
             }
 
             $candidate = Candidate::create([
@@ -187,9 +198,14 @@ class CandidateRegistrationModal extends Component
                 }
             }
 
-            session()->flash('success', '✅ Inscription réussie ! ' .
-                ($isNewUser ? 'Un compte a été créé et vos identifiants ont été envoyés par WhatsApp. Votre candidature sera validée sous 24h.' :
-                'Votre candidature sera validée sous 24h.'));
+            $message = '✅ Inscription réussie ! ';
+            if ($isNewUser) {
+                $message .= 'Un compte a été créé et vos identifiants ont été envoyés par WhatsApp. ';
+            } else {
+                $message .= 'Votre numéro était déjà enregistré, nous avons connecté votre compte. ';
+            }
+            $message .= 'Votre candidature sera validée sous 24h.';
+            session()->flash('success', $message);
 
             // Tracker l'inscription avec Google Analytics
             $this->dispatch('track-registration', candidateName: $this->prenom . ' ' . $this->nom);

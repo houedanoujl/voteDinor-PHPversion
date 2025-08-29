@@ -108,12 +108,12 @@
                                     </svg>
                                     <h3 class="text-lg font-semibold text-gray-900 mb-2">Connectez-vous pour voter</h3>
                                     <p class="text-gray-600 mb-4">Vous devez être connecté pour voter pour ce candidat</p>
-                                    <a href="{{ route('login') }}" class="inline-flex items-center px-6 py-3 bg-orange-600 hover:bg-orange-700 text-white font-medium rounded-lg transition-colors">
-                                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
-                                        </svg>
-                                        Se connecter
-                                    </a>
+                                    <button onclick="Livewire.dispatch('open-voter-modal')" class="inline-flex items-center px-6 py-3 bg-orange-600 hover:bg-orange-700 text-white font-medium rounded-lg transition-colors mr-2">
+                                        🗳️ Créer un compte votant
+                                    </button>
+                                    <button onclick="Livewire.dispatch('open-candidate-modal')" class="inline-flex items-center px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors">
+                                        📸 Se connecter / poster une photo
+                                    </button>
                                 </div>
                             @else
                                 @if($hasVotedToday)

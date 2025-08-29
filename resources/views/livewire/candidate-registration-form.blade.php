@@ -83,18 +83,7 @@
             </div>
         </div>
 
-        <!-- Email -->
-        <div>
-            <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">
-                📧 Email *
-            </label>
-            <input type="email" id="email" wire:model="email"
-                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
-                   placeholder="votre.email@exemple.com">
-            @error('email')
-                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-            @enderror
-        </div>
+        <!-- Email supprimé -->
 
         <!-- WhatsApp -->
         <div>
@@ -103,8 +92,8 @@
             </label>
             <input type="text" id="whatsapp" wire:model="whatsapp"
                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
-                   placeholder="+225XXXXXXXX">
-            <p class="mt-1 text-xs text-gray-500">Format: +225 suivi de 8 chiffres</p>
+                   placeholder="+225XXXXXXXXXX">
+            <p class="mt-1 text-xs text-gray-500">Format: +225 suivi de 10 chiffres</p>
             @error('whatsapp')
                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
             @enderror

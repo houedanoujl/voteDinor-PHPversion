@@ -271,10 +271,10 @@
                                    class="bg-white text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors border border-gray-200">
                                     Connexion
                                 </a>
-                                <a href="{{ route('register') }}"
+                                <!-- <a href="{{ route('register') }}"
                                    class="bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-orange-700 transition-colors">
                                     Inscription
-                                </a>
+                                </a> -->
                             </div>
                         @endauth
                     </div>

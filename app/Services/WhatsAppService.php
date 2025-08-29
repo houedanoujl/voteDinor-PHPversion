@@ -36,20 +36,26 @@ class WhatsAppService
      */
     private function formatPhoneNumber(string $phoneNumber): string
     {
-        // Supprimer le + et les espaces
-        $phone = preg_replace('/[^0-9]/', '', $phoneNumber);
+        // Conserver uniquement les chiffres
+        $digits = preg_replace('/[^0-9]/', '', $phoneNumber);
 
-        // Si le numéro commence par 225, le garder tel quel
-        if (strpos($phone, '225') === 0) {
-            return $phone;
+        // Green API attend le numéro international sans +, ex: 225XXXXXXXXXX
+        // Si l'utilisateur fournit 10 chiffres locaux, préfixer 225
+        if (strlen($digits) === 10) {
+            return '225' . $digits;
         }
 
-        // Si le numéro commence par 00, supprimer les 00
-        if (strpos($phone, '00') === 0) {
-            return substr($phone, 2);
+        // Si fourni avec 00225..., supprimer les 00
+        if (strpos($digits, '00') === 0) {
+            $digits = substr($digits, 2);
         }
 
-        return $phone;
+        // Si commence déjà par 225, renvoyer tel quel
+        if (strpos($digits, '225') === 0) {
+            return $digits;
+        }
+
+        return $digits;
     }
 
     /**

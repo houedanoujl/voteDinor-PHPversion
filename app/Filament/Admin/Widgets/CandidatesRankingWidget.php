@@ -9,11 +9,7 @@ class CandidatesRankingWidget extends Widget
 {
     protected int | string | array $columnSpan = 'full';
     protected static ?int $sort = 2;
-
-    public static function getView(): string
-    {
-        return 'filament.admin.widgets.candidates-ranking';
-    }
+    protected string $view = 'filament.admin.widgets.candidates-ranking';
 
     public function getCandidatesRanking()
     {

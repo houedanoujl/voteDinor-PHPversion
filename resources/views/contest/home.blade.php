@@ -17,10 +17,6 @@
                         <span class="block text-orange-600">DINOR</span>
                     </h1>
 
-                    <!-- Sous-titre simple -->
-                    <p class="text-xl text-gray-600 mb-12 max-w-2xl mx-auto lg:mx-0">
-                        Participez au concours photo cuisine vintage. Votez pour vos créations préférées.
-                    </p>
 
                     <!-- Boutons d'action épurés -->
                     <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start items-center">
@@ -67,43 +63,7 @@
                     </div>
                 </div>
 
-                <!-- Section vidéo multistream -->
-                <div class="relative">
-                    <div class="bg-gray-100 rounded-2xl p-6 shadow-lg">
-                        <div class="aspect-video rounded-xl overflow-hidden bg-black">
-                            <video
-                                id="hero-video"
-                                class="w-full h-full object-cover"
-                                controls
-                                preload="metadata"
-                                poster="{{ asset('images/video-poster.jpg') }}">
-                                <source src="{{ route('video.stream', 'video.mp4') }}" type="video/mp4">
-                                <source src="{{ route('video.hls', 'video.mp4') }}" type="application/x-mpegURL">
-                                Votre navigateur ne supporte pas la lecture vidéo.
-                            </video>
-                        </div>
 
-                        <!-- Contrôles de streaming -->
-                        <div class="mt-4 space-y-3">
-                            <div class="flex gap-2">
-                                <button onclick="loadStream('standard')" class="flex-1 bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-orange-700 transition-colors">
-                                    📺 Streaming Standard
-                                </button>
-                                <button onclick="loadStream('hls')" class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
-                                    📱 Streaming HLS
-                                </button>
-                            </div>
-
-                            <!-- Informations vidéo -->
-                            <div id="video-info" class="text-sm text-gray-600 bg-white p-3 rounded-lg border">
-                                <div class="flex justify-between items-center">
-                                    <span>🎥 Chargement des informations...</span>
-                                    <span id="video-status" class="text-green-500">● En ligne</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </section>
@@ -129,7 +89,7 @@
     </section>
 
     <!-- Formulaire d'inscription -->
-    <section id="inscription" class="py-16 px-4 bg-white">
+    <!-- <section id="inscription" class="py-16 px-4 bg-white">
         <div class="max-w-4xl mx-auto">
             <div class="text-center mb-12">
                 <h2 class="text-3xl md:text-4xl font-bold mb-4 text-gray-900">
@@ -146,7 +106,7 @@
                 </p>
             </div>
         </div>
-    </section>
+    </section> -->
 
     <!-- Candidats Gallery simple -->
     <section id="gallery" class="py-16 px-4 bg-gray-50">
@@ -206,31 +166,31 @@
         document.getElementById('voterModal').classList.remove('hidden');
         document.body.style.overflow = 'hidden';
     }
-    
+
     function closeVoterModal() {
         document.getElementById('voterModal').classList.add('hidden');
         document.body.style.overflow = 'auto';
     }
-    
+
     function openCandidateModal() {
         document.getElementById('candidateModal').classList.remove('hidden');
         document.body.style.overflow = 'hidden';
     }
-    
+
     function closeCandidateModal() {
         document.getElementById('candidateModal').classList.add('hidden');
         document.body.style.overflow = 'auto';
     }
-    
+
     // Fermer les modales en cliquant à l'extérieur
     document.getElementById('voterModal').addEventListener('click', function(e) {
         if (e.target === this) closeVoterModal();
     });
-    
+
     document.getElementById('candidateModal').addEventListener('click', function(e) {
         if (e.target === this) closeCandidateModal();
     });
-    
+
     // Fermer avec Escape
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {

@@ -18,27 +18,27 @@
         <!-- Formulaire de connexion normale -->
         <form method="POST" action="{{ route('login') }}" class="space-y-6">
             @csrf
-            
+
             <div class="space-y-4">
                 <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700">
-                        Adresse email
+                    <label for="identifier" class="block text-sm font-medium text-gray-700">
+                        Téléphone WhatsApp ou Email
                     </label>
-                    <input id="email" name="email" type="email" required 
-                           class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 @error('email') border-red-500 @enderror" 
-                           placeholder="votre@email.com"
-                           value="{{ old('email') }}">
-                    @error('email')
+                    <input id="identifier" name="identifier" type="text" required
+                           class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 @error('identifier') border-red-500 @enderror"
+                           placeholder="07XXXXXXXX ou votre@email.com"
+                           value="{{ old('identifier') }}">
+                    @error('identifier')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
-                
+
                 <div>
                     <label for="password" class="block text-sm font-medium text-gray-700">
                         Mot de passe
                     </label>
-                    <input id="password" name="password" type="password" required 
-                           class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 @error('password') border-red-500 @enderror" 
+                    <input id="password" name="password" type="password" required
+                           class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 @error('password') border-red-500 @enderror"
                            placeholder="••••••••">
                     @error('password')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -48,13 +48,13 @@
 
             <div class="flex items-center justify-between">
                 <div class="flex items-center">
-                    <input id="remember" name="remember" type="checkbox" 
+                    <input id="remember" name="remember" type="checkbox"
                            class="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded">
                     <label for="remember" class="ml-2 block text-sm text-gray-700">
                         Se souvenir de moi
                     </label>
                 </div>
-                
+
                 <div class="text-sm">
                     <a href="{{ route('register') }}" class="font-medium text-orange-600 hover:text-orange-700">
                         Créer un compte
@@ -62,17 +62,17 @@
                 </div>
             </div>
 
-            <button type="submit" 
+            <button type="submit"
                     class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-all duration-200">
                 Se connecter
             </button>
         </form>
-        
+
         <div class="text-center mt-6">
             <p class="text-sm text-dinor-olive">
                 En vous connectant, vous acceptez de participer au concours selon les règles établies.
             </p>
-            
+
             <div class="mt-4 pt-4 border-t border-dinor-beige">
                 <a href="{{ route('contest.home') }}" class="text-dinor-brown hover:text-dinor-orange font-medium">
                     ← Retour au concours

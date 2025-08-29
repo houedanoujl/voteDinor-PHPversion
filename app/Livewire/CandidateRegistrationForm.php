@@ -28,19 +28,15 @@ class CandidateRegistrationForm extends Component
     protected $rules = [
         'prenom' => 'required|min:2|max:255',
         'nom' => 'required|min:2|max:255',
-        'email' => 'required|email|unique:users,email',
-        'whatsapp' => 'required|regex:/^[0-9]{10}$/|unique:candidates,whatsapp',
+        'whatsapp' => 'required|regex:/^\+225[0-9]{10}$/|unique:candidates,whatsapp',
         'photo' => 'required|image|max:3072',
     ];
 
     protected $messages = [
         'prenom.required' => 'Le prénom est obligatoire.',
         'nom.required' => 'Le nom est obligatoire.',
-        'email.required' => 'L\'email est obligatoire.',
-        'email.email' => 'L\'email doit être valide.',
-        'email.unique' => 'Cet email est déjà utilisé.',
         'whatsapp.required' => 'Le numéro WhatsApp est obligatoire.',
-        'whatsapp.regex' => 'Le numéro doit contenir exactement 10 chiffres',
+        'whatsapp.regex' => 'Format requis: +225 suivi de 10 chiffres',
         'whatsapp.unique' => 'Ce numéro WhatsApp est déjà utilisé.',
         'photo.required' => 'Une photo est obligatoire.',
         'photo.image' => 'Le fichier doit être une image.',
@@ -68,38 +64,66 @@ class CandidateRegistrationForm extends Component
             }
             $this->validate();
 
-            // Créer un utilisateur candidat
-            $user = User::create([
-                'name' => $this->prenom . ' ' . $this->nom,
-                'prenom' => $this->prenom,
-                'nom' => $this->nom,
-                'email' => $this->email,
-                'whatsapp' => $whatsappWithPrefix,
-                'password' => Hash::make(Str::random(12)), // Mot de passe temporaire
-                'email_verified_at' => now(),
-                'type' => 'candidate',
-                'role' => 'user',
-            ]);
+            // Déjà au format +225XXXXXXXXXX
+            $whatsappWithPrefix = $this->whatsapp;
+
+            // Réutiliser un utilisateur existant par WhatsApp ou en créer un
+            $existingUser = User::where('whatsapp', $whatsappWithPrefix)->first();
+
+            if ($existingUser) {
+                $user = $existingUser;
+                // S'assurer que le type devient candidate
+                if ($user->type !== 'candidate') {
+                    $user->update(['type' => 'candidate']);
+                }
+                // Mettre à jour le nom si vide
+                if (empty($user->prenom) || empty($user->nom)) {
+                    $user->update([
+                        'prenom' => $this->prenom,
+                        'nom' => $this->nom,
+                        'name' => $this->prenom . ' ' . $this->nom,
+                    ]);
+                }
+                // Connecter l'utilisateur existant
+                Auth::login($user);
+            } else {
+                $user = User::create([
+                    'name' => $this->prenom . ' ' . $this->nom,
+                    'prenom' => $this->prenom,
+                    'nom' => $this->nom,
+                    'email' => (string) Str::uuid().'@dinor.local',
+                    'whatsapp' => $whatsappWithPrefix,
+                    'password' => Hash::make(Str::random(12)), // Mot de passe temporaire
+                    'email_verified_at' => now(),
+                    'type' => 'candidate',
+                    'role' => 'user',
+                ]);
+                // Connecter automatiquement le nouvel utilisateur
+                Auth::login($user);
+            }
 
             // Stocker la photo
             $photoPath = $this->photo->store('candidates', 'public');
 
-            // Formater le numéro WhatsApp avec préfixe +225
-            $whatsappWithPrefix = '+225' . $this->whatsapp;
+            // whatsapp déjà défini
+
+            // Empêcher de créer une deuxième candidature pour le même utilisateur
+            if ($user->candidate) {
+                $this->isSubmitting = false;
+                session()->flash('error', '❌ Ce numéro est déjà enregistré et une candidature existe déjà.');
+                return;
+            }
 
             // Créer le candidat
             $candidate = Candidate::create([
                 'user_id' => $user->id,
                 'prenom' => $this->prenom,
                 'nom' => $this->nom,
-                'email' => $this->email,
+                'email' => null,
                 'whatsapp' => $whatsappWithPrefix,
                 'photo_url' => $photoPath,
                 'status' => 'pending',
             ]);
-
-            // Connecter automatiquement l'utilisateur
-            Auth::login($user);
 
             // Envoyer un message WhatsApp de confirmation
             try {
@@ -114,7 +138,9 @@ class CandidateRegistrationForm extends Component
             $this->resetForm();
 
             // Message de succès
-            session()->flash('success', 'Votre inscription a été envoyée avec succès ! Vous recevrez une notification WhatsApp dès validation.');
+            session()->flash('success', 'Votre inscription a été envoyée avec succès ! ' .
+                ($existingUser ? 'Votre numéro était déjà enregistré, nous avons connecté votre compte. ' : '') .
+                'Vous recevrez une notification WhatsApp dès validation.');
 
             // Redirection vers le tableau de bord
             return redirect()->route('dashboard');

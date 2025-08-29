@@ -65,17 +65,19 @@
                     <p class="text-gray-600 mb-8 text-lg">Soyez le premier à participer au concours photo DINOR !</p>
 
                     @auth
-                        <livewire:candidate-registration-modal />
-                    @else
-                        <a
-                            href="{{ route('login') }}"
+                        <button
+                            onclick="openCandidateModal()"
                             class="bg-orange-600 hover:bg-orange-700 text-white px-8 py-4 text-lg inline-block rounded-lg font-medium transition-colors"
                         >
-                            <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
-                            </svg>
-                            Se connecter pour participer
-                        </a>
+                            📸 S'inscrire et poster une photo
+                        </button>
+                    @else
+                        <button
+                            onclick="openCandidateModal()"
+                            class="bg-orange-600 hover:bg-orange-700 text-white px-8 py-4 text-lg inline-block rounded-lg font-medium transition-colors"
+                        >
+                            📸 S'inscrire et poster une photo
+                        </button>
                     @endauth
                 </div>
             </div>
