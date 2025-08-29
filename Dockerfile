@@ -61,9 +61,10 @@ RUN php artisan storage:link || true
 # Configuration Supervisor pour les queues
 COPY docker/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# Script d'initialisation
+# Scripts d'initialisation
 COPY docker/scripts/init.sh /usr/local/bin/init.sh
-RUN chmod +x /usr/local/bin/init.sh
+COPY docker/scripts/start-app.sh /usr/local/bin/start-app.sh
+RUN chmod +x /usr/local/bin/init.sh /usr/local/bin/start-app.sh
 
 # Utilisation de l'utilisateur créé
 USER $user

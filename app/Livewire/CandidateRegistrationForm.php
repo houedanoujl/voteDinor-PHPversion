@@ -28,7 +28,7 @@ class CandidateRegistrationForm extends Component
         'prenom' => 'required|min:2|max:255',
         'nom' => 'required|min:2|max:255',
         'email' => 'required|email|unique:users,email',
-        'whatsapp' => 'required|regex:/^\+225[0-9]{8}$/|unique:candidates,whatsapp',
+        'whatsapp' => 'required|regex:/^[0-9]{10}$/|unique:candidates,whatsapp',
         'photo' => 'required|image|max:3072',
     ];
 
@@ -39,7 +39,7 @@ class CandidateRegistrationForm extends Component
         'email.email' => 'L\'email doit être valide.',
         'email.unique' => 'Cet email est déjà utilisé.',
         'whatsapp.required' => 'Le numéro WhatsApp est obligatoire.',
-        'whatsapp.regex' => 'Format: +225XXXXXXXX',
+        'whatsapp.regex' => 'Le numéro doit contenir exactement 10 chiffres',
         'whatsapp.unique' => 'Ce numéro WhatsApp est déjà utilisé.',
         'photo.required' => 'Une photo est obligatoire.',
         'photo.image' => 'Le fichier doit être une image.',
@@ -60,16 +60,24 @@ class CandidateRegistrationForm extends Component
         try {
             $this->validate();
 
-            // Créer un utilisateur
+            // Créer un utilisateur candidat
             $user = User::create([
                 'name' => $this->prenom . ' ' . $this->nom,
+                'prenom' => $this->prenom,
+                'nom' => $this->nom,
                 'email' => $this->email,
+                'whatsapp' => $whatsappWithPrefix,
                 'password' => Hash::make(Str::random(12)), // Mot de passe temporaire
                 'email_verified_at' => now(),
+                'type' => 'candidate',
+                'role' => 'user',
             ]);
 
             // Stocker la photo
             $photoPath = $this->photo->store('candidates', 'public');
+            
+            // Formater le numéro WhatsApp avec préfixe +225
+            $whatsappWithPrefix = '+225' . $this->whatsapp;
 
             // Créer le candidat
             $candidate = Candidate::create([
@@ -77,8 +85,8 @@ class CandidateRegistrationForm extends Component
                 'prenom' => $this->prenom,
                 'nom' => $this->nom,
                 'email' => $this->email,
-                'whatsapp' => $this->whatsapp,
-                'photo' => $photoPath,
+                'whatsapp' => $whatsappWithPrefix,
+                'photo_url' => $photoPath,
                 'status' => 'pending',
             ]);
 
@@ -89,7 +97,7 @@ class CandidateRegistrationForm extends Component
             try {
                 $whatsappService = new WhatsAppService();
                 $message = "🎉 Félicitations {$this->prenom} ! Votre inscription au concours photo DINOR a été reçue. Votre candidature est en cours de validation. Vous recevrez une notification dès l'approbation.";
-                $whatsappService->sendMessage($this->whatsapp, $message);
+                $whatsappService->sendMessage($whatsappWithPrefix, $message);
             } catch (\Exception $e) {
                 Log::error('Erreur WhatsApp inscription: ' . $e->getMessage());
             }

@@ -24,6 +24,10 @@ class User extends Authenticatable
         'provider',
         'provider_id',
         'role',
+        'type',
+        'prenom',
+        'nom',
+        'whatsapp',
     ];
 
     /**
@@ -72,5 +76,30 @@ class User extends Authenticatable
     public function isAdmin()
     {
         return $this->role === 'admin';
+    }
+    
+    public function isCandidate()
+    {
+        return $this->type === 'candidate';
+    }
+    
+    public function isVoter()
+    {
+        return $this->type === 'voter';
+    }
+    
+    public function candidate()
+    {
+        return $this->hasOne(Candidate::class);
+    }
+    
+    public function getTypeLabel()
+    {
+        return match($this->type) {
+            'admin' => 'Administrateur',
+            'candidate' => 'Candidat',
+            'voter' => 'Votant',
+            default => $this->type
+        };
     }
 }

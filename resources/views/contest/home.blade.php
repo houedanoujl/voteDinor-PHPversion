@@ -24,23 +24,41 @@
 
                     <!-- Boutons d'action épurés -->
                     <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start items-center">
-                        <div class="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
-                            <button onclick="scrollToInscription()" class="bg-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-orange-700 transition-colors flex items-center">
-                                🎯 Participer au concours
-                                <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
-                                </svg>
-                            </button>
-                            @guest
+                        @guest
+                            <!-- Boutons pour les invités -->
+                            <div class="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
+                                <button onclick="openVoterModal()" class="bg-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-orange-700 transition-colors flex items-center">
+                                    🗳️ Devenir Votant
+                                    <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                    </svg>
+                                </button>
+                                <button onclick="openCandidateModal()" class="bg-green-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700 transition-colors flex items-center">
+                                    📸 Devenir Candidat
+                                    <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                    </svg>
+                                </button>
                                 <a href="{{ route('login') }}" class="bg-gray-900 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors">
                                     Connexion
                                 </a>
-                            @else
+                            </div>
+                        @else
+                            <!-- Boutons pour les utilisateurs connectés -->
+                            <div class="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
+                                @if(!auth()->user()->candidate)
+                                    <button onclick="openCandidateModal()" class="bg-green-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700 transition-colors flex items-center">
+                                        📸 Devenir Candidat
+                                        <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                        </svg>
+                                    </button>
+                                @endif
                                 <a href="{{ route('dashboard') }}" class="bg-gray-900 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors">
                                     Mon tableau de bord
                                 </a>
-                            @endguest
-                        </div>
+                            </div>
+                        @endguest
 
                         <!-- Bouton voir candidats avec mêmes dimensions -->
                         <button onclick="scrollToGallery()" class="bg-gray-100 text-gray-900 px-6 py-3 rounded-lg font-medium hover:bg-gray-200 transition-colors">
@@ -122,41 +140,11 @@
                 </p>
             </div>
 
-            @guest
-                <!-- Formulaire pour les invités -->
-                @livewire('candidate-registration-form')
-            @else
-                <!-- Formulaire pour les utilisateurs connectés -->
-                @if(auth()->user()->candidate)
-                    <div class="text-center bg-green-50 border border-green-200 rounded-xl p-8">
-                        <div class="mb-4">
-                            <svg class="mx-auto h-16 w-16 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                        </div>
-                        <h3 class="text-2xl font-bold text-gray-900 mb-2">Vous participez déjà ! 🎉</h3>
-                        <p class="text-gray-600 mb-6">
-                            Votre candidature a été soumise avec succès. 
-                            @if(auth()->user()->candidate->status === 'pending')
-                                Elle est actuellement en cours de validation.
-                            @elseif(auth()->user()->candidate->status === 'approved')
-                                Elle a été approuvée et vous pouvez recevoir des votes !
-                            @else
-                                Elle a été rejetée. Contactez-nous pour plus d'informations.
-                            @endif
-                        </p>
-                        <a href="{{ route('dashboard') }}" class="inline-flex items-center px-6 py-3 bg-orange-600 text-white font-medium rounded-lg hover:bg-orange-700 transition-colors">
-                            Voir mon tableau de bord
-                            <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
-                            </svg>
-                        </a>
-                    </div>
-                @else
-                    <!-- L'utilisateur est connecté mais n'a pas encore participé -->
-                    @livewire('candidate-registration-form')
-                @endif
-            @endguest
+            <div class="text-center">
+                <p class="text-gray-600">
+                    Cliquez sur les boutons ci-dessus pour créer votre compte et participer au concours !
+                </p>
+            </div>
         </div>
     </section>
 
@@ -174,20 +162,85 @@
         </div>
     </section>
 
+    <!-- Modales -->
+    <!-- Modal Votant -->
+    <div id="voterModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold text-gray-900">Créer un compte votant</h2>
+                    <button onclick="closeVoterModal()" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                @livewire('voter-registration-form')
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Candidat -->
+    <div id="candidateModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold text-gray-900">Devenir candidat</h2>
+                    <button onclick="closeCandidateModal()" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                @livewire('candidate-registration-form')
+            </div>
+        </div>
+    </div>
 
 </div>
 
 @push('scripts')
 <script>
+    // Fonctions pour les modales
+    function openVoterModal() {
+        document.getElementById('voterModal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+    
+    function closeVoterModal() {
+        document.getElementById('voterModal').classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+    
+    function openCandidateModal() {
+        document.getElementById('candidateModal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+    
+    function closeCandidateModal() {
+        document.getElementById('candidateModal').classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+    
+    // Fermer les modales en cliquant à l'extérieur
+    document.getElementById('voterModal').addEventListener('click', function(e) {
+        if (e.target === this) closeVoterModal();
+    });
+    
+    document.getElementById('candidateModal').addEventListener('click', function(e) {
+        if (e.target === this) closeCandidateModal();
+    });
+    
+    // Fermer avec Escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeVoterModal();
+            closeCandidateModal();
+        }
+    });
+
     function scrollToGallery() {
         document.getElementById('gallery').scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-        });
-    }
-
-    function scrollToInscription() {
-        document.getElementById('inscription').scrollIntoView({
             behavior: 'smooth',
             block: 'start'
         });

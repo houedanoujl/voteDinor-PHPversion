@@ -7,6 +7,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use BackedEnum;
 
 class VoteResource extends Resource
 {
@@ -16,7 +17,9 @@ class VoteResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Votes';
 
-    protected static ?int $navigationSort = 2;
+    protected static BackedEnum|string|null $navigationIcon = 'heroicon-o-check-circle';
+
+    protected static ?int $navigationSort = 3;
 
     public static function table(Table $table): Table
     {

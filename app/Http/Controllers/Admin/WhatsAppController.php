@@ -35,7 +35,7 @@ class WhatsAppController extends Controller
             ]);
 
             $whatsappService = new WhatsAppService();
-            
+
             // Préparer le message
             $message = $request->message;
             if (!$message && $request->message_type === 'notification') {
@@ -43,10 +43,10 @@ class WhatsAppController extends Controller
             }
 
             \Log::info('🟢 Message préparé', ['message' => $message]);
-            
+
             $result = $whatsappService->sendMessage($candidate->whatsapp, $message);
             \Log::info('🟢 Résultat du service WhatsApp', $result);
-            
+
             if ($result['success']) {
                 $response = [
                     'success' => true,
@@ -67,7 +67,7 @@ class WhatsAppController extends Controller
                 'errors' => $e->errors(),
                 'message' => $e->getMessage()
             ]);
-            
+
             return response()->json([
                 'success' => false,
                 'message' => 'Données invalides: ' . json_encode($e->errors())
@@ -79,7 +79,7 @@ class WhatsAppController extends Controller
                 'file' => $e->getFile(),
                 'line' => $e->getLine()
             ]);
-            
+
             return response()->json([
                 'success' => false,
                 'message' => 'Erreur lors de l\'envoi: ' . $e->getMessage()

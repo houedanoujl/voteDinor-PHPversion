@@ -1,0 +1,121 @@
+<?php
+
+namespace App\Livewire;
+
+use App\Models\User;
+use App\Services\WhatsAppService;
+use Livewire\Component;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+
+class VoterRegistrationForm extends Component
+{
+    public $prenom = '';
+    public $nom = '';
+    public $whatsapp = '';
+    public $isSubmitting = false;
+
+    protected $rules = [
+        'prenom' => 'required|min:2|max:255',
+        'nom' => 'required|min:2|max:255',
+        'whatsapp' => 'required|regex:/^[0-9]{10}$/|unique:users,whatsapp',
+    ];
+
+    protected $messages = [
+        'prenom.required' => 'Le prénom est obligatoire.',
+        'nom.required' => 'Le nom est obligatoire.',
+        'whatsapp.required' => 'Le numéro WhatsApp est obligatoire.',
+        'whatsapp.regex' => 'Le numéro doit contenir exactement 10 chiffres',
+        'whatsapp.unique' => 'Ce numéro WhatsApp est déjà utilisé.',
+    ];
+
+    public function submit()
+    {
+        $this->isSubmitting = true;
+
+        try {
+            $this->validate();
+
+            // Générer un email unique basé sur le prénom et nom
+            $baseEmail = Str::slug($this->prenom . '.' . $this->nom) . '@dinor-voters.com';
+            $email = $baseEmail;
+            $counter = 1;
+
+            while (User::where('email', $email)->exists()) {
+                $email = Str::slug($this->prenom . '.' . $this->nom) . $counter . '@dinor-voters.com';
+                $counter++;
+            }
+
+            // Générer un mot de passe aléatoire
+            $password = Str::random(12);
+
+            // Formater le numéro WhatsApp avec préfixe +225
+            $whatsappWithPrefix = '+225' . $this->whatsapp;
+
+            // Créer l'utilisateur votant
+            $user = User::create([
+                'name' => $this->prenom . ' ' . $this->nom,
+                'prenom' => $this->prenom,
+                'nom' => $this->nom,
+                'email' => $email,
+                'whatsapp' => $whatsappWithPrefix,
+                'password' => Hash::make($password),
+                'email_verified_at' => now(),
+                'type' => 'voter',
+                'role' => 'user',
+            ]);
+
+            // Connecter automatiquement l'utilisateur
+            Auth::login($user);
+
+            // Envoyer un message WhatsApp de bienvenue
+            try {
+                $whatsappService = new WhatsAppService();
+                $dashboardUrl = url('/dashboard');
+                $message = "🎉 Bienvenue {$this->prenom} sur le concours photo DINOR !\n\n";
+                $message .= "Votre compte VOTANT a été créé avec succès.\n";
+                $message .= "Vous pouvez maintenant voter pour vos candidats préférés.\n\n";
+                $message .= "🔗 Accédez à votre dashboard : {$dashboardUrl}\n\n";
+                $message .= "📧 Email : {$email}\n";
+                $message .= "🔑 Mot de passe : {$password}\n\n";
+                $message .= "Bon vote ! 🗳️";
+
+                $whatsappService->sendMessage($whatsappWithPrefix, $message);
+            } catch (\Exception $e) {
+                Log::error('Erreur WhatsApp votant: ' . $e->getMessage());
+            }
+
+            // Réinitialiser le formulaire
+            $this->resetForm();
+
+            // Message de succès
+            session()->flash('success', 'Votre compte votant a été créé avec succès ! Vous pouvez maintenant voter.');
+
+            // Redirection vers le tableau de bord
+            return redirect()->route('dashboard');
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            $this->isSubmitting = false;
+            throw $e;
+        } catch (\Exception $e) {
+            $this->isSubmitting = false;
+            Log::error('Erreur lors de la création du compte votant: ' . $e->getMessage());
+            session()->flash('error', 'Une erreur est survenue lors de la création du compte. Veuillez réessayer.');
+        }
+    }
+
+    private function resetForm()
+    {
+        $this->prenom = '';
+        $this->nom = '';
+        $this->whatsapp = '';
+        $this->isSubmitting = false;
+    }
+
+    public function render()
+    {
+        return view('livewire.voter-registration-form');
+    }
+}

@@ -24,6 +24,8 @@ class CandidateRegistrationModal extends Component
     public $photo = null;
     public $tempPhotoUrl = null;
 
+    protected $listeners = ['open-candidate-modal' => 'openModal'];
+
     protected $rules = [
         'prenom' => 'required|min:2|max:255',
         'nom' => 'required|min:2|max:255',
@@ -100,7 +102,7 @@ class CandidateRegistrationModal extends Component
             $user = null;
             $password = null;
             $isNewUser = false;
-            
+
             if (!auth()->check()) {
                 // Générer un mot de passe temporaire
                 $password = Str::random(12);
@@ -108,15 +110,23 @@ class CandidateRegistrationModal extends Component
 
                 $user = User::create([
                     'name' => $this->prenom . ' ' . $this->nom,
+                    'prenom' => $this->prenom,
+                    'nom' => $this->nom,
                     'email' => $this->email,
                     'password' => Hash::make($password),
                     'email_verified_at' => now(), // Auto-vérifier l'email
+                    'type' => 'candidate',
+                    'role' => 'user',
                 ]);
 
                 // Connecter l'utilisateur automatiquement
                 Auth::login($user);
             } else {
                 $user = auth()->user();
+                // Mettre à jour le type d'utilisateur vers candidat s'il ne l'est pas déjà
+                if ($user->type !== 'candidate') {
+                    $user->update(['type' => 'candidate']);
+                }
             }
 
             $candidate = Candidate::create([
@@ -141,7 +151,7 @@ class CandidateRegistrationModal extends Component
                 try {
                     $whatsappService = new WhatsAppService();
                     $dashboardUrl = route('dashboard');
-                    
+
                     $message = "🎯 Bienvenue sur DINOR Concours Photo !\n\n";
                     $message .= "Votre inscription a été effectuée avec succès.\n\n";
                     $message .= "📧 Email: {$this->email}\n";
@@ -152,9 +162,9 @@ class CandidateRegistrationModal extends Component
                     $message .= "Votre candidature sera validée sous 24h.\n\n";
                     $message .= "Merci de votre participation !\n";
                     $message .= "L'équipe DINOR";
-                    
+
                     $result = $whatsappService->sendMessage($this->whatsapp, $message);
-                    
+
                     if (!$result['success']) {
                         \Log::warning('Échec envoi WhatsApp identifiants', [
                             'user_id' => $user->id,
