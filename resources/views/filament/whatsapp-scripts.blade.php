@@ -10,7 +10,7 @@
 window.WhatsAppService = {
     baseUrl: '/admin/whatsapp',
     csrfToken: document.querySelector('meta[name="csrf-token"]')?.getAttribute('content'),
-    
+
     /**
      * Envoie un message WhatsApp à un candidat
      */
@@ -90,7 +90,7 @@ window.WhatsAppService = {
         // Créer l'élément de notification
         const notification = document.createElement('div');
         notification.className = `fixed top-4 right-4 max-w-sm p-4 rounded-lg shadow-lg z-50 transform transition-all duration-300 translate-x-full`;
-        
+
         // Définir les couleurs selon le type
         const colors = {
             success: 'bg-green-500 text-white',
@@ -152,6 +152,58 @@ window.checkWhatsAppApiStatus = function() {
     } else {
         console.error('WhatsAppService not available');
         alert('Service WhatsApp non disponible');
+    }
+};
+
+/**
+ * Fonction pour supprimer un candidat
+ */
+window.deleteCandidate = async function(candidateId) {
+    try {
+        console.log('🗑️ Suppression du candidat:', candidateId);
+
+        // Afficher un loader
+        if (window.WhatsAppService) {
+            window.WhatsAppService.showLoader('Suppression du candidat...');
+        }
+
+        const response = await fetch(`/admin/candidates/${candidateId}`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content'),
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (window.WhatsAppService) {
+            window.WhatsAppService.hideLoader();
+        }
+
+        if (response.ok) {
+            // Recharger la page pour voir les changements
+            if (window.WhatsAppService) {
+                window.WhatsAppService.showNotification('✅ Candidat supprimé avec succès !', 'success');
+            }
+
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
+
+            return true;
+        } else {
+            throw new Error('Erreur lors de la suppression');
+        }
+
+    } catch (error) {
+        if (window.WhatsAppService) {
+            window.WhatsAppService.hideLoader();
+            window.WhatsAppService.showNotification('❌ Erreur lors de la suppression du candidat', 'error');
+        } else {
+            alert('Erreur lors de la suppression du candidat');
+        }
+        console.error('Erreur suppression candidat:', error);
+        return false;
     }
 };
 
