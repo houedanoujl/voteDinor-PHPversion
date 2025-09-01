@@ -130,6 +130,20 @@ class CandidateRegistrationForm extends Component
                 $whatsappService = new WhatsAppService();
                 $message = "🎉 Félicitations {$this->prenom} ! Votre inscription au concours photo DINOR a été reçue. Votre candidature est en cours de validation. Vous recevrez une notification dès l'approbation.";
                 $whatsappService->sendMessage($whatsappWithPrefix, $message);
+
+                // Notifier l'admin
+                $adminPhone = config('services.whatsapp.admin_phone');
+                if (!empty($adminPhone)) {
+                    $adminMessage = "🔔 Nouvelle inscription CANDIDAT\n\n" .
+                        "Nom: {$this->prenom} {$this->nom}\n" .
+                        "WhatsApp: {$whatsappWithPrefix}\n" .
+                        "ID utilisateur: {$user->id}\n" .
+                        "ID candidat: {$candidate->id}\n" .
+                        "Statut: pending\n\n" .
+                        "Filament: " . url('/admin') . "\n" .
+                        "Valider depuis le panneau admin.";
+                    $whatsappService->sendMessage($adminPhone, $adminMessage);
+                }
             } catch (\Exception $e) {
                 Log::error('Erreur WhatsApp inscription: ' . $e->getMessage());
             }

@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -13,12 +15,26 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Créer l'utilisateur admin
-        User::factory()->create([
-            'name' => 'Jean-Luc Admin',
-            'email' => 'jeanluc@bigfiveabidjan.com',
-            'password' => bcrypt('admin2025!'),
-        ]);
+        // Créer ou mettre à jour l'utilisateur admin (idempotent)
+        $adminEmail = env('ADMIN_EMAIL', 'admin@dinor.local');
+        $adminName = env('ADMIN_NAME', 'DINOR Admin');
+        $adminPassword = env('ADMIN_PASSWORD');
+
+        // Si aucun mot de passe n'est fourni, générer un mot de passe fort et logger
+        if (!$adminPassword) {
+            $adminPassword = Str::password(32, symbols: true);
+            \Log::warning('ADMIN_PASSWORD non défini. Un mot de passe fort a été généré lors du seed.', [
+                'email' => $adminEmail,
+            ]);
+        }
+
+        User::updateOrCreate(
+            ['email' => $adminEmail],
+            [
+                'name' => $adminName,
+                'password' => Hash::make($adminPassword),
+            ]
+        );
 
         // Créer des candidats d'exemple
         $this->call([

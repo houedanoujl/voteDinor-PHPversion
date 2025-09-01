@@ -37,6 +37,8 @@ return [
 
     // Configuration WhatsApp
     'whatsapp' => [
+        // Numéro admin pour les notifications (format international +225...)
+        'admin_phone' => env('ADMIN_WHATSAPP'),
         // Green API (alternative)
         'green_api' => [
             'instance_id' => env('GREEN_API_ID'),
@@ -62,7 +64,7 @@ return [
         'analytics_id' => env('GOOGLE_ANALYTICS_ID'),
     ],
 
-    // Configuration Facebook OAuth  
+    // Configuration Facebook OAuth
     'facebook' => [
         'client_id' => env('FACEBOOK_CLIENT_ID'),
         'client_secret' => env('FACEBOOK_CLIENT_SECRET'),

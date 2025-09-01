@@ -198,6 +198,25 @@ class CandidateRegistrationModal extends Component
                 }
             }
 
+            // Notifier l'admin par WhatsApp de la nouvelle inscription
+            try {
+                $adminPhone = config('services.whatsapp.admin_phone');
+                if (!empty($adminPhone)) {
+                    $whatsappService = isset($whatsappService) ? $whatsappService : new WhatsAppService();
+                    $adminMessage = "🔔 Nouvelle inscription CANDIDAT\n\n" .
+                        "Nom: {$this->prenom} {$this->nom}\n" .
+                        "WhatsApp: {$this->whatsapp}\n" .
+                        "ID utilisateur: {$user->id}\n" .
+                        "ID candidat: {$candidate->id}\n" .
+                        "Statut: pending\n\n" .
+                        "Filament: " . url('/admin') . "\n" .
+                        "Valider depuis le panneau admin.";
+                    $whatsappService->sendMessage($adminPhone, $adminMessage);
+                }
+            } catch (\Exception $e) {
+                \Log::error('Erreur envoi WhatsApp admin (inscription candidat): ' . $e->getMessage());
+            }
+
             $message = '✅ Inscription réussie ! ';
             if ($isNewUser) {
                 $message .= 'Un compte a été créé et vos identifiants ont été envoyés par WhatsApp. ';
