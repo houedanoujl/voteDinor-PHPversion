@@ -6,58 +6,60 @@
 @section('content')
 <div class="min-h-screen">
     <!-- Hero Section avec vidéo multistream -->
-    <section class="relative bg-white py-20 px-4">
-        <div class="max-w-6xl mx-auto">
+    <section class="relative bg-black py-20 px-4 overflow-hidden">
+        <!-- Background video -->
+        <video class="absolute inset-0 w-full h-full object-cover" autoplay muted loop playsinline>
+            <source src="{{ asset('videos/video.mp4') }}" type="video/mp4">
+        </video>
+        <!-- Overlay -->
+        <div class="absolute inset-0 bg-black/50"></div>
+
+        <div class="relative z-10 max-w-6xl mx-auto">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <!-- Contenu texte -->
-                <div class="text-center lg:text-left">
+                <div class="text-center lg:text-left text-white">
                     <!-- Titre principal épuré -->
-                    <h1 class="text-4xl md:text-6xl font-bold text-gray-900 mb-6 tracking-tight">
+                    <h1 class="text-4xl md:text-6xl font-bold mb-6 tracking-tight">
                         Concours Photo
-                        <span class="block text-orange-600">DINOR</span>
+                        <span class="block text-orange-400">DINOR</span>
                     </h1>
 
 
                     <!-- Boutons d'action épurés -->
-                    <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start items-center">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 w-full max-w-2xl mx-auto lg:mx-0">
                         @guest
                             <!-- Boutons pour les invités -->
-                            <div class="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
-                                <button onclick="openVoterModal()" class="bg-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-orange-700 transition-colors flex items-center">
+                                <button onclick="openVoterModal()" class="bg-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-orange-700 transition-colors flex items-center justify-center w-full">
                                     🗳️ Devenir Votant
                                     <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                                     </svg>
                                 </button>
-                                <button onclick="openCandidateModal()" class="bg-green-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700 transition-colors flex items-center">
+                                <button onclick="openCandidateModal()" class="bg-green-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700 transition-colors flex items-center justify-center w-full">
                                     📸 Devenir Candidat
                                     <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                                     </svg>
                                 </button>
-                                <a href="{{ route('login') }}" class="bg-gray-900 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors">
+                                <a href="{{ route('login') }}" class="bg-gray-900 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors w-full text-center">
                                     Connexion
                                 </a>
-                            </div>
                         @else
                             <!-- Boutons pour les utilisateurs connectés -->
-                            <div class="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
                                 @if(!auth()->user()->candidate)
-                                    <button onclick="openCandidateModal()" class="bg-green-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700 transition-colors flex items-center">
+                                    <button onclick="openCandidateModal()" class="bg-green-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700 transition-colors flex items-center justify-center w-full">
                                         📸 Devenir Candidat
                                         <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                                         </svg>
                                     </button>
                                 @endif
-                                <a href="{{ route('dashboard') }}" class="bg-gray-900 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors">
+                                <a href="{{ route('dashboard') }}" class="bg-gray-900 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors w-full text-center">
                                     Mon tableau de bord
                                 </a>
-                            </div>
                         @endguest
-
-                        <!-- Bouton voir candidats avec mêmes dimensions -->
-                        <button onclick="scrollToGallery()" class="bg-gray-100 text-gray-900 px-6 py-3 rounded-lg font-medium hover:bg-gray-200 transition-colors">
+                        <!-- Bouton voir candidats avec même largeur -->
+                        <button onclick="scrollToGallery()" class="bg-white/80 backdrop-blur text-gray-900 px-6 py-3 rounded-lg font-medium hover:bg-white transition-colors w-full col-span-1 sm:col-span-2 lg:col-span-3">
                             Voir les candidats →
                         </button>
                     </div>
