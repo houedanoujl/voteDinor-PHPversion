@@ -107,12 +107,9 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
                                     </svg>
                                     <h3 class="text-lg font-semibold text-gray-900 mb-2">Connectez-vous pour voter</h3>
-                                    <p class="text-gray-600 mb-4">Vous devez être connecté pour voter pour ce candidat</p>
-                                    <button onclick="Livewire.dispatch('open-voter-modal')" class="inline-flex items-center px-6 py-3 bg-orange-600 hover:bg-orange-700 text-white font-medium rounded-lg transition-colors mr-2">
-                                        🗳️ Créer un compte votant
-                                    </button>
-                                    <button onclick="Livewire.dispatch('open-candidate-modal')" class="inline-flex items-center px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors">
-                                        📸 Se connecter / poster une photo
+                                    <p class="text-gray-600 mb-6">Vous devez être connecté pour voter pour ce candidat</p>
+                                    <button onclick="openVoterModal()" class="inline-flex items-center px-8 py-4 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-xl transition-colors">
+                                        🗳️ Devenir Votant
                                     </button>
                                 </div>
                             @else
@@ -240,6 +237,23 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal Votant (mêmes styles que l'accueil) -->
+    <div id="voterModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold text-gray-900">Créer un compte votant</h2>
+                    <button onclick="closeVoterModal()" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                @livewire('voter-registration-form')
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -354,6 +368,32 @@ function closeLightbox() {
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
         closeLightbox();
+    }
+});
+
+// Fonctions pour la modale Votant (alignées sur l'accueil)
+function openVoterModal() {
+    const modal = document.getElementById('voterModal');
+    if (modal) {
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeVoterModal() {
+    const modal = document.getElementById('voterModal');
+    if (modal) {
+        modal.classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+}
+
+// Fermer la modale en cliquant à l'extérieur
+document.addEventListener('click', function(e) {
+    const modal = document.getElementById('voterModal');
+    if (!modal || modal.classList.contains('hidden')) return;
+    if (e.target === modal) {
+        closeVoterModal();
     }
 });
 </script>
