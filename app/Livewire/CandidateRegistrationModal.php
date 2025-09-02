@@ -143,7 +143,7 @@ class CandidateRegistrationModal extends Component
 
             // Empêcher la création d'un doublon de candidature
             if ($user->candidate) {
-                session()->flash('error', '❌ Ce numéro est déjà enregistré et une candidature existe déjà.');
+                session()->flash('error', '❌ Vous avez déjà soumis une photo. Une seule participation est autorisée.');
                 return;
             }
 

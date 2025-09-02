@@ -12,11 +12,13 @@ return new class extends Migration
         Schema::create('site_settings', function (Blueprint $table) {
             $table->id();
             $table->boolean('applications_open')->default(true);
+            $table->boolean('uploads_enabled')->default(true);
             $table->timestamps();
         });
 
         DB::table('site_settings')->insert([
             'applications_open' => true,
+            'uploads_enabled' => true,
             'created_at' => now(),
             'updated_at' => now(),
         ]);

@@ -94,10 +94,23 @@
                         <p class="text-gray-600 dark:text-gray-300 mb-6">
                             Soumettez votre plus belle photo et tentez de remporter le concours !
                         </p>
-                        <button onclick="openCandidateModal()"
-                                class="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors">
-                            Participer au Concours
-                        </button>
+                        @auth
+                            @if(!auth()->user()->candidate)
+                                <button onclick="openCandidateModal()"
+                                        class="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors">
+                                    Participer au Concours
+                                </button>
+                            @else
+                                <button class="w-full bg-gray-400 text-white font-semibold py-3 px-6 rounded-lg opacity-60 cursor-not-allowed" disabled>
+                                    Photo déjà postée
+                                </button>
+                            @endif
+                        @else
+                            <button onclick="openCandidateModal()"
+                                    class="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors">
+                                Participer au Concours
+                            </button>
+                        @endauth
                     </div>
                 </div>
 

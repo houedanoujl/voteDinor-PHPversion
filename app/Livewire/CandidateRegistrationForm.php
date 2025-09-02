@@ -64,6 +64,13 @@ class CandidateRegistrationForm extends Component
             }
             $this->validate();
 
+            // Si un utilisateur est connecté, interdire la création si une candidature existe déjà
+            if (auth()->check() && auth()->user()->candidate) {
+                $this->isSubmitting = false;
+                session()->flash('error', '❌ Vous avez déjà soumis une photo. Une seule participation est autorisée.');
+                return;
+            }
+
             // Déjà au format +225XXXXXXXXXX
             $whatsappWithPrefix = $this->whatsapp;
 
@@ -116,7 +123,7 @@ class CandidateRegistrationForm extends Component
             // Empêcher de créer une deuxième candidature pour le même utilisateur
             if ($user->candidate) {
                 $this->isSubmitting = false;
-                session()->flash('error', '❌ Ce numéro est déjà enregistré et une candidature existe déjà.');
+                session()->flash('error', '❌ Vous avez déjà soumis une photo. Une seule participation est autorisée.');
                 return;
             }
 

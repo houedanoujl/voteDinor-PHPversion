@@ -6,7 +6,7 @@
 @section('content')
 <div class="min-h-screen">
     <!-- Hero Section avec vidéo -->
-    <section class="relative bg-black py-20 px-4 overflow-hidden min-h-screen">
+    <section class="relative bg-black py-20 px-4 overflow-hidden min-h-screen hero-section">
         <!-- Background video -->
         <video class="absolute inset-0 w-full h-full object-cover" autoplay muted loop playsinline>
             <source src="{{ asset('videos/video.mp4') }}" type="video/mp4">
@@ -46,23 +46,29 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                                     </svg>
                                 </button>
+                                @if(($settings->uploads_enabled ?? true) && ($settings->applications_open ?? true))
                                 <button onclick="openCandidateModal()" class="btn-dinor btn-dinor-accent w-full">
                                     Poster ma photo du FGA
                                     <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                                     </svg>
                                 </button>
+                                @endif
                                 <!-- <a href="{{ route('login') }}" class="btn-dinor btn-dinor-secondary w-full">
                                     Connexion
                                 </a> -->
                         @else
                             <!-- Boutons pour les utilisateurs connectés -->
-                                @if(!auth()->user()->candidate)
+                                @if(!auth()->user()->candidate && ($settings->uploads_enabled ?? true) && ($settings->applications_open ?? true))
                                     <button onclick="openCandidateModal()" class="btn-dinor btn-dinor-accent w-full">
                                         Poster ma photo du FGA
                                         <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                                         </svg>
+                                    </button>
+                                @else
+                                    <button class="btn-dinor btn-dinor-secondary w-full opacity-60 cursor-not-allowed" disabled>
+                                        Photo déjà postée
                                     </button>
                                 @endif
                                 <a href="{{ route('dashboard') }}" class="btn-dinor btn-dinor-secondary w-full">
@@ -81,47 +87,47 @@
                         @php($top = $stats['top_candidates'])
                         @if($top->count() > 0)
                             <!-- Fond pour améliorer la lisibilité du classement -->
-                            <div class="bg-black/50 rounded-2xl p-8 mb-8">
+                            <div class="bg-black/50 rounded-2xl p-4 sm:p-8 mb-8">
                             
-                                <div class="grid grid-cols-3 gap-4 items-end mb-6">
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-stretch mb-6">
                                     <!-- 2ème place -->
-                                    <div class="text-center">
+                                    <div class="text-center order-2 sm:order-1">
                                         @if($top->get(1))
-                                            <a href="{{ route('candidate.detail', $top->get(1)->id) }}" class="block bg-white/15  rounded-xl p-4 border border-white/20">
-                                                <div class="w-16 h-16 rounded-full mx-auto mb-3 overflow-hidden border-3 border-gray-400 shadow-lg">
+                                            <a href="{{ route('candidate.detail', $top->get(1)->id) }}" class="block bg-white/15 rounded-xl p-4 border border-white/20">
+                                                <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full mx-auto mb-3 overflow-hidden border-3 border-gray-400 shadow-lg">
                                                     <img src="{{ $top->get(1)->getPhotoUrl() ?: asset('images/placeholder-avatar.svg') }}" alt="{{ $top->get(1)->full_name }}" class="w-full h-full object-cover">
                                                 </div>
-                                                <div class="text-sm font-semibold text-white">{{ Str::limit($top->get(1)->full_name, 12) }}</div>
+                                                <div class="text-sm font-semibold text-white truncate max-w-[10rem] mx-auto">{{ Str::limit($top->get(1)->full_name, 18) }}</div>
                                                 <div class="text-xs text-yellow-300 font-medium">{{ $top->get(1)->votes_count }} votes</div>
-                                                <div class="mt-2 text-2xl font-bold text-gray-400">2</div>
+                                                <div class="mt-2 text-xl sm:text-2xl font-bold text-gray-400">2</div>
                                             </a>
                                         @endif
                                     </div>
                                     
                                     <!-- 1ère place -->
-                                    <div class="text-center">
+                                    <div class="text-center order-1 sm:order-2">
                                         @if($top->get(0))
-                                            <a href="{{ route('candidate.detail', $top->get(0)->id) }}" class="block bg-gradient-to-b from-yellow-400/20 to-yellow-600/20  rounded-xl p-5 border-2 border-yellow-400/40 shadow-2xl">
-                                                <div class="w-20 h-20 rounded-full mx-auto mb-3 overflow-hidden border-4 border-yellow-400 shadow-xl">
+                                            <a href="{{ route('candidate.detail', $top->get(0)->id) }}" class="block bg-gradient-to-b from-yellow-400/20 to-yellow-600/20 rounded-xl p-4 sm:p-5 border-2 border-yellow-400/40 shadow-2xl sm:transform sm:scale-110">
+                                                <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full mx-auto mb-3 overflow-hidden border-4 border-yellow-400 shadow-xl">
                                                     <img src="{{ $top->get(0)->getPhotoUrl() ?: asset('images/placeholder-avatar.svg') }}" alt="{{ $top->get(0)->full_name }}" class="w-full h-full object-cover">
                                                 </div>
-                                                <div class="text-base font-bold text-white">{{ Str::limit($top->get(0)->full_name, 12) }}</div>
-                                                <div class="text-sm text-yellow-300 font-semibold">{{ $top->get(0)->votes_count }} votes</div>
-                                                <div class="mt-2 text-3xl font-extrabold text-yellow-400">1</div>
+                                                <div class="text-sm sm:text-base font-bold text-white truncate max-w-[10rem] mx-auto">{{ Str::limit($top->get(0)->full_name, 18) }}</div>
+                                                <div class="text-xs sm:text-sm text-yellow-300 font-semibold">{{ $top->get(0)->votes_count }} votes</div>
+                                                <div class="mt-2 text-2xl sm:text-3xl font-extrabold text-yellow-400">1</div>
                                             </a>
                                         @endif
                                     </div>
                                     
                                     <!-- 3ème place -->
-                                    <div class="text-center">
+                                    <div class="text-center order-3 sm:order-3">
                                         @if($top->get(2))
-                                            <a href="{{ route('candidate.detail', $top->get(2)->id) }}" class="block bg-white/15  rounded-xl p-4 border border-white/20">
-                                                <div class="w-16 h-16 rounded-full mx-auto mb-3 overflow-hidden border-3 border-orange-600 shadow-lg">
+                                            <a href="{{ route('candidate.detail', $top->get(2)->id) }}" class="block bg-white/15 rounded-xl p-4 border border-white/20">
+                                                <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full mx-auto mb-3 overflow-hidden border-3 border-orange-600 shadow-lg">
                                                     <img src="{{ $top->get(2)->getPhotoUrl() ?: asset('images/placeholder-avatar.svg') }}" alt="{{ $top->get(2)->full_name }}" class="w-full h-full object-cover">
                                                 </div>
-                                                <div class="text-sm font-semibold text-white">{{ Str::limit($top->get(2)->full_name, 12) }}</div>
+                                                <div class="text-sm font-semibold text-white truncate max-w-[10rem] mx-auto">{{ Str::limit($top->get(2)->full_name, 18) }}</div>
                                                 <div class="text-xs text-yellow-300 font-medium">{{ $top->get(2)->votes_count }} votes</div>
-                                                <div class="mt-2 text-2xl font-bold text-orange-600">3</div>
+                                                <div class="mt-2 text-xl sm:text-2xl font-bold text-orange-600">3</div>
                                             </a>
                                         @endif
                                     </div>
@@ -147,18 +153,18 @@
     <section class="py-16 px-4 bg-gray-50">
         <div class="max-w-4xl mx-auto">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="text-center card-dinor-clean">
+                <div class="text-center card-dinor-clean" style="background: var(--bg-light); border-color: var(--primary)">
                     <div class="text-4xl font-bold mb-2" style="color: var(--accent);">{{ $stats['total_candidates'] }}</div>
-                    <p class="text-gray-700 font-semibold">Candidats</p>
+                    <p class="font-semibold" style="color: var(--dinor-gray-800);">Candidats</p>
                 </div>
-                <div class="text-center card-dinor-clean">
+                <div class="text-center card-dinor-clean" style="background: #fff; border-color: var(--muted)">
                     <div class="text-4xl font-bold mb-2" style="color: var(--primary);">{{ $stats['total_votes'] }}</div>
-                    <p class="text-gray-700 font-semibold">Votes</p>
+                    <p class="font-semibold" style="color: var(--dinor-gray-800);">Votes</p>
                 </div>
-                <div class="text-center card-dinor-clean">
-                    <div class="text-4xl mb-2" style="color: var(--muted);">★</div>
-                    <p class="text-gray-700"><a href="{{ route('contest.ranking') }}" class="font-bold btn-dinor-outline" style="color: var(--accent); text-decoration: none;">Voir le classement</a></p>
-                </div>
+                <a href="{{ route('contest.ranking') }}" class="block text-center card-dinor-clean" style="background: linear-gradient(135deg, var(--dark-goldenrod) 0%, var(--lion) 100%); border-color: var(--dark-goldenrod); color: #1f2937; text-decoration: none;">
+                    <div class="text-4xl mb-2" style="color: #fff">★</div>
+                    <p class="font-bold" style="color:#fff">Voir le classement</p>
+                </a>
             </div>
         </div>
     </section>

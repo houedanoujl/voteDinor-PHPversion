@@ -15,7 +15,7 @@
 
     <!-- Modal moderne -->
     @if($showModal)
-        <div class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center" aria-labelledby="modal-title" role="dialog" aria-modal="true">
             <!-- Background overlay avec blur -->
             <div class="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity" wire:click="closeModal"></div>
 

@@ -18,7 +18,6 @@ class Dashboard extends BaseDashboard
     protected function getHeaderWidgets(): array
     {
         return [
-            GoogleAnalyticsWidget::class,
             StatsOverview::class,
         ];
     }
@@ -26,9 +25,7 @@ class Dashboard extends BaseDashboard
     protected function getFooterWidgets(): array
     {
         return [
-            DetailedStats::class,
             CandidatesRanking::class,
-            AnalyticsChart::class,
             LatestCandidates::class,
             LatestVotes::class,
         ];

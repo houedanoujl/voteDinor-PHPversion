@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Candidate;
 use App\Models\Vote;
+use App\Models\SiteSetting;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
     public function index()
     {
+        $settings = SiteSetting::first();
         $stats = [
             'total_candidates' => Candidate::approved()->count(),
             'total_votes' => Vote::count(),
@@ -19,7 +21,10 @@ class HomeController extends Controller
                 ->get()
         ];
 
-        return view('contest.home', compact('stats'));
+        return view('contest.home', [
+            'stats' => $stats,
+            'settings' => $settings,
+        ]);
     }
 
     public function ranking()

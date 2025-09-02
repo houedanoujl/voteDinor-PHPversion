@@ -143,14 +143,13 @@
             transition: left 0.5s;
         }
 
-        .btn-dinor:hover::before {
-            left: 100%;
-        }
+        /* Désactivation des effets hover pour les boutons dans le hero */
+        .hero-section .btn-dinor:hover::before { left: -100%; }
 
-        .btn-dinor:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
-            background: linear-gradient(145deg, var(--muted), var(--primary));
+        .hero-section .btn-dinor:hover {
+            transform: none;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            background: linear-gradient(145deg, var(--primary), var(--muted));
         }
 
         .btn-dinor:active {
@@ -428,7 +427,7 @@
                 <div class="flex justify-between h-16">
                     <div class="flex items-center">
                         <a href="{{ route('contest.home') }}" class="flex-shrink-0 flex items-center group">
-                            <img src="{{ asset('images/dinor-logo.png') }}" alt="DINOR" class="w-10 h-10">
+                            <img src="{{ asset('images/dinor-logo.png') }}" alt="DINOR" class="w-15 h-15">
                         </a>
                     </div>
 
