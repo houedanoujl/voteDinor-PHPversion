@@ -1,7 +1,13 @@
 <div>
     @if($showModal)
-        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" wire:click="closeModal">
-            <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl" wire:click.stop>
+        <div class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+            <!-- Background overlay -->
+            <div class="fixed inset-0 bg-black bg-opacity-50 transition-opacity" wire:click="closeModal"></div>
+            
+            <!-- Modal container -->
+            <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:p-0">
+                <!-- Modal panel -->
+                <div class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-2xl p-8 max-w-md w-full text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:w-full" wire:click.stop>
                 <!-- Header -->
                 <div class="flex items-center justify-between mb-6">
                     <div class="flex items-center space-x-3">
@@ -9,7 +15,7 @@
                             <span class="text-xl font-bold" style="color: var(--primary);">V</span>
                         </div>
                         <div>
-                            <h3 class="text-xl font-bold text-gray-900 dark:text-white">Voter</h3>
+                            <h3 id="modal-title" class="text-xl font-bold text-gray-900 dark:text-white">Voter</h3>
                             <p class="text-sm text-gray-500 dark:text-gray-400">Créez votre compte pour voter</p>
                         </div>
                     </div>
@@ -30,7 +36,7 @@
                         <input type="text"
                                id="prenom"
                                wire:model="prenom"
-                               class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                               class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                                placeholder="Votre prénom">
                         @error('prenom')
                             <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
@@ -45,7 +51,7 @@
                         <input type="text"
                                id="nom"
                                wire:model="nom"
-                               class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                               class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                                placeholder="Votre nom">
                         @error('nom')
                             <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
@@ -65,7 +71,7 @@
                                    id="whatsapp"
                                    wire:model="whatsapp"
                                    maxlength="10"
-                                   class="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-r-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                                   class="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-r-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                                    placeholder="0123456789">
                         </div>
                         @error('whatsapp')
@@ -96,7 +102,7 @@
                     <!-- Submit Button -->
                     <button type="submit"
                             wire:loading.attr="disabled"
-                            class="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold py-3 px-6 rounded-lg transition-colors">
+                            class="w-full bg-orange-600 hover:bg-orange-700 disabled:bg-orange-400 text-white font-semibold py-3 px-6 rounded-lg transition-colors">
                         <span wire:loading.remove wire:target="submit">Créer mon compte Votant</span>
                         <span wire:loading wire:target="submit" class="flex items-center justify-center">
                             <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -107,6 +113,7 @@
                         </span>
                     </button>
                 </form>
+                </div>
             </div>
         </div>
     @endif

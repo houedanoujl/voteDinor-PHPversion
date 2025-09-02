@@ -17,6 +17,7 @@ class Dashboard extends BaseDashboard
 
     protected function getHeaderWidgets(): array
     {
+        // Widgets 100% natifs Filament pour un rendu cohérent
         return [
             StatsOverview::class,
         ];
@@ -24,11 +25,8 @@ class Dashboard extends BaseDashboard
 
     protected function getFooterWidgets(): array
     {
-        return [
-            CandidatesRanking::class,
-            LatestCandidates::class,
-            LatestVotes::class,
-        ];
+        // On retire les widgets custom “riches” pour garder l’esthétique native
+        return [];
     }
 
     public function getTitle(): string

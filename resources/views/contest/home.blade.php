@@ -23,7 +23,7 @@
                         <div class="flex">
                         <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-0 tracking-tight flex items-center justify-center">
                             Mon festival des grillades
-                        </h1>
+                    </h1>
                          <img class='contempt' src="{{asset('images/LOGO_DINOR_monochrome.svg')}}" style="width: 200px; height: 200px;filter: invert(1)" alt="Dinor"/>
 
                         </div>
