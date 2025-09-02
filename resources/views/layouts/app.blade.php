@@ -36,8 +36,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
 
-    <!-- Alpine.js -->
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Alpine.js non nécessaire: Livewire v3 l'inclut déjà. Éviter les doublons. -->
 
     <!-- reCAPTCHA -->
     <script src="https://www.google.com/recaptcha/api.js?render={{ config('services.recaptcha.site_key') }}" async defer></script>
@@ -47,16 +46,22 @@
 
     <style>
         :root {
-            --dinor-orange: #FF8C00;
-            --dinor-orange-light: #FFB84D;
-            --dinor-cream: #FFF8DC;
-            --dinor-brown: #8B4513;
-            --dinor-brown-dark: #2C1810;
-            --dinor-beige: #F5DEB3;
-            --dinor-red-vintage: #CD853F;
-            --dinor-olive: #808000;
+            /* Palette festive fournie */
+            --dark-goldenrod: #9B7D25;
+            --bole: #7B433D;
+            --black: #000000;
+            --red-cmyk: #E3231C;
+            --lion: #AF9556;
 
-            /* Nouvelles couleurs inspirées de cursor.com */
+            /* Déclinaisons utilitaires */
+            --primary: var(--dark-goldenrod);
+            --secondary: var(--bole);
+            --accent: var(--red-cmyk);
+            --muted: var(--lion);
+            --bg-dark: #0a0a0a;
+            --bg-light: #faf7f2;
+
+            /* Grays */
             --dinor-gray-50: #fafafa;
             --dinor-gray-100: #f5f5f5;
             --dinor-gray-200: #e5e5e5;
@@ -70,28 +75,30 @@
             --dinor-gray-950: #0a0a0a;
         }
 
-        /* Design moderne inspiré de cursor.com */
+        /* Arrière-plans festifs */
         .bg-gradient-dinor {
-            background: linear-gradient(135deg, var(--dinor-orange) 0%, var(--dinor-orange-light) 50%, var(--dinor-cream) 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--muted) 35%, #fff 100%);
         }
 
         .bg-gradient-dinor-dark {
-            background: linear-gradient(135deg, var(--dinor-brown-dark) 0%, var(--dinor-brown) 100%);
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--black) 100%);
         }
 
         .btn-dinor {
-            background: linear-gradient(45deg, var(--dinor-orange), var(--dinor-orange-light));
+            background: linear-gradient(145deg, var(--primary), var(--muted));
             color: white;
-            border: none;
+            border: 2px solid var(--muted);
             padding: 12px 24px;
-            border-radius: 12px;
+            border-radius: 8px;
             font-weight: 600;
             font-family: 'Inter', sans-serif;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 12px rgba(255,140,0,0.3);
-            position: relative;
-            overflow: hidden;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .btn-dinor::before {
@@ -111,7 +118,8 @@
 
         .btn-dinor:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(255,140,0,0.4);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+            background: linear-gradient(145deg, var(--muted), var(--primary));
         }
 
         .btn-dinor:active {
@@ -134,11 +142,11 @@
         }
 
         .card-dinor-vintage {
-            background: linear-gradient(135deg, var(--dinor-cream), var(--dinor-beige));
-            border: 2px solid var(--dinor-red-vintage);
+            background: linear-gradient(135deg, #fffef8, var(--bg-light));
+            border: 2px solid var(--muted);
             border-radius: 16px;
             padding: 24px;
-            box-shadow: 0 4px 12px rgba(139,69,19,0.2);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
         }
 
         .font-retro {
@@ -153,13 +161,147 @@
         .nav-modern {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--dinor-gray-200);
+            border-bottom: 2px solid var(--muted);
         }
 
         .nav-dark {
             background: rgba(10, 10, 10, 0.95);
             backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--dinor-gray-800);
+        }
+
+        /* Ruban festif haut de page (grill/guirlandes) */
+        .festive-topbar {
+            height: 6px;
+            background-image:
+                repeating-linear-gradient(45deg,
+                    var(--accent) 0 12px,
+                    var(--muted) 12px 24px,
+                    var(--secondary) 24px 36px
+                );
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+
+        /* Motif grille (grillade) utilisable en fond */
+        .bg-grill {
+            background-color: #111;
+            background-image:
+                linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px),
+                linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        /* Texture bois pour l'ambiance barbecue */
+        .bg-wood {
+            background: linear-gradient(90deg, 
+                var(--secondary) 0%, 
+                #8B5A3C 15%, 
+                var(--secondary) 30%, 
+                #6B3A2D 45%, 
+                var(--secondary) 60%, 
+                #8B5A3C 75%, 
+                var(--secondary) 100%);
+            background-size: 120px 100%;
+        }
+
+        /* Effet fumée animée */
+        .smoke {
+            position: relative;
+            overflow: hidden;
+        }
+        .smoke::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -10%;
+            width: 120%;
+            height: 200%;
+            background: radial-gradient(ellipse at center,
+                rgba(255,255,255,0.03) 0%,
+                rgba(255,255,255,0.01) 40%,
+                transparent 70%);
+            animation: smokeFloat 8s ease-in-out infinite;
+            pointer-events: none;
+        }
+        @keyframes smokeFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg) scale(1); opacity: 0.3; }
+            25% { transform: translateY(-20px) rotate(1deg) scale(1.05); opacity: 0.5; }
+            50% { transform: translateY(-10px) rotate(-1deg) scale(0.98); opacity: 0.4; }
+            75% { transform: translateY(-30px) rotate(0.5deg) scale(1.02); opacity: 0.6; }
+        }
+
+        /* Variantes de boutons */
+        .btn-dinor-secondary {
+            background: linear-gradient(145deg, var(--secondary), var(--bole));
+            border-color: var(--secondary);
+        }
+        .btn-dinor-secondary:hover {
+            background: linear-gradient(145deg, var(--bole), var(--secondary));
+        }
+
+        .btn-dinor-accent {
+            background: linear-gradient(145deg, var(--accent), #C41E3A);
+            border-color: var(--accent);
+        }
+        .btn-dinor-accent:hover {
+            background: linear-gradient(145deg, #C41E3A, var(--accent));
+        }
+
+        .btn-dinor-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        .btn-dinor-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Cards cohérentes */
+        .card-dinor-clean {
+            background: white;
+            border: 2px solid var(--muted);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+        }
+        .card-dinor-clean:hover {
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+        }
+
+        /* Écran de chargement */
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(ellipse at top, var(--black), #1a1a1a 70%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 300ms ease, visibility 300ms ease;
+        }
+        .loading-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .loader-ring {
+            width: 64px;
+            height: 64px;
+            border: 4px solid rgba(255,255,255,0.1);
+            border-top-color: var(--accent);
+            border-right-color: var(--muted);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .loading-icon {
+            font-size: 24px;
+            margin-left: 12px;
+            opacity: 0.8;
         }
 
         /* Animations */
@@ -233,6 +375,15 @@
 </head>
 
 <body class="font-modern antialiased bg-white">
+    <!-- Bandeau festif -->
+    <div class="festive-topbar"></div>
+    <!-- Écran de chargement -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div style="display:flex;align-items:center;">
+            <div class="loader-ring"></div>
+            <div class="loading-icon">DINOR</div>
+        </div>
+    </div>
     <div class="min-h-screen">
         <!-- Navigation moderne -->
         <nav class="nav-modern sticky top-0 z-50">
@@ -240,12 +391,7 @@
                 <div class="flex justify-between h-16">
                     <div class="flex items-center">
                         <a href="{{ route('contest.home') }}" class="flex-shrink-0 flex items-center group">
-                            <div class="bg-orange-600 p-2 rounded-lg mr-3 group-hover:scale-110 transition-transform">
-                                <span class="text-white font-bold text-lg">D</span>
-                            </div>
-                            <h1 class="text-2xl font-bold text-gray-900 group-hover:text-orange-600 transition-colors">
-                                DINOR
-                            </h1>
+                            <img src="{{ asset('images/dinor-logo.png') }}" alt="DINOR" class="w-10 h-10">
                         </a>
                     </div>
 

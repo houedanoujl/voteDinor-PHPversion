@@ -108,8 +108,8 @@
                                     </svg>
                                     <h3 class="text-lg font-semibold text-gray-900 mb-2">Connectez-vous pour voter</h3>
                                     <p class="text-gray-600 mb-6">Vous devez être connecté pour voter pour ce candidat</p>
-                                    <button onclick="openVoterModal()" class="inline-flex items-center px-8 py-4 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-xl transition-colors">
-                                        🗳️ Devenir Votant
+                                    <button onclick="openVoterModal()" class="btn-dinor">
+                                        Voter
                                     </button>
                                 </div>
                             @else

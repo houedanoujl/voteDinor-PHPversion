@@ -15,7 +15,7 @@
 
         <!-- Titre -->
         <div class="text-center">
-            <h3 class="text-2xl font-bold text-gray-900 mb-2">🗳️ Devenir Votant</h3>
+            <h3 class="text-2xl font-bold text-gray-900 mb-2">Voter</h3>
             <p class="text-gray-600 text-sm">
                 Créez votre compte pour voter pour vos candidats préférés
             </p>

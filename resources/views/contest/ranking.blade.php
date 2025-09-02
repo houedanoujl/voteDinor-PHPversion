@@ -8,8 +8,8 @@
     <div class="max-w-6xl mx-auto">
         <!-- Header -->
         <div class="text-center mb-12">
-            <h1 class="text-4xl md:text-5xl font-retro font-bold text-dinor-brown mb-4">
-                🏆 Classement DINOR
+            <h1 class="text-4xl md:text-5xl font-bold mb-4" style="color: var(--secondary);">
+                Classement DINOR
             </h1>
             <p class="text-xl text-dinor-olive mb-6">
                 Découvrez les candidats les plus populaires du concours photo vintage
@@ -27,7 +27,7 @@
                 <!-- 2ème place -->
                 @if(isset($candidates[1]))
                 <div class="bg-white rounded-xl shadow-lg p-6 text-center transform rotate-2">
-                    <div class="text-4xl mb-2">🥈</div>
+                    <div class="text-4xl mb-2 font-bold" style="color: var(--muted);">2</div>
                     <div class="w-24 h-24 rounded-full mx-auto mb-4 overflow-hidden">
                         <img src="{{ $candidates[1]->getPhotoUrl() ?: '/images/placeholder-avatar.svg' }}" 
                              alt="{{ $candidates[1]->full_name }}" 
@@ -41,7 +41,7 @@
                 <!-- 1ère place -->
                 @if(isset($candidates[0]))
                 <div class="bg-gradient-to-b from-yellow-100 to-yellow-200 rounded-xl shadow-xl p-8 text-center transform -rotate-1 scale-110">
-                    <div class="text-5xl mb-4">👑</div>
+                    <div class="text-5xl mb-4 font-bold" style="color: var(--accent);">1</div>
                     <div class="w-32 h-32 rounded-full mx-auto mb-4 overflow-hidden border-4 border-yellow-400">
                         <img src="{{ $candidates[0]->getPhotoUrl() ?: '/images/placeholder-avatar.svg' }}" 
                              alt="{{ $candidates[0]->full_name }}" 
@@ -55,7 +55,7 @@
                 <!-- 3ème place -->
                 @if(isset($candidates[2]))
                 <div class="bg-white rounded-xl shadow-lg p-6 text-center transform -rotate-2">
-                    <div class="text-4xl mb-2">🥉</div>
+                    <div class="text-4xl mb-2 font-bold" style="color: var(--secondary);">3</div>
                     <div class="w-24 h-24 rounded-full mx-auto mb-4 overflow-hidden">
                         <img src="{{ $candidates[2]->getPhotoUrl() ?: '/images/placeholder-avatar.svg' }}" 
                              alt="{{ $candidates[2]->full_name }}" 
@@ -82,13 +82,13 @@
                         <!-- Position -->
                         <div class="flex-shrink-0 w-8 text-center">
                             @if($index == 0)
-                                <span class="text-2xl">🥇</span>
+                                <span class="text-2xl font-bold" style="color: var(--accent);">1</span>
                             @elseif($index == 1)
-                                <span class="text-2xl">🥈</span>
+                                <span class="text-2xl font-bold" style="color: var(--muted);">2</span>
                             @elseif($index == 2)
-                                <span class="text-2xl">🥉</span>
+                                <span class="text-2xl font-bold" style="color: var(--secondary);">3</span>
                             @else
-                                <span class="text-lg font-bold text-dinor-olive">{{ $index + 1 }}</span>
+                                <span class="text-lg font-bold" style="color: var(--primary);">{{ $index + 1 }}</span>
                             @endif
                         </div>
                         

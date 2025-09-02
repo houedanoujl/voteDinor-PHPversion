@@ -27,11 +27,11 @@
                     @auth
                         <a href="{{ route('dashboard') }}"
                            class="inline-flex items-center px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium transition-colors">
-                            🗳️ Voter
+                            Voter
                         </a>
                         <button onclick="openCandidateModal()"
                            class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors">
-                            📸 Poster une photo
+                            Poster une photo
                         </button>
                         <a href="{{ route('dashboard') }}"
                            class="inline-flex items-center px-4 py-2 border border-orange-200 hover:border-orange-300 text-orange-700 dark:text-orange-300 rounded-lg font-medium transition-colors">
@@ -40,7 +40,7 @@
                     @else
                         <button onclick="openVoterModal()"
                                 class="inline-flex items-center px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-medium transition-colors">
-                            🗳️ Voter
+                            Voter
                         </button>
                         <a href="{{ route('register') }}"
                            class="inline-flex items-center px-4 py-2 border border-orange-200 hover:border-orange-300 text-orange-700 dark:text-orange-300 rounded-lg font-medium transition-colors">
@@ -48,7 +48,7 @@
                         </a>
                         <button onclick="openCandidateModal()"
                                 class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors">
-                            📸 Poster une photo
+                            Poster une photo
                         </button>
                         <a href="{{ route('login') }}"
                            class="inline-flex items-center px-4 py-2 border border-orange-200 hover:border-orange-300 text-orange-700 dark:text-orange-300 rounded-lg font-medium transition-colors">
@@ -76,8 +76,8 @@
                 <div class="grid md:grid-cols-2 gap-6 mb-12">
                     <!-- Voter Button -->
                     <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-orange-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-                        <div class="text-4xl mb-4">🗳️</div>
-                        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Devenir Votant</h3>
+                        <div class="text-4xl mb-4 font-bold" style="color: var(--primary);">V</div>
+                        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Voter</h3>
                         <p class="text-gray-600 dark:text-gray-300 mb-6">
                             Rejoignez la communauté et votez pour vos photos préférées. Simple et rapide !
                         </p>
@@ -89,8 +89,8 @@
 
                     <!-- Candidate Button -->
                     <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-orange-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-                        <div class="text-4xl mb-4">📸</div>
-                        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Devenir Candidat</h3>
+                        <div class="text-4xl mb-4 font-bold" style="color: var(--accent);">P</div>
+                        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Poster ma photo du FGA</h3>
                         <p class="text-gray-600 dark:text-gray-300 mb-6">
                             Soumettez votre plus belle photo et tentez de remporter le concours !
                         </p>
@@ -109,7 +109,7 @@
                         <p class="text-gray-600 dark:text-gray-300 text-sm">Créez votre compte en quelques minutes seulement</p>
                     </div>
                     <div class="p-6">
-                        <div class="text-3xl mb-3">🏆</div>
+                        <div class="text-3xl mb-3 font-bold" style="color: var(--muted);">★</div>
                         <h4 class="font-semibold text-gray-900 dark:text-white mb-2">Concours Équitable</h4>
                         <p class="text-gray-600 dark:text-gray-300 text-sm">Système de vote transparent et sécurisé</p>
                     </div>

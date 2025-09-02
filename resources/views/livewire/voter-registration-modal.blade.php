@@ -6,10 +6,10 @@
                 <div class="flex items-center justify-between mb-6">
                     <div class="flex items-center space-x-3">
                         <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center">
-                            <span class="text-xl">🗳️</span>
+                            <span class="text-xl font-bold" style="color: var(--primary);">V</span>
                         </div>
                         <div>
-                            <h3 class="text-xl font-bold text-gray-900 dark:text-white">Devenir Votant</h3>
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white">Voter</h3>
                             <p class="text-sm text-gray-500 dark:text-gray-400">Créez votre compte pour voter</p>
                         </div>
                     </div>
