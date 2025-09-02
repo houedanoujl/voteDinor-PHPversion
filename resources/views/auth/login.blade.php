@@ -9,7 +9,7 @@
         <div class="text-center">
             <h1 class="text-4xl font-bold text-gray-900 mb-2">Connexion</h1>
             <p class="text-gray-600 mb-8">
-                Connectez-vous pour voter et participer au concours photo vintage
+                Connectez-vous pour voter et participer au concours photo  
             </p>
         </div>
 

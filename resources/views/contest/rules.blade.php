@@ -12,7 +12,7 @@
                 📋 Règles du Concours DINOR
             </h1>
             <p class="text-dinor-olive text-lg">
-                Règles officielles pour participer au concours photo vintage
+                Règles officielles pour participer au concours photo  
             </p>
         </div>
 
@@ -20,7 +20,7 @@
         <div class="bg-white rounded-lg border border-gray-200 p-8 mb-8">
             <h2 class="text-2xl font-bold text-dinor-brown mb-6">🏆 Objectif du Concours</h2>
             <p class="text-gray-700 mb-6">
-                Le concours photo DINOR vise à célébrer la créativité et l'art photographique dans un style vintage.
+                Le concours photo DINOR vise à célébrer la créativité et l'art photographique dans un style  .
                 Les participants peuvent soumettre leurs meilleures photos et voter pour leurs candidats préférés.
             </p>
 
@@ -83,7 +83,7 @@
                     <h3 class="text-xl font-semibold text-green-600 mb-4">✅ Contenu Autorisé</h3>
                     <ul class="space-y-2 text-gray-700">
                         <li>• Photos originales prises par le participant</li>
-                        <li>• Style vintage et rétro</li>
+                        <li>• Style   et rétro</li>
                         <li>• Portraits, paysages, nature morte</li>
                         <li>• Photos artistiques et créatives</li>
                         <li>• Contenu approprié pour tous publics</li>

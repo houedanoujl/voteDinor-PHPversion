@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Classement - Concours Photo DINOR')
-@section('description', 'Découvrez le classement en temps réel du concours photo vintage DINOR')
+@section('description', 'Découvrez le classement en temps réel du concours photo   DINOR')
 
 @section('content')
 <div class="min-h-screen bg-dinor-cream py-12 px-4">
@@ -12,7 +12,7 @@
                 Classement DINOR
             </h1>
             <p class="text-xl text-dinor-olive mb-6">
-                Découvrez les candidats les plus populaires du concours photo vintage
+                Découvrez les candidats les plus populaires du concours photo  
             </p>
             <a href="{{ route('contest.home') }}" class="btn-dinor inline-block">
                 ← Retour au concours

@@ -5,16 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Concours Photo DINOR') }} - @yield('title', 'Cuisine Vintage des Années 60')</title>
+    <title>{{ config('app.name', 'Concours Photo DINOR') }} - @yield('title', 'Cuisine   des Années 60')</title>
 
     <!-- Meta pour SEO et réseaux sociaux -->
-    <meta name="description" content="@yield('description', 'Participez au concours photo vintage DINOR - Cuisine des années 60. Votez pour vos photos préférées !')">
+    <meta name="description" content="@yield('description', 'Participez au concours photo   DINOR - Cuisine des années 60. Votez pour vos photos préférées !')">
 
     @hasSection('og_meta')
         @yield('og_meta')
     @else
         <meta property="og:title" content="{{ config('app.name') }} - @yield('title', 'Concours Photo Rétro')">
-        <meta property="og:description" content="@yield('description', 'Participez au concours photo vintage DINOR')">
+        <meta property="og:description" content="@yield('description', 'Participez au concours photo   DINOR')">
         <meta property="og:image" content="{{ asset('images/dinor-logo.png') }}">
         <meta property="og:url" content="{{ url()->current() }}">
         <meta property="og:type" content="website">
@@ -23,7 +23,7 @@
         <!-- Twitter Card -->
         <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:title" content="{{ config('app.name') }} - @yield('title', 'Concours Photo Rétro')">
-        <meta name="twitter:description" content="@yield('description', 'Participez au concours photo vintage DINOR')">
+        <meta name="twitter:description" content="@yield('description', 'Participez au concours photo   DINOR')">
         <meta name="twitter:image" content="{{ asset('images/dinor-logo.png') }}">
     @endif
 
@@ -172,7 +172,7 @@
             transform: translateY(-2px);
         }
 
-        .card-dinor-vintage {
+        .card-dinor-  {
             background: linear-gradient(135deg, var(--bg-light), var(--muted));
             border: 2px solid var(--muted);
             border-radius: 16px;

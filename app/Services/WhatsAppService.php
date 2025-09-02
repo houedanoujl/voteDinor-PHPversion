@@ -179,7 +179,7 @@ class WhatsAppService
                "Votre candidature pour le concours photo DINOR a été approuvée !\n\n" .
                "Vous pouvez maintenant recevoir des votes sur notre plateforme.\n\n" .
                "Merci de votre participation !\n\n" .
-               "DINOR - Cuisine Vintage";
+               "DINOR;
     }
 
     /**

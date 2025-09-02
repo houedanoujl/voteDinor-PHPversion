@@ -4,7 +4,7 @@ namespace App\Filament\Admin\Resources;
 
 use App\Models\SiteSetting;
 use Filament\Forms;
-use Filament\Schemas\Schema;
+use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables\Table;
 use Filament\Tables;
@@ -22,9 +22,9 @@ class SiteSettingResource extends Resource
 
     protected static ?int $navigationSort = 99;
 
-    public static function form(Schema $schema): Schema
+    public static function form(Form $form): Form
     {
-        return $schema
+        return $form
             ->schema([
                 Forms\Components\Toggle::make('applications_open')
                     ->label('Candidatures ouvertes')

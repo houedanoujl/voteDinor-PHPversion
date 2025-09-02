@@ -224,7 +224,7 @@ GREEN_API_TOKEN=your-token
 ### 🎨 Avatars génériques
 - **6 avatars SVG** uniques avec palette DINOR
 - **Remplacement Unsplash** : Plus de dépendance externe
-- **Style cohérent** : Intégration parfaite au design vintage
+- **Style cohérent** : Intégration parfaite au design  
 - **Performance** : Fichiers légers et rapides à charger
 
 ---
