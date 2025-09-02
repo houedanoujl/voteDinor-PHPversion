@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
         $adminEmail = env('ADMIN_EMAIL', 'admin@dinor.local');
         $adminName = env('ADMIN_NAME', 'DINOR Admin');
         $adminPassword = env('ADMIN_PASSWORD');
+        $adminWhatsapp = env('ADMIN_WHATSAPP');
 
         // Si aucun mot de passe n'est fourni, générer un mot de passe fort et logger
         if (!$adminPassword) {
@@ -32,7 +33,11 @@ class DatabaseSeeder extends Seeder
             ['email' => $adminEmail],
             [
                 'name' => $adminName,
+                'email' => $adminEmail,
                 'password' => Hash::make($adminPassword),
+                'role' => 'admin',   // requis pour l'accès Filament
+                'type' => 'admin',   // cohérence du type
+                'whatsapp' => $adminWhatsapp,
             ]
         );
 
