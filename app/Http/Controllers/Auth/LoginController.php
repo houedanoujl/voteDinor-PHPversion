@@ -21,9 +21,24 @@ class LoginController extends Controller
             'password' => 'required',
         ]);
 
-        // Connexion WhatsApp uniquement
         $identifier = $request->input('identifier');
-        $credentials = ['password' => $request->input('password')];
+        $password = $request->input('password');
+
+        // Vérifier d'abord si c'est un email (pour les admins)
+        if (filter_var($identifier, FILTER_VALIDATE_EMAIL)) {
+            $credentials = [
+                'email' => $identifier,
+                'password' => $password
+            ];
+            
+            if (Auth::attempt($credentials, $request->filled('remember'))) {
+                $request->session()->regenerate();
+                return redirect()->intended('/');
+            }
+        }
+
+        // Sinon, connexion WhatsApp pour les utilisateurs normaux
+        $credentials = ['password' => $password];
 
         // normaliser 10 chiffres -> +225XXXXXXXXXX
         $digits = preg_replace('/[^0-9]/', '', $identifier);
@@ -36,7 +51,6 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials, $request->filled('remember'))) {
             $request->session()->regenerate();
-
             return redirect()->intended('/');
         }
 

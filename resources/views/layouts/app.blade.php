@@ -28,9 +28,9 @@
     @endif
 
     <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -73,11 +73,42 @@
             --dinor-gray-800: #262626;
             --dinor-gray-900: #171717;
             --dinor-gray-950: #0a0a0a;
+
+            /* Polices */
+            --font-title: 'EB Garamond', serif;
+            --font-body: 'Space Grotesk', sans-serif;
+        }
+
+        /* Polices globales */
+        body {
+            font-family: var(--font-body);
+            font-weight: 400;
+        }
+
+        /* Titres avec EB Garamond */
+        h1, h2, h3, h4, h5, h6,
+        .font-title,
+        .hero-title,
+        .section-title {
+            font-family: var(--font-title);
+            font-weight: 600;
+        }
+
+        /* Texte courant avec Space Grotesk */
+        p, span, div, a, button, input, textarea, label,
+        .font-body {
+            font-family: var(--font-body);
+        }
+
+        /* Boutons héritent de Space Grotesk */
+        .btn-dinor, .btn-dinor-secondary, .btn-dinor-accent, .btn-dinor-outline {
+            font-family: var(--font-body);
+            font-weight: 500;
         }
 
         /* Arrière-plans festifs */
         .bg-gradient-dinor {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--muted) 35%, #fff 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--muted) 100%);
         }
 
         .bg-gradient-dinor-dark {
@@ -91,7 +122,7 @@
             padding: 12px 24px;
             border-radius: 8px;
             font-weight: 600;
-            font-family: 'Inter', sans-serif;
+            font-family: var(--font-body);
             cursor: pointer;
             transition: all 0.2s ease;
             box-shadow: 0 4px 8px rgba(0,0,0,0.15);
@@ -142,7 +173,7 @@
         }
 
         .card-dinor-vintage {
-            background: linear-gradient(135deg, #fffef8, var(--bg-light));
+            background: linear-gradient(135deg, var(--bg-light), var(--muted));
             border: 2px solid var(--muted);
             border-radius: 16px;
             padding: 24px;
@@ -269,6 +300,23 @@
         .card-dinor-clean:hover {
             box-shadow: 0 8px 20px rgba(0,0,0,0.15);
             transform: translateY(-2px);
+        }
+
+        /* Désactiver les effets hover dans le classement du hero */
+        .classment a:hover,
+        .classment a:hover div,
+        .classment a:hover img,
+        .classment a:focus,
+        .classment a:active {
+            transform: none !important;
+            transition: none !important;
+            box-shadow: none !important;
+            scale: none !important;
+        }
+
+        /* Garder le scale-110 pour la première place mais sans effet hover */
+        .classment .scale-110 {
+            transform: scale(1.1) !important;
         }
 
         /* Écran de chargement */
@@ -444,20 +492,7 @@
         <!-- Footer moderne -->
         <footer class="bg-gradient-dinor-dark text-white py-12 mt-16">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div class="text-center md:text-left">
-                        <h3 class="text-2xl font-bold mb-4">DINOR</h3>
-                        <p class="text-dinor-beige">Redécouvrez les saveurs authentiques des années 60</p>
-                    </div>
-                    <div class="text-center">
-                        <h4 class="text-lg font-semibold mb-4">Concours Photo</h4>
-                        <p class="text-dinor-beige">Partagez vos créations culinaires vintage</p>
-                    </div>
-                    <div class="text-center md:text-right">
-                        <h4 class="text-lg font-semibold mb-4">Contact</h4>
-                        <p class="text-dinor-beige">© {{ date('Y') }} DINOR - Flashback Gourmand</p>
-                    </div>
-                </div>
+              2025 - Copyright Dinor 
             </div>
         </footer>
     </div>

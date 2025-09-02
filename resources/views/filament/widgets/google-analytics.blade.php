@@ -4,7 +4,9 @@
             <!-- Titre avec statut de configuration -->
             <div class="flex items-center justify-between">
                 <h2 class="text-xl font-bold text-gray-900 flex items-center">
-                    <span class="mr-3">📊</span>
+                    <svg class="w-6 h-6 mr-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
                     Google Analytics - Statistiques du Site
                 </h2>
                 <div class="flex items-center">
@@ -72,7 +74,9 @@
                 <!-- Sessions -->
                 <div class="bg-white rounded-lg border border-gray-200 p-6">
                     <h3 class="text-lg font-semibold mb-4 flex items-center">
-                        <span class="text-blue-500 mr-2">👥</span>
+                        <svg class="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                        </svg>
                         Sessions (30 derniers jours)
                     </h3>
                     <div class="h-64">
@@ -87,7 +91,9 @@
                 <!-- Utilisateurs -->
                 <div class="bg-white rounded-lg border border-gray-200 p-6">
                     <h3 class="text-lg font-semibold mb-4 flex items-center">
-                        <span class="text-green-500 mr-2">🧑‍💻</span>
+                        <svg class="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
                         Utilisateurs (30 derniers jours)
                     </h3>
                     <div class="h-64">
@@ -103,7 +109,9 @@
             <!-- Pages les plus consultées -->
             <div class="bg-white rounded-lg border border-gray-200 p-6">
                 <h3 class="text-lg font-semibold mb-6 flex items-center">
-                    <span class="text-purple-500 mr-2">📄</span>
+                    <svg class="w-5 h-5 mr-2 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
                     Pages les plus consultées
                 </h3>
                 <div class="overflow-x-auto">
@@ -144,7 +152,9 @@
                 <!-- Appareils -->
                 <div class="bg-white rounded-lg border border-gray-200 p-6">
                     <h3 class="text-lg font-semibold mb-4 flex items-center">
-                        <span class="text-orange-500 mr-2">📱</span>
+                        <svg class="w-5 h-5 mr-2 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                        </svg>
                         Appareils utilisés
                     </h3>
                     <div class="space-y-4">
@@ -175,7 +185,9 @@
                 <!-- Sources de trafic -->
                 <div class="bg-white rounded-lg border border-gray-200 p-6">
                     <h3 class="text-lg font-semibold mb-4 flex items-center">
-                        <span class="text-red-500 mr-2">🌍</span>
+                        <svg class="w-5 h-5 mr-2 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path>
+                        </svg>
                         Sources de trafic
                     </h3>
                     <div class="space-y-4">
@@ -195,7 +207,10 @@
             <!-- Géolocalisation -->
             <div class="bg-white rounded-lg border border-gray-200 p-6">
                 <h3 class="text-lg font-semibold mb-6 flex items-center">
-                    <span class="text-indigo-500 mr-2">🗺️</span>
+                    <svg class="w-5 h-5 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
                     Répartition géographique
                 </h3>
                 <div class="overflow-x-auto">

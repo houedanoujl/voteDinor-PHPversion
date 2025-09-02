@@ -12,24 +12,32 @@
             <source src="{{ asset('videos/video.mp4') }}" type="video/mp4">
         </video>
         <!-- Overlay -->
-        <div class="absolute inset-0 bg-black/75"></div>
+        <div class="absolute inset-0 bg-black/60"></div>
 
-        <div class="relative z-10 max-w-6xl mx-auto">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div class="relative z-10 max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center min-h-screen px-6 py-12">
                 <!-- Contenu texte (CTA) -> à gauche -->
                 <div class="text-center lg:text-left text-white">
-                    <!-- Titre principal -->
-                    <h1 class="text-4xl md:text-6xl font-bold mb-6 tracking-tight">
-                        Concours Photo
-                        <span class="block" style="color: var(--accent);">DINOR</span>
-                        <div class="text-lg md:text-xl text-yellow-300 mt-2 font-normal">
-                            Flashback Gourmand des Années 60
+                    <!-- Titre principal avec fond pour améliorer la lisibilité -->
+                    <div class="bg-black/50 rounded-2xl p-8 mb-8">
+                        <div class="flex">
+                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-0 tracking-tight flex items-center justify-center">
+                            Mon festival des grillades
+                        </h1>
+                         <img class='contempt' src="{{asset('images/LOGO_DINOR_monochrome.svg')}}" style="width: 200px; height: 200px;filter: invert(1)" alt="Dinor"/>
+
                         </div>
-                    </h1>
+                        
+
+                        <div class="text-lg md:text-xl text-yellow-300 mt-4 font-medium">
+                            Fais nous vivre ton expérience !
+                        </div>
+                    </div>
 
 
-                    <!-- Boutons d'action épurés -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 w-full max-w-2xl mx-auto lg:mx-0">
+                    <!-- Boutons d'action avec fond pour améliorer la lisibilité -->
+                    <div class="bg-black/40 rounded-2xl p-6 mb-6">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 w-full max-w-2xl mx-auto lg:mx-0 mb-6">
                         @guest
                             <!-- Boutons pour les invités -->
                                 <button onclick="openVoterModal()" class="btn-dinor w-full">
@@ -44,9 +52,9 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                                     </svg>
                                 </button>
-                                <a href="{{ route('login') }}" class="btn-dinor btn-dinor-secondary w-full">
+                                <!-- <a href="{{ route('login') }}" class="btn-dinor btn-dinor-secondary w-full">
                                     Connexion
-                                </a>
+                                </a> -->
                         @else
                             <!-- Boutons pour les utilisateurs connectés -->
                                 @if(!auth()->user()->candidate)
@@ -61,62 +69,76 @@
                                     Mon tableau de bord
                                 </a>
                         @endguest
-                        <!-- Bouton voir candidats -->
-                        <button onclick="scrollToGallery()" class="btn-dinor btn-dinor-outline w-full col-span-1 sm:col-span-2 lg:col-span-3">
-                            Voir les candidats →
-                        </button>
+                        </div>
+                        
+                  
                     </div>
-                    
                 </div>
                 
                 <!-- Classement (podium) -> à droite -->
-                <div class="text-white"></div>
-                    <div class="classment mt-10 lg:mt-0">
+                <div class="text-white">
+                    <div class="classment">
                         @php($top = $stats['top_candidates'])
                         @if($top->count() > 0)
-                            <div class="max-w-md lg:max-w-lg ml-auto">
-                                <h2 class="text-2xl font-semibold mb-6 text-center lg:text-left">Classement synthétique</h2>
-                                <div class="grid grid-cols-3 gap-4 items-end">
+                            <!-- Fond pour améliorer la lisibilité du classement -->
+                            <div class="bg-black/50 rounded-2xl p-8 mb-8">
+                            
+                                <div class="grid grid-cols-3 gap-4 items-end mb-6">
+                                    <!-- 2ème place -->
                                     <div class="text-center">
                                         @if($top->get(1))
-                                            <div class="bg-white/10 backdrop-blur rounded-xl p-4">
-                                                <div class="w-20 h-20 rounded-full mx-auto mb-3 overflow-hidden border-2 border-white/40">
-                                                    <img src="{{ $top->get(1)->getPhotoUrl() ?: asset('images/placeholder-avatar.svg') }}" alt="{{ $top->get(1)->full_name }}" class="w-full h-full object-cover">
+                                            <a href="{{ route('candidate.detail', $top->get(1)->id) }}" class="block">
+                                                <div class="bg-white/15 rounded-xl p-4 border border-white/20">
+                                                    <div class="w-16 h-16 rounded-full mx-auto mb-3 overflow-hidden border-3 border-gray-400 shadow-lg">
+                                                        <img src="{{ $top->get(1)->getPhotoUrl() ?: asset('images/placeholder-avatar.svg') }}" alt="{{ $top->get(1)->full_name }}" class="w-full h-full object-cover">
+                                                    </div>
+                                                    <div class="text-sm font-semibold text-white">{{ Str::limit($top->get(1)->full_name, 12) }}</div>
+                                                    <div class="text-xs text-yellow-300 font-medium">{{ $top->get(1)->votes_count }} votes</div>
+                                                    <div class="mt-2 text-2xl font-bold text-gray-400">2</div>
                                                 </div>
-                                                <div class="text-sm font-medium">{{ $top->get(1)->full_name }}</div>
-                                                <div class="text-xs text-white/70">{{ $top->get(1)->votes_count }} votes</div>
-                                                <div class="mt-2 text-lg font-bold">2</div>
-                                            </div>
+                                            </a>
                                         @endif
                                     </div>
+                                    
+                                    <!-- 1ère place -->
                                     <div class="text-center">
                                         @if($top->get(0))
-                                            <div class="bg-white/15 backdrop-blur rounded-xl p-5 scale-110">
-                                                <div class="w-24 h-24 rounded-full mx-auto mb-3 overflow-hidden border-2 border-white/60">
-                                                    <img src="{{ $top->get(0)->getPhotoUrl() ?: asset('images/placeholder-avatar.svg') }}" alt="{{ $top->get(0)->full_name }}" class="w-full h-full object-cover">
+                                            <a href="{{ route('candidate.detail', $top->get(0)->id) }}" class="block">
+                                                <div class="bg-gradient-to-b from-yellow-400/20 to-yellow-600/20 rounded-xl p-5 border-2 border-yellow-400/40 transform scale-110 shadow-2xl">
+                                                    <div class="w-20 h-20 rounded-full mx-auto mb-3 overflow-hidden border-4 border-yellow-400 shadow-xl">
+                                                        <img src="{{ $top->get(0)->getPhotoUrl() ?: asset('images/placeholder-avatar.svg') }}" alt="{{ $top->get(0)->full_name }}" class="w-full h-full object-cover">
+                                                    </div>
+                                                    <div class="text-base font-bold text-white">{{ Str::limit($top->get(0)->full_name, 12) }}</div>
+                                                    <div class="text-sm text-yellow-300 font-semibold">{{ $top->get(0)->votes_count }} votes</div>
+                                                    <div class="mt-2 text-3xl font-extrabold text-yellow-400">1</div>
                                                 </div>
-                                                <div class="text-base font-semibold">{{ $top->get(0)->full_name }}</div>
-                                                <div class="text-xs text-white/80">{{ $top->get(0)->votes_count }} votes</div>
-                                                <div class="mt-2 text-xl font-extrabold">1</div>
-                                            </div>
+                                            </a>
                                         @endif
                                     </div>
+                                    
+                                    <!-- 3ème place -->
                                     <div class="text-center">
                                         @if($top->get(2))
-                                            <div class="bg-white/10 backdrop-blur rounded-xl p-4">
-                                                <div class="w-20 h-20 rounded-full mx-auto mb-3 overflow-hidden border-2 border-white/40">
-                                                    <img src="{{ $top->get(2)->getPhotoUrl() ?: asset('images/placeholder-avatar.svg') }}" alt="{{ $top->get(2)->full_name }}" class="w-full h-full object-cover">
+                                            <a href="{{ route('candidate.detail', $top->get(2)->id) }}" class="block">
+                                                <div class="bg-white/15 rounded-xl p-4 border border-white/20">
+                                                    <div class="w-16 h-16 rounded-full mx-auto mb-3 overflow-hidden border-3 border-orange-600 shadow-lg">
+                                                        <img src="{{ $top->get(2)->getPhotoUrl() ?: asset('images/placeholder-avatar.svg') }}" alt="{{ $top->get(2)->full_name }}" class="w-full h-full object-cover">
+                                                    </div>
+                                                    <div class="text-sm font-semibold text-white">{{ Str::limit($top->get(2)->full_name, 12) }}</div>
+                                                    <div class="text-xs text-yellow-300 font-medium">{{ $top->get(2)->votes_count }} votes</div>
+                                                    <div class="mt-2 text-2xl font-bold text-orange-600">3</div>
                                                 </div>
-                                                <div class="text-sm font-medium">{{ $top->get(2)->full_name }}</div>
-                                                <div class="text-xs text-white/70">{{ $top->get(2)->votes_count }} votes</div>
-                                                <div class="mt-2 text-lg font-bold">3</div>
-                                            </div>
+                                            </a>
                                         @endif
                                     </div>
                                 </div>
-                                <div class="mt-4 text-center lg:text-left">
-                                    <a href="{{ route('contest.ranking') }}" class="btn-dinor btn-dinor-outline">Voir le classement complet</a>
-                                </div>
+                               
+                            </div>
+                            <div class="bg-black/50 rounded-2xl p-8 mb-8">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 w-full max-w-2xl mx-auto lg:mx-0 mb-6">
+                                <a href="{{ route('contest.ranking') }}" class="btn-dinor btn-dinor-accent px-6 py-3 w-full">Classement complet</a>
+                                <button onclick="scrollToGallery()" class="btn-dinor btn-dinor-outline text-lg px-6 py-3 w-full">Voir les photos</button>
+                                </div>  
                             </div>
                         @endif
                     </div>
@@ -185,7 +207,7 @@
 
     <!-- Modales -->
     <!-- Modal Votant -->
-    <div id="voterModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+    <div id="voterModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center p-4">
         <div class="bg-white rounded-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-4">
@@ -202,7 +224,7 @@
     </div>
 
     <!-- Modal Candidat -->
-    <div id="candidateModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+    <div id="candidateModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center p-4">
         <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div class="p-6">
                 <div class="flex justify-between items-center mb-4">

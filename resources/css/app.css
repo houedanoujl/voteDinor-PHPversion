@@ -19,3 +19,7 @@ input[type="submit"]:hover,
 .cursor-pointer:hover {
     cursor: pointer;
 }
+.contempt {
+    filter: invert(1);
+    -webkit-filter: invert(1);
+}
