@@ -302,23 +302,6 @@
             transform: translateY(-2px);
         }
 
-        /* Désactiver les effets hover dans le classement du hero */
-        .classment a:hover,
-        .classment a:hover div,
-        .classment a:hover img,
-        .classment a:focus,
-        .classment a:active {
-            transform: none !important;
-            transition: none !important;
-            box-shadow: none !important;
-            scale: none !important;
-        }
-
-        /* Garder le scale-110 pour la première place mais sans effet hover */
-        .classment .scale-110 {
-            transform: scale(1.1) !important;
-        }
-
         /* Écran de chargement */
         .loading-overlay {
             position: fixed;
