@@ -30,6 +30,10 @@ class SiteSettingResource extends Resource
                     ->label('Candidatures ouvertes')
                     ->helperText('Activez pour permettre les nouvelles inscriptions candidats')
                     ->default(true),
+                Forms\Components\Toggle::make('uploads_enabled')
+                    ->label('Upload de photos activé')
+                    ->helperText('Désactivez en phase de vote pour bloquer les nouveaux uploads')
+                    ->default(true),
             ]);
     }
 

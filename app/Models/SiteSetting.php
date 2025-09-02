@@ -11,6 +11,7 @@ class SiteSetting extends Model
 
     protected $fillable = [
         'applications_open',
+        'uploads_enabled',
     ];
 }
 

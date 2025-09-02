@@ -275,7 +275,7 @@
         .loading-overlay {
             position: fixed;
             inset: 0;
-            background: radial-gradient(ellipse at top, var(--black), #1a1a1a 70%);
+            background: #ffffff;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -297,6 +297,15 @@
         }
         @keyframes spin {
             to { transform: rotate(360deg); }
+        }
+        .loading-logo {
+            width: 96px;
+            height: auto;
+            animation: logo-blink 1.2s ease-in-out infinite;
+        }
+        @keyframes logo-blink {
+            0%, 100% { opacity: 0.4; transform: scale(0.98); }
+            50% { opacity: 1; transform: scale(1); }
         }
         .loading-icon {
             font-size: 24px;
@@ -379,10 +388,7 @@
     <div class="festive-topbar"></div>
     <!-- Écran de chargement -->
     <div id="loadingOverlay" class="loading-overlay">
-        <div style="display:flex;align-items:center;">
-            <div class="loader-ring"></div>
-            <div class="loading-icon">DINOR</div>
-        </div>
+        <img src="{{ asset('images/dinor-logo.png') }}" alt="DINOR" class="loading-logo" />
     </div>
     <div class="min-h-screen">
         <!-- Navigation moderne -->

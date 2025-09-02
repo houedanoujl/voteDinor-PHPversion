@@ -29,7 +29,7 @@ class CandidateRegistrationForm extends Component
         'prenom' => 'required|min:2|max:255',
         'nom' => 'required|min:2|max:255',
         'whatsapp' => 'required|regex:/^\+225[0-9]{10}$/|unique:candidates,whatsapp',
-        'photo' => 'required|image|max:3072',
+        'photo' => 'nullable|image|max:3072',
     ];
 
     protected $messages = [
@@ -38,7 +38,7 @@ class CandidateRegistrationForm extends Component
         'whatsapp.required' => 'Le numéro WhatsApp est obligatoire.',
         'whatsapp.regex' => 'Format requis: +225 suivi de 10 chiffres',
         'whatsapp.unique' => 'Ce numéro WhatsApp est déjà utilisé.',
-        'photo.required' => 'Une photo est obligatoire.',
+        // 'photo.required' => 'Une photo est obligatoire.',
         'photo.image' => 'Le fichier doit être une image.',
         'photo.max' => 'La photo ne doit pas dépasser 3MB.',
     ];
@@ -102,8 +102,14 @@ class CandidateRegistrationForm extends Component
                 Auth::login($user);
             }
 
-            // Stocker la photo
-            $photoPath = $this->photo->store('candidates', 'public');
+            // Stocker la photo si l'upload est activé
+            $photoPath = null;
+            $uploadsEnabled = $settings?->uploads_enabled ?? true;
+            if ($uploadsEnabled) {
+                if ($this->photo) {
+                    $photoPath = $this->photo->store('candidates', 'public');
+                }
+            }
 
             // whatsapp déjà défini
 
