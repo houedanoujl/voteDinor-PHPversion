@@ -29,7 +29,7 @@ class CandidateRegistrationForm extends Component
         'prenom' => 'required|min:2|max:255',
         'nom' => 'required|min:2|max:255',
         'whatsapp' => 'required|regex:/^\+225[0-9]{10}$/|unique:candidates,whatsapp',
-        'photo' => 'nullable|image|max:3072',
+        'photo' => 'required|image|max:3072',
     ];
 
     protected $messages = [
@@ -38,7 +38,7 @@ class CandidateRegistrationForm extends Component
         'whatsapp.required' => 'Le numéro WhatsApp est obligatoire.',
         'whatsapp.regex' => 'Format requis: +225 suivi de 10 chiffres',
         'whatsapp.unique' => 'Ce numéro WhatsApp est déjà utilisé.',
-        // 'photo.required' => 'Une photo est obligatoire.',
+        'photo.required' => 'Une photo est obligatoire.',
         'photo.image' => 'Le fichier doit être une image.',
         'photo.max' => 'La photo ne doit pas dépasser 3MB.',
     ];
@@ -62,7 +62,15 @@ class CandidateRegistrationForm extends Component
                 session()->flash('error', 'Les candidatures sont actuellement fermées.');
                 return;
             }
-            $this->validate();
+            // Validation dynamique: photo obligatoire si les uploads sont activés
+            $dynamicRules = $this->rules;
+            $uploadsEnabled = $settings?->uploads_enabled ?? true;
+            if ($uploadsEnabled === false) {
+                $dynamicRules['photo'] = 'nullable|image|max:3072';
+            } else {
+                $dynamicRules['photo'] = 'required|image|max:3072';
+            }
+            $this->validate($dynamicRules);
 
             // Si un utilisateur est connecté, interdire la création si une candidature existe déjà
             if (auth()->check() && auth()->user()->candidate) {
@@ -136,9 +144,13 @@ class CandidateRegistrationForm extends Component
                 'nom' => $this->nom,
                 'email' => null,
                 'whatsapp' => $whatsappWithPrefix,
-                'photo_url' => $photoPath,
                 'status' => 'pending',
             ]);
+
+            // Garantir photo_url si photo uploadée
+            if ($photoPath) {
+                $candidate->update(['photo_url' => $photoPath]);
+            }
 
             // Envoyer un message WhatsApp de confirmation
             try {

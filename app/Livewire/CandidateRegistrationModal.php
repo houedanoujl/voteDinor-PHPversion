@@ -158,10 +158,13 @@ class CandidateRegistrationModal extends Component
 
             // Ajouter la photo avec Spatie Media Library
             if ($this->photo) {
-                $candidate->addMediaFromString(file_get_contents($this->photo->getRealPath()))
+                $media = $candidate->addMediaFromString(file_get_contents($this->photo->getRealPath()))
                     ->usingName($this->prenom . '_' . $this->nom)
                     ->usingFileName(Str::uuid() . '.' . $this->photo->getClientOriginalExtension())
                     ->toMediaCollection('photos');
+
+                // Enregistrer aussi une URL dans photo_url pour respect de la contrainte DB
+                $candidate->update(['photo_url' => $candidate->getFirstMediaUrl('photos')]);
             }
 
             // Envoyer les identifiants WhatsApp si c'est un nouvel utilisateur

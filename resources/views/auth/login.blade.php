@@ -44,7 +44,9 @@
                 </div>
             </div>
 
-            <div class="flex items-center justify-between"></div>
+            <div class="flex items-center justify-between">
+                <a href="{{ route('password.whatsapp') }}" class="text-sm text-orange-600 hover:text-orange-700">Mot de passe oublié (WhatsApp)</a>
+            </div>
 
             <button type="submit"
                     class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-all duration-200">

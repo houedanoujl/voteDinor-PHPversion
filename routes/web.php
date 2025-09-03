@@ -7,6 +7,7 @@ use App\Http\Controllers\VoteController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\CandidateController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\WhatsAppResetController;
 use Livewire\Livewire;
 
 // Page d'accueil du concours
@@ -65,4 +66,10 @@ Route::prefix('video')->group(function () {
     // Routes HLS pour les segments et playlists
     Route::get('/hls/{quality}/playlist.m3u8', [\App\Http\Controllers\VideoController::class, 'serveHLSPlaylist'])->name('video.hls.playlist');
     Route::get('/hls/{quality}/{segment}', [\App\Http\Controllers\VideoController::class, 'serveHLSSegment'])->name('video.hls.segment');
+});
+
+// Réinitialisation de mot de passe via WhatsApp
+Route::middleware('guest')->group(function () {
+    Route::get('/password/whatsapp', [WhatsAppResetController::class, 'show'])->name('password.whatsapp');
+    Route::post('/password/whatsapp', [WhatsAppResetController::class, 'send'])->name('password.whatsapp.send');
 });
