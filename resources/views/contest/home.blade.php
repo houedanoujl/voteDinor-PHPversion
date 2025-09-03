@@ -15,21 +15,19 @@
         <div class="absolute inset-0 bg-black/60"></div>
 
         <div class="relative z-10 max-w-7xl mx-auto">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center min-h-screen px-6 py-12">
+            <div class="grid grid-cols-1 lg:grid-cols-2 xs:grid-cols-1 gap-12 items-center min-h-screen px-6 py-12">
                 <!-- Contenu texte (CTA) -> à gauche -->
                 <div class="text-center lg:text-left text-white">
                     <!-- Titre principal avec fond pour améliorer la lisibilité -->
                     <div class="bg-black/50 rounded-2xl p-8 mb-8">
-                        <div class="flex">
-                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-0 tracking-tight flex items-center justify-center">
-                            Mon festival des grillades
-                    </h1>
-                         <img class='contempt' src="{{asset('images/LOGO_DINOR_monochrome.svg')}}" style="width: 200px; height: 200px;filter: invert(1)" alt="Dinor"/>
+                        <div class="flex grid xs:grid-cols-1">
+                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-0 tracking-tight flex items-center justify-center">Mon festival des grillades</h1>
+                         <img class='contempt align-center justify-center' src="{{asset('images/LOGO_DINOR_monochrome.svg')}}" style="width: 200px; height: 200px;filter: invert(1)" alt="Dinor"/>
 
                         </div>
-                        
 
-                        <div class="text-lg md:text-xl text-yellow-300 mt-4 font-medium">
+
+                        <div class="text-lg md:text-xl text-yellow-300 mt-4 font-medium align-center justify-center">
                             Fais nous vivre ton expérience !
                         </div>
                     </div>
@@ -40,7 +38,7 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 w-full max-w-2xl mx-auto lg:mx-0 mb-6">
                         @guest
                             <!-- Boutons pour les invités -->
-                                <button onclick="openVoterModal()" class="btn-dinor w-full">
+                                <button onclick="openVoteChoiceModal()" class="btn-dinor w-full">
                                     Voter
                                     <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
@@ -76,11 +74,11 @@
                                 </a>
                         @endguest
                         </div>
-                        
-                  
+
+
                     </div>
                 </div>
-                
+
                 <!-- Classement (podium) -> à droite -->
                 <div class="text-white">
                     <div class="classment">
@@ -88,7 +86,7 @@
                         @if($top->count() > 0)
                             <!-- Fond pour améliorer la lisibilité du classement -->
                             <div class="bg-black/50 rounded-2xl p-4 sm:p-8 mb-8">
-                            
+
                                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-stretch mb-6">
                                     <!-- 2ème place -->
                                     <div class="text-center order-2 sm:order-1">
@@ -103,7 +101,7 @@
                                             </a>
                                         @endif
                                     </div>
-                                    
+
                                     <!-- 1ère place -->
                                     <div class="text-center order-1 sm:order-2">
                                         @if($top->get(0))
@@ -117,7 +115,7 @@
                                             </a>
                                         @endif
                                     </div>
-                                    
+
                                     <!-- 3ème place -->
                                     <div class="text-center order-3 sm:order-3">
                                         @if($top->get(2))
@@ -132,13 +130,13 @@
                                         @endif
                                     </div>
                                 </div>
-                               
+
                             </div>
                             <div class="bg-black/50 rounded-2xl p-8 mb-8">
                                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 w-full max-w-2xl mx-auto lg:mx-0 mb-6">
                                 <a href="{{ route('contest.ranking') }}" class="btn-dinor btn-dinor-accent px-6 py-3 w-full">Classement complet</a>
                                 <button onclick="scrollToGallery()" class="btn-dinor btn-dinor-outline text-lg px-6 py-3 w-full">Voir les photos</button>
-                                </div>  
+                                </div>
                             </div>
                         @endif
                     </div>
@@ -206,6 +204,26 @@
     </section>
 
     <!-- Modales -->
+    <!-- Modal choix connexion/inscription pour voter -->
+    <div id="voteChoiceModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-xl w-full max-w-md overflow-hidden">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold text-gray-900">Pour voter</h2>
+                    <button onclick="closeVoteChoiceModal()" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <p class="text-gray-600 mb-6">Connectez-vous ou créez votre compte pour participer au vote.</p>
+                <div class="grid grid-cols-1 gap-3">
+                    <a href="{{ route('login') }}" class="btn-dinor w-full text-center">Se connecter</a>
+                    <button onclick="switchToVoterRegistration()" class="btn-dinor btn-dinor-secondary w-full">Créer un compte</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- Modal Votant -->
     <div id="voterModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center p-4">
         <div class="bg-white rounded-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
@@ -245,6 +263,20 @@
 @push('scripts')
 <script>
     // Fonctions pour les modales
+    function openVoteChoiceModal() {
+        document.getElementById('voteChoiceModal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeVoteChoiceModal() {
+        document.getElementById('voteChoiceModal').classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+
+    function switchToVoterRegistration() {
+        closeVoteChoiceModal();
+        openVoterModal();
+    }
     function openVoterModal() {
         document.getElementById('voterModal').classList.remove('hidden');
         document.body.style.overflow = 'hidden';
@@ -266,6 +298,10 @@
     }
 
     // Fermer les modales en cliquant à l'extérieur
+    document.getElementById('voteChoiceModal').addEventListener('click', function(e) {
+        if (e.target === this) closeVoteChoiceModal();
+    });
+
     document.getElementById('voterModal').addEventListener('click', function(e) {
         if (e.target === this) closeVoterModal();
     });
@@ -277,6 +313,7 @@
     // Fermer avec Escape
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
+            closeVoteChoiceModal();
             closeVoterModal();
             closeCandidateModal();
         }

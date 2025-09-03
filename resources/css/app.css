@@ -23,3 +23,13 @@ input[type="submit"]:hover,
     filter: invert(1);
     -webkit-filter: invert(1);
 }
+@media screen and (max-width: 1024px) {
+    .contempt {
+        margin: 1em  auto;
+        height: 50px !important;
+        width: 50px !important;
+    }
+    .hero-section {
+padding-top:2em !important;
+    }
+}
