@@ -1,5 +1,5 @@
 <x-filament-widgets::widget class="fi-wi-stats-overview">
-    <x-filament::section icon="heroicon-m-trophy" heading="Classement des Candidats"></x-filament::section>
+    <x-filament::section icon="heroicon-m-trophy" heading="Classement des Candidats">
         @php
             $candidates = $this->getCandidatesRanking();
             $stats = $this->getStats();
