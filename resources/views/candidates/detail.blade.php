@@ -73,7 +73,7 @@
                         <svg class="w-4 h-4 mr-1 text-red-500" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
                         </svg>
-                        {{ $votesCount }} votes
+                        {{ $votesCount }} {{ Str::plural('vote', $votesCount) }}
                     </div>
                     <!-- indication -->
                     <p>cliquez sur l'image l'afficher en plein écran </p>
@@ -425,7 +425,7 @@ document.addEventListener('click', function(e) {
                     <svg class="w-4 h-4 mr-1 text-red-400" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
                     </svg>
-                    {{ $votesCount }} votes
+                    {{ $votesCount }} {{ Str::plural('vote', $votesCount) }}
                 </div>
                 <div class="text-white/80">Concours Photo DINOR</div>
             </div>

@@ -41,7 +41,7 @@
                                     </div>
                                     <div class="flex-1 min-w-0">
                                         <p class="text-sm font-semibold text-gray-900 truncate">{{ $candidate->prenom }} {{ $candidate->nom }}</p>
-                                        <x-filament::badge color="success">{{ number_format($candidate->votes_count) }} votes</x-filament::badge>
+                                        <x-filament::badge color="success">{{ number_format($candidate->votes_count) }} {{ Str::plural('vote', $candidate->votes_count) }}</x-filament::badge>
                                     </div>
                                     <div class="flex items-center gap-2">
                                         <x-filament::button tag="a" size="sm" icon="heroicon-m-eye" href="{{ route('filament.admin.resources.candidates.view', $candidate) }}">Voir</x-filament::button>
@@ -134,7 +134,7 @@
                                     <!-- Nombre de votes et actions -->
                                     <div class="flex items-center space-x-4">
                                         <!-- Nombre de votes -->
-                                        <x-filament::badge color="success">{{ number_format($candidate->votes_count) }} votes</x-filament::badge>
+                                        <x-filament::badge color="success">{{ number_format($candidate->votes_count) }} {{ Str::plural('vote', $candidate->votes_count) }}</x-filament::badge>
 
                                         <!-- Bouton voir détails -->
                                         <x-filament::button tag="a" size="sm" icon="heroicon-m-eye" href="{{ route('filament.admin.resources.candidates.view', $candidate) }}">

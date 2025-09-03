@@ -24,7 +24,7 @@
                     <p class="text-lg opacity-90">{{ $candidate->email }}</p>
                     <div class="flex items-center mt-2">
                         <span class="text-yellow-400 text-xl mr-2">⭐</span>
-                        <span class="text-xl font-bold">{{ $candidate->votes()->count() }} votes</span>
+                        <span class="text-xl font-bold">{{ $candidate->votes()->count() }} {{ Str::plural('vote', $candidate->votes()->count()) }}</span>
                     </div>
                 </div>
             </div>
@@ -41,7 +41,7 @@
                     <div class="flex items-center space-x-4">
                         <div class="text-center">
                             <div class="text-2xl font-bold text-purple-600">{{ $candidate->votes()->count() }}</div>
-                            <div class="text-sm text-gray-600">Votes</div>
+                            <div class="text-sm text-gray-600">{{ Str::plural('Vote', $candidate->votes()->count()) }}</div>
                         </div>
                         <div class="text-center">
                             <div class="text-2xl font-bold text-green-600">{{ $candidate->created_at->format('d/m/Y') }}</div>

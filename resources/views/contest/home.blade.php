@@ -96,7 +96,7 @@
                                                     <img src="{{ $top->get(1)->getPhotoUrl() ?: asset('images/placeholder-avatar.svg') }}" alt="{{ $top->get(1)->full_name }}" class="w-full h-full object-cover">
                                                 </div>
                                                 <div class="text-sm font-semibold text-white truncate max-w-[10rem] mx-auto">{{ Str::limit($top->get(1)->full_name, 18) }}</div>
-                                                <div class="text-xs text-yellow-300 font-medium">{{ $top->get(1)->votes_count }} votes</div>
+                                                <div class="text-xs text-yellow-300 font-medium">{{ $top->get(1)->votes_count }} {{ Str::plural('vote', $top->get(1)->votes_count) }}</div>
                                                 <div class="mt-2 text-xl sm:text-2xl font-bold text-gray-400">2</div>
                                             </a>
                                         @endif
@@ -110,7 +110,7 @@
                                                     <img src="{{ $top->get(0)->getPhotoUrl() ?: asset('images/placeholder-avatar.svg') }}" alt="{{ $top->get(0)->full_name }}" class="w-full h-full object-cover">
                                                 </div>
                                                 <div class="text-sm sm:text-base font-bold text-white truncate max-w-[10rem] mx-auto">{{ Str::limit($top->get(0)->full_name, 18) }}</div>
-                                                <div class="text-xs sm:text-sm text-yellow-300 font-semibold">{{ $top->get(0)->votes_count }} votes</div>
+                                                <div class="text-xs sm:text-sm text-yellow-300 font-semibold">{{ $top->get(0)->votes_count }} {{ Str::plural('vote', $top->get(0)->votes_count) }}</div>
                                                 <div class="mt-2 text-2xl sm:text-3xl font-extrabold text-yellow-400">1</div>
                                             </a>
                                         @endif
@@ -124,7 +124,7 @@
                                                     <img src="{{ $top->get(2)->getPhotoUrl() ?: asset('images/placeholder-avatar.svg') }}" alt="{{ $top->get(2)->full_name }}" class="w-full h-full object-cover">
                                                 </div>
                                                 <div class="text-sm font-semibold text-white truncate max-w-[10rem] mx-auto">{{ Str::limit($top->get(2)->full_name, 18) }}</div>
-                                                <div class="text-xs text-yellow-300 font-medium">{{ $top->get(2)->votes_count }} votes</div>
+                                                <div class="text-xs text-yellow-300 font-medium">{{ $top->get(2)->votes_count }} {{ Str::plural('vote', $top->get(2)->votes_count) }}</div>
                                                 <div class="mt-2 text-xl sm:text-2xl font-bold text-orange-600">3</div>
                                             </a>
                                         @endif
