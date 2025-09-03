@@ -22,9 +22,9 @@
         </div>
     @endif
 
-    <div class="flex flex-wrap">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         @forelse($candidates as $candidate)
-            <div class="group relative overflow-hidden cursor-pointer transform hover:scale-105 transition-all duration-300 w-[45vw] md:w-[25vw]">
+            <div class="group relative overflow-hidden cursor-pointer transform hover:scale-105 transition-all duration-300">
                 <!-- Image avec lightbox -->
                 <div onclick="openPhotoLightbox('{{ $candidate['photo_url'] }}', '{{ $candidate['prenom'] }} {{ $candidate['nom'] }}')" class="relative">
                     <img

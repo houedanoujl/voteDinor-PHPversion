@@ -223,13 +223,13 @@
 
         /* Texture bois pour l'ambiance barbecue */
         .bg-wood {
-            background: linear-gradient(90deg, 
-                var(--secondary) 0%, 
-                #8B5A3C 15%, 
-                var(--secondary) 30%, 
-                #6B3A2D 45%, 
-                var(--secondary) 60%, 
-                #8B5A3C 75%, 
+            background: linear-gradient(90deg,
+                var(--secondary) 0%,
+                #8B5A3C 15%,
+                var(--secondary) 30%,
+                #6B3A2D 45%,
+                var(--secondary) 60%,
+                #8B5A3C 75%,
                 var(--secondary) 100%);
             background-size: 120px 100%;
         }
@@ -474,7 +474,15 @@
         <!-- Footer moderne -->
         <footer class="bg-gradient-dinor-dark text-white py-12 mt-16">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              2025 - Copyright Dinor 
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div>
+                        2025 - Copyright Dinor
+                    </div>
+                    <div class="text-sm opacity-90">
+                        <a href="{{ route('contest.rules') }}" class="underline hover:text-orange-300">Règles du concours</a>
+                        <span class="ml-2">• Toute forme de tricherie (comptes multiples, votes en masse, etc.) est strictement interdite.</span>
+                    </div>
+                </div>
             </div>
         </footer>
     </div>
@@ -483,5 +491,32 @@
 
 
     @stack('scripts')
+    <script>
+        // Smooth scroll behavior for the whole page
+        try { document.documentElement.style.scrollBehavior = 'smooth'; } catch (e) {}
+
+        // Scroll to top button
+        (function() {
+            const btn = document.createElement('button');
+            btn.setAttribute('type', 'button');
+            btn.setAttribute('aria-label', 'Remonter en haut');
+            btn.className = 'fixed bottom-6 right-6 z-50 bg-orange-600 text-white rounded-full shadow-lg w-12 h-12 flex items-center justify-center hover:bg-orange-700 transition-opacity opacity-0 pointer-events-none';
+            btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg>';
+            document.body.appendChild(btn);
+
+            const toggleBtn = () => {
+                if (window.scrollY > 300) {
+                    btn.classList.remove('opacity-0', 'pointer-events-none');
+                    btn.classList.add('opacity-100');
+                } else {
+                    btn.classList.add('opacity-0', 'pointer-events-none');
+                    btn.classList.remove('opacity-100');
+                }
+            };
+            window.addEventListener('scroll', toggleBtn, { passive: true });
+            window.addEventListener('load', toggleBtn);
+            btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        })();
+    </script>
 </body>
 </html>

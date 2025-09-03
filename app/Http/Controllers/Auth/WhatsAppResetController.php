@@ -24,10 +24,28 @@ class WhatsAppResetController extends Controller
 
         $identifier = trim($request->input('identifier'));
 
-        $user = User::query()
-            ->when(filter_var($identifier, FILTER_VALIDATE_EMAIL), fn ($q) => $q->where('email', $identifier))
-            ->when(!filter_var($identifier, FILTER_VALIDATE_EMAIL), fn ($q) => $q->orWhere('whatsapp', 'like', "%{$identifier}%"))
-            ->first();
+        // Normaliser WhatsApp comme dans LoginController
+        $normalizedWhatsapp = null;
+        $digits = preg_replace('/[^0-9]/', '', $identifier) ?? '';
+        if (strlen($digits) === 10) {
+            $normalizedWhatsapp = '+225' . $digits;
+        } elseif (strpos($digits, '225') === 0 && strlen($digits) === 13) {
+            $normalizedWhatsapp = '+' . $digits;
+        } elseif (str_starts_with($identifier, '+225') && strlen($digits) === 13) {
+            $normalizedWhatsapp = $identifier;
+        }
+
+        if (filter_var($identifier, FILTER_VALIDATE_EMAIL)) {
+            $user = User::where('email', $identifier)->first();
+        } elseif ($normalizedWhatsapp) {
+            $user = User::where('whatsapp', $normalizedWhatsapp)->first();
+            // Fallback très limité: si non trouvé, tenter recherche exacte sur l'entrée brute
+            if (!$user) {
+                $user = User::where('whatsapp', $identifier)->first();
+            }
+        } else {
+            $user = null;
+        }
 
         if (!$user) {
             return back()->withErrors(['identifier' => "Utilisateur introuvable (email ou WhatsApp)."])->withInput();
@@ -37,8 +55,10 @@ class WhatsAppResetController extends Controller
             return back()->withErrors(['identifier' => "Aucun numéro WhatsApp associé à ce compte."])->withInput();
         }
 
-        $newPasswordPlain = Str::password(12);
-        $user->password = Hash::make($newPasswordPlain);
+        // Mot de passe simple: 8 caractères (minuscules/chiffres)
+        $newPasswordPlain = strtolower(Str::random(8));
+        // L'attribut cast "hashed" gère le hash automatiquement
+        $user->password = $newPasswordPlain;
         $user->setRememberToken(Str::random(60));
         $user->save();
 
