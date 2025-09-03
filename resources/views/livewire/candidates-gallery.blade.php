@@ -24,7 +24,7 @@
 
     <div class="flex flex-wrap">
         @forelse($candidates as $candidate)
-            <div class="group relative overflow-hidden cursor-pointer transform hover:scale-105 transition-all duration-300 w-[50vw] md:w-[25vw]">
+            <div class="group relative overflow-hidden cursor-pointer transform hover:scale-105 transition-all duration-300 w-[45vw] md:w-[25vw]">
                 <!-- Image avec lightbox -->
                 <div onclick="openPhotoLightbox('{{ $candidate['photo_url'] }}', '{{ $candidate['prenom'] }} {{ $candidate['nom'] }}')" class="relative">
                     <img
