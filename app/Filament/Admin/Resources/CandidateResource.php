@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources;
 
 use App\Models\Candidate;
 use App\Services\WhatsAppService;
+use Filament\Forms;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -88,6 +89,61 @@ class CandidateResource extends Resource
                     ->color('primary')
                     ->icon('heroicon-o-eye')
                     ->url(fn (Candidate $record): string => static::getUrl('view', ['record' => $record])),
+
+                Action::make('notifyCandidate')
+                    ->label('Notifier le candidat')
+                    ->icon('heroicon-o-paper-airplane')
+                    ->color('warning')
+                    ->form([
+                        Forms\Components\Select::make('reason')
+                            ->label('Raison')
+                            ->options([
+                                'missing' => 'Photo manquante',
+                                'blurry' => 'Photo floue',
+                                'inappropriate' => 'Photo inappropriée',
+                            ])
+                            ->required()
+                            ->reactive()
+                            ->afterStateUpdated(function ($state, $set, Candidate $record) {
+                                $message = match ($state) {
+                                    'missing' => "Bonjour {$record->prenom},\n\nNous avons constaté que votre candidature n\'inclut pas de photo.\nMerci d\'ajouter une photo nette de vous afin de valider votre participation au concours DINOR.\n\nLien d\'upload (si disponible) : https://votedinor.com/ajouter-photo\n\nCordialement,\nL\'équipe DINOR",
+                                    'blurry' => "Bonjour {$record->prenom},\n\nVotre photo semble floue et ne permet pas une bonne identification.\nMerci de soumettre une nouvelle photo nette pour valider votre participation.\n\nCritères : visage bien visible, photo claire et lumineuse.\n\nCordialement,\nL\'équipe DINOR",
+                                    'inappropriate' => "Bonjour {$record->prenom},\n\nVotre photo ne respecte pas nos règles de participation (contenu inapproprié).\nMerci de soumettre une photo conforme aux règles : photo personnelle, respectueuse et appropriée.\n\nCordialement,\nL\'équipe DINOR",
+                                    default => "Bonjour {$record->prenom},\n\nMessage concernant votre candidature au concours DINOR.",
+                                };
+                                $set('message', $message);
+                            }),
+                        Forms\Components\Textarea::make('message')
+                            ->label('Message WhatsApp')
+                            ->rows(10)
+                            ->required(),
+                    ])
+                    ->action(function (array $data, Candidate $record) {
+                        try {
+                            $service = new WhatsAppService();
+                            $result = $service->sendMessage($record->whatsapp, $data['message']);
+
+                            if (!empty($result['success'])) {
+                                Notification::make()
+                                    ->title('Message envoyé au candidat')
+                                    ->success()
+                                    ->body('Le message WhatsApp a été envoyé avec succès.')
+                                    ->send();
+                            } else {
+                                Notification::make()
+                                    ->title('Échec de l\'envoi du message')
+                                    ->danger()
+                                    ->body(($result['message'] ?? 'Erreur inconnue') . ' [' . ($result['provider'] ?? 'whatsapp') . ']')
+                                    ->send();
+                            }
+                        } catch (\Throwable $e) {
+                            Notification::make()
+                                ->title('Erreur WhatsApp')
+                                ->danger()
+                                ->body($e->getMessage())
+                                ->send();
+                        }
+                    }),
 
                 Action::make('whatsapp')
                     ->label('WhatsApp')

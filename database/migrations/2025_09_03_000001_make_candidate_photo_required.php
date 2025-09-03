@@ -19,7 +19,7 @@ return new class extends Migration
         }
 
         Schema::table('candidates', function (Blueprint $table) {
-            $table->string('photo_url')->nullable(false)->change();
+            $table->string('photo_url')->default('')->nullable(false)->change();
         });
     }
 
@@ -29,7 +29,7 @@ return new class extends Migration
             DB::statement('DROP TABLE IF EXISTS "__temp__candidates"');
         }
         Schema::table('candidates', function (Blueprint $table) {
-            $table->string('photo_url')->nullable()->change();
+            $table->string('photo_url')->nullable()->default(null)->change();
         });
     }
 };

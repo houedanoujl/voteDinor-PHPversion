@@ -145,6 +145,7 @@ class CandidateRegistrationForm extends Component
                 'email' => null,
                 'whatsapp' => $whatsappWithPrefix,
                 'status' => 'pending',
+                'photo_url' => '',
             ]);
 
             // Garantir photo_url si photo uploadée
