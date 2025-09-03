@@ -23,12 +23,59 @@ class WhatsAppService
     {
         // Formater le numéro de téléphone pour Green API (sans le +)
         $formattedPhone = $this->formatPhoneNumber($phoneNumber);
+        $errors = [];
 
         if ($this->provider === 'business_api') {
-            return $this->sendViaBusinessAPI($formattedPhone, $message);
+            // Tente Business API d'abord
+            try {
+                return $this->sendViaBusinessAPI($formattedPhone, $message);
+            } catch (\Throwable $e) {
+                Log::warning('WhatsApp Business API échec, tentative fallback Green API', [
+                    'error' => $e->getMessage(),
+                ]);
+                $errors[] = 'business_api: ' . $e->getMessage();
+            }
+
+            // Fallback Green API si configurée
+            if ($this->isGreenConfigured()) {
+                try {
+                    return $this->sendViaGreenAPI($formattedPhone, $message);
+                } catch (\Throwable $e) {
+                    $errors[] = 'green_api: ' . $e->getMessage();
+                }
+            }
         } else {
-            return $this->sendViaGreenAPI($formattedPhone, $message);
+            // Tente Green API d'abord
+            try {
+                return $this->sendViaGreenAPI($formattedPhone, $message);
+            } catch (\Throwable $e) {
+                Log::warning('Green API échec, tentative fallback Business API', [
+                    'error' => $e->getMessage(),
+                ]);
+                $errors[] = 'green_api: ' . $e->getMessage();
+            }
+
+            // Fallback Business API si configurée
+            if ($this->isBusinessConfigured()) {
+                try {
+                    return $this->sendViaBusinessAPI($formattedPhone, $message);
+                } catch (\Throwable $e) {
+                    $errors[] = 'business_api: ' . $e->getMessage();
+                }
+            }
         }
+
+        Log::error('Envoi WhatsApp échoué (toutes tentatives)', [
+            'phone' => $formattedPhone,
+            'errors' => $errors,
+        ]);
+
+        return [
+            'status' => 500,
+            'body' => ['errors' => $errors],
+            'success' => false,
+            'provider' => $this->provider,
+        ];
     }
 
     /**
@@ -145,6 +192,18 @@ class WhatsAppService
             'success' => $response->successful(),
             'provider' => 'green_api',
         ];
+    }
+
+    private function isBusinessConfigured(): bool
+    {
+        $cfg = $this->config['business_api'] ?? [];
+        return !empty($cfg['phone_number_id']) && !empty($cfg['access_token']);
+    }
+
+    private function isGreenConfigured(): bool
+    {
+        $cfg = $this->config['green_api'] ?? [];
+        return !empty($cfg['instance_id']) && !empty($cfg['token']);
     }
 
     /**

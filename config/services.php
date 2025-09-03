@@ -38,7 +38,7 @@ return [
     // Configuration WhatsApp
     'whatsapp' => [
         // Numéro admin pour les notifications (format international +225...)
-        'admin_phone' => env('ADMIN_WHATSAPP', '+22548348221'),
+        'admin_phone' => env('ADMIN_WHATSAPP', '+2250748348221'),
         // Green API (alternative)
         'green_api' => [
             'instance_id' => env('GREEN_API_ID'),

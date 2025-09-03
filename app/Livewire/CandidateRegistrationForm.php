@@ -159,9 +159,22 @@ class CandidateRegistrationForm extends Component
                 $message = "🎉 Félicitations {$this->prenom} ! Votre inscription au concours photo DINOR a été reçue. Votre candidature est en cours de validation. Vous recevrez une notification dès l'approbation.";
                 $whatsappService->sendMessage($whatsappWithPrefix, $message);
 
-                // Notifier l'admin
+                // Notifier l'admin - LOG OBLIGATOIRE
+                Log::info('=== INSCRIPTION CANDIDAT: début notification admin ===', [
+                    'candidat' => "{$this->prenom} {$this->nom}",
+                    'user_id' => $user->id,
+                    'candidate_id' => $candidate->id,
+                ]);
+
                 $adminPhone = config('services.whatsapp.admin_phone');
+                Log::info('Config admin phone', ['admin_phone' => $adminPhone]);
+
                 if (!empty($adminPhone)) {
+                    Log::info('Notif admin inscription: envoi WhatsApp', [
+                        'admin_phone' => $adminPhone,
+                        'user_id' => $user->id,
+                        'candidate_id' => $candidate->id,
+                    ]);
                     $userUrl = route('filament.admin.resources.users.edit', $user);
                     $candidateUrl = route('filament.admin.resources.candidates.view', $candidate);
                     $adminMessage = "🔔 Nouvelle inscription CANDIDAT\n\n" .
@@ -173,8 +186,13 @@ class CandidateRegistrationForm extends Component
                         "Statut: pending\n\n" .
                         "▶ Utilisateur: {$userUrl}\n" .
                         "▶ Candidat: {$candidateUrl}";
-                    $whatsappService->sendMessage($adminPhone, $adminMessage);
+                    $result = $whatsappService->sendMessage($adminPhone, $adminMessage);
+                    Log::info('Notif admin inscription: résultat', $result);
+                } else {
+                    Log::warning('Admin phone vide - notification non envoyée');
                 }
+
+                Log::info('=== INSCRIPTION CANDIDAT: fin notification admin ===');
             } catch (\Exception $e) {
                 Log::error('Erreur WhatsApp inscription: ' . $e->getMessage());
             }
