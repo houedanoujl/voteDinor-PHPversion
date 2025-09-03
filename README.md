@@ -21,6 +21,84 @@ Laravel is a web application framework with expressive, elegant syntax. We belie
 
 Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
+## Système d'inscription, connexion & notifications WhatsApp (DINOR)
+
+Ce projet inclut un système complet d'inscription/connexion et de notifications WhatsApp pour informer l'admin et les candidats.
+
+- **Flux candidat**:
+  - Inscription via formulaire (photo requise si les uploads sont activés).
+  - Création de l'utilisateur et du candidat; prévention des doublons.
+  - Message WhatsApp de confirmation envoyé au candidat.
+  - Notification WhatsApp envoyée à l'admin avec les liens utiles (utilisateur, candidat).
+
+- **Notifications admin**:
+  - Configurable via `ADMIN_WHATSAPP` (numéro au format international, ex: `+2250748348221`).
+  - Le provider WhatsApp est sélectionné via `WHATSAPP_PROVIDER` (`green_api` ou `business_api`).
+  - Un mécanisme de fallback tente l'autre provider si le provider courant échoue (et s'il est configuré).
+
+- **Normalisation des numéros**:
+  - Entrée utilisateur: attendue au format `+225XXXXXXXXXX`.
+  - Provider Green API: envoi aux 8 derniers chiffres, préfixés par `225` (sans `+`) comme requis par l'API. L'application s'occupe de ce format automatiquement.
+  - Provider WhatsApp Business API: envoi au format E.164 (ex: `2250748348221`).
+
+### Configuration (.env)
+
+Exemple minimal avec Green API:
+
+```env
+WHATSAPP_PROVIDER=green_api
+ADMIN_WHATSAPP=+2250748348221
+GREEN_API_ID=your_instance_id
+GREEN_API_TOKEN=your_token
+```
+
+Exemple avec WhatsApp Business API (Meta):
+
+```env
+WHATSAPP_PROVIDER=business_api
+ADMIN_WHATSAPP=+2250748348221
+WHATSAPP_PHONE_NUMBER_ID=your_phone_number_id
+WHATSAPP_ACCESS_TOKEN=your_access_token
+WHATSAPP_API_URL=https://graph.facebook.com/v18.0
+```
+
+Après modification du `.env`, vider les caches dans Docker:
+
+```bash
+docker exec -it dinor_app php artisan config:clear && \
+docker exec -it dinor_app php artisan cache:clear
+```
+
+### Test rapide d'envoi WhatsApp admin
+
+Une commande Artisan est fournie pour diagnostiquer l'envoi vers l'admin:
+
+```bash
+docker exec -it dinor_app php artisan test:whatsapp-admin
+```
+
+Cette commande affiche:
+- le numéro admin chargé, le provider courant
+- l'état de configuration des providers (Green/Business)
+- le résultat d'envoi (succès/erreur, code de statut et corps de réponse)
+
+### Journalisation
+
+Lors d'une inscription candidat, des logs détaillés sont écrits:
+- début et fin de notification admin
+- numéro admin chargé
+- résultat de l'appel WhatsApp
+
+Consulter les logs:
+
+```bash
+docker exec -it dinor_app sh -lc "tail -n 200 storage/logs/laravel.log | cat"
+```
+
+### Important (numéro expéditeur)
+
+Le numéro « expéditeur » des messages WhatsApp dépend du provider et de l'instance configurée (ex: instance Green API connectée à `+22543348221`). Assurez-vous que l'instance/provider est relié au numéro souhaité côté fournisseur; l'application ne modifie pas le numéro expéditeur.
+
 ## Learning Laravel
 
 Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
