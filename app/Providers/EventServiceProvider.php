@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Events\CandidateRegisteredEvent;
+use App\Events\UserRegisteredEvent;
 use App\Listeners\SendCandidateNotifications;
+use App\Listeners\NotifyAdminOnUserRegistered;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -16,6 +18,9 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         CandidateRegisteredEvent::class => [
             SendCandidateNotifications::class,
+        ],
+        UserRegisteredEvent::class => [
+            NotifyAdminOnUserRegistered::class,
         ],
     ];
 

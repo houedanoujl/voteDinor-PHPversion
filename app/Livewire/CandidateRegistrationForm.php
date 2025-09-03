@@ -111,10 +111,12 @@ class CandidateRegistrationForm extends Component
 
             // Stocker la photo si l'upload est activé
             $photoPath = null;
+            $photoUrl = null;
             $uploadsEnabled = $settings?->uploads_enabled ?? true;
             if ($uploadsEnabled) {
                 if ($this->photo) {
                     $photoPath = $this->photo->store('candidates', 'public');
+                    $photoUrl = $photoPath ? asset('storage/' . $photoPath) : null;
                 }
             }
 
@@ -147,14 +149,17 @@ class CandidateRegistrationForm extends Component
                 // Notifier l'admin
                 $adminPhone = config('services.whatsapp.admin_phone');
                 if (!empty($adminPhone)) {
+                    $userUrl = route('filament.admin.resources.users.edit', $user);
+                    $candidateUrl = route('filament.admin.resources.candidates.view', $candidate);
                     $adminMessage = "🔔 Nouvelle inscription CANDIDAT\n\n" .
                         "Nom: {$this->prenom} {$this->nom}\n" .
                         "WhatsApp: {$whatsappWithPrefix}\n" .
+                        (isset($photoUrl) && $photoUrl ? "Photo: {$photoUrl}\n" : '') .
                         "ID utilisateur: {$user->id}\n" .
                         "ID candidat: {$candidate->id}\n" .
                         "Statut: pending\n\n" .
-                        "Filament: " . url('/admin') . "\n" .
-                        "Valider depuis le panneau admin.";
+                        "▶ Utilisateur: {$userUrl}\n" .
+                        "▶ Candidat: {$candidateUrl}";
                     $whatsappService->sendMessage($adminPhone, $adminMessage);
                 }
             } catch (\Exception $e) {

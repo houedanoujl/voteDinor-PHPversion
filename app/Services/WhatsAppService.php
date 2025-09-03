@@ -37,24 +37,24 @@ class WhatsAppService
     private function formatPhoneNumber(string $phoneNumber): string
     {
         // Conserver uniquement les chiffres
-        $digits = preg_replace('/[^0-9]/', '', $phoneNumber);
+        $digits = preg_replace('/[^0-9]/', '', $phoneNumber) ?? '';
 
-        // Green API attend le numéro international sans +, ex: 225XXXXXXXXXX
-        // Si l'utilisateur fournit 10 chiffres locaux, préfixer 225
+        // Règle demandée: pour Green API, envoyer aux 8 derniers chiffres, préfixés par 225
+        if ($this->provider === 'green_api') {
+            $lastEight = substr($digits, -8);
+            return '225' . $lastEight; // Sans + pour Green API
+        }
+
+        // Pour WhatsApp Business API, on conserve l'ancien comportement
         if (strlen($digits) === 10) {
             return '225' . $digits;
         }
-
-        // Si fourni avec 00225..., supprimer les 00
         if (strpos($digits, '00') === 0) {
             $digits = substr($digits, 2);
         }
-
-        // Si commence déjà par 225, renvoyer tel quel
         if (strpos($digits, '225') === 0) {
             return $digits;
         }
-
         return $digits;
     }
 

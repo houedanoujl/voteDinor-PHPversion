@@ -25,8 +25,9 @@ class Dashboard extends BaseDashboard
 
     protected function getFooterWidgets(): array
     {
-        // On retire les widgets custom “riches” pour garder l’esthétique native
-        return [];
+        return [
+            \App\Filament\Widgets\GoogleAnalyticsWidget::class,
+        ];
     }
 
     public function getTitle(): string

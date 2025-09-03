@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Facades\Socialite;
+use App\Events\UserRegisteredEvent;
 
 class SocialAuthController extends Controller
 {
@@ -30,18 +31,23 @@ class SocialAuthController extends Controller
 
         try {
             $socialUser = Socialite::driver($provider)->user();
-            
+
             // Trouver ou créer l'utilisateur
             $user = $this->findOrCreateUser($socialUser, $provider);
-            
+
             // Connecter l'utilisateur
             Auth::login($user, true);
-            
+
             Log::info("Connexion sociale réussie", [
                 'provider' => $provider,
                 'user_id' => $user->id,
                 'email' => $user->email
             ]);
+
+            // Notifier l'admin pour un nouveau compte (si nouvel utilisateur)
+            if ($user->wasRecentlyCreated) {
+                event(new UserRegisteredEvent($user, 'social:' . $provider));
+            }
 
             // Rediriger avec message de succès
             return redirect()->intended('/')
@@ -49,7 +55,7 @@ class SocialAuthController extends Controller
 
         } catch (\Exception $e) {
             Log::error("Erreur connexion sociale {$provider}: " . $e->getMessage());
-            
+
             return redirect()->route('login')
                 ->with('error', 'Erreur lors de la connexion avec ' . ucfirst($provider) . '. Veuillez réessayer.');
         }
@@ -63,7 +69,7 @@ class SocialAuthController extends Controller
         // 1. Chercher un utilisateur existant avec cet email
         if ($socialUser->getEmail()) {
             $user = User::where('email', $socialUser->getEmail())->first();
-            
+
             if ($user) {
                 // Mettre à jour les infos du fournisseur social
                 $this->updateSocialInfo($user, $socialUser, $provider);
@@ -130,7 +136,7 @@ class SocialAuthController extends Controller
     private function validateProvider(string $provider): void
     {
         $allowedProviders = ['google', 'facebook'];
-        
+
         if (!in_array($provider, $allowedProviders)) {
             abort(404, 'Fournisseur non supporté');
         }
@@ -142,10 +148,10 @@ class SocialAuthController extends Controller
     public function logout(Request $request)
     {
         Auth::logout();
-        
+
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        
+
         return redirect('/')->with('success', 'Vous êtes déconnecté.');
     }
 }

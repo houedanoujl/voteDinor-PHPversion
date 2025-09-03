@@ -35,7 +35,7 @@ class UserResource extends Resource
     {
         return $schema
             ->schema([
-                Forms\Components\Section::make()
+                \Filament\Schemas\Components\Grid::make(2)
                     ->schema([
                         Forms\Components\TextInput::make('name')
                             ->label('Nom complet')
@@ -88,8 +88,7 @@ class UserResource extends Resource
                             ->dehydrated(fn ($state) => filled($state))
                             ->required(fn (string $context): bool => $context === 'create')
                             ->maxLength(255),
-                    ])
-                    ->columns(2),
+                    ]),
             ]);
     }
 

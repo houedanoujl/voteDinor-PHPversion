@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use App\Events\UserRegisteredEvent;
 
 class VoterRegistrationModal extends Component
 {
@@ -98,6 +99,9 @@ class VoterRegistrationModal extends Component
 
             // Message de succès
             session()->flash('success', 'Votre compte votant a été créé avec succès ! Vous pouvez maintenant voter.');
+
+            // Notifier l'admin (événement global)
+            event(new UserRegisteredEvent($user, 'voter_modal'));
 
             // Fermer la modal et rediriger
             $this->closeModal();

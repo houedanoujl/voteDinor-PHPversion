@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
+use App\Events\UserRegisteredEvent;
 
 class AuthModal extends Component
 {
@@ -14,12 +15,12 @@ class AuthModal extends Component
     public $mode = 'login'; // 'login' or 'register'
 
     protected $listeners = ['open-auth-modal' => 'handleOpenModal'];
-    
+
     // Login fields
     public $email = '';
     public $password = '';
     public $remember = false;
-    
+
     // Register fields
     public $name = '';
     public $email_register = '';
@@ -122,6 +123,9 @@ class AuthModal extends Component
         $this->closeModal();
         $this->dispatch('user-registered');
         session()->flash('success', 'Inscription réussie ! Bienvenue !');
+
+        // Notifier l'admin (événement global)
+        event(new UserRegisteredEvent($user, 'auth_modal'));
     }
 
     public function render()

@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 
 class VotingStatsWidget extends BaseWidget
 {
+    protected int | string | array $columnSpan = 'full';
     protected static ?int $sort = 1;
 
     protected function getStats(): array
@@ -39,26 +40,22 @@ class VotingStatsWidget extends BaseWidget
             Stat::make('Total Votes', number_format($totalVotes))
                 ->description('Votes enregistrés')
                 ->descriptionIcon('heroicon-m-chart-bar')
-                ->color('success')
-                ->chart([7, 3, 4, 5, 6, 3, 5, 3]),
+                ->color('success'),
 
             Stat::make('Candidats Approuvés', $approvedCandidates . '/' . $totalCandidates)
                 ->description('Candidats validés')
                 ->descriptionIcon('heroicon-m-check-circle')
-                ->color('info')
-                ->chart([3, 5, 7, 2, 4, 6, 8, 1]),
+                ->color('info'),
 
             Stat::make('Votes Aujourd\'hui', number_format($votesToday))
                 ->description('Votes du jour')
                 ->descriptionIcon('heroicon-m-clock')
-                ->color('warning')
-                ->chart([2, 4, 3, 7, 5, 6, 4, 8]),
+                ->color('warning'),
 
             Stat::make('Leader Actuel', $topCandidate ? $topCandidate->prenom . ' ' . $topCandidate->nom : 'Aucun')
                 ->description($topCandidate ? number_format($topCandidate->votes_count) . ' votes' : 'Pas de votes')
                 ->descriptionIcon('heroicon-m-trophy')
-                ->color('danger')
-                ->chart([1, 3, 5, 7, 9, 8, 6, 4]),
+                ->color('danger'),
         ];
     }
 }

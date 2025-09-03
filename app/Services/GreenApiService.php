@@ -160,17 +160,15 @@ class GreenApiService
      */
     private function cleanPhoneNumber(string $phoneNumber): string
     {
-        // Supprimer tous les caractères non numériques sauf le +
-        $cleaned = preg_replace('/[^\d+]/', '', $phoneNumber);
+        // Garder uniquement les chiffres
+        $digits = preg_replace('/\D+/', '', $phoneNumber) ?? '';
 
-        // Si le numéro commence par +, le garder
-        // Sinon, ajouter le préfixe +225 pour la Côte d'Ivoire
-        if (!str_starts_with($cleaned, '+')) {
-            $cleaned = '+225' . $cleaned;
-        }
+        // Prendre les 8 derniers chiffres
+        $lastEight = substr($digits, -8);
 
-        // Supprimer le + pour Green API (format requis)
-        return ltrim($cleaned, '+');
+        // Préfixer avec l'indicatif CI "225" et retourner SANS + (format attendu par Green API)
+        // Exemple: +2250748348221 -> 22548348221
+        return '225' . $lastEight;
     }
 
     /**
