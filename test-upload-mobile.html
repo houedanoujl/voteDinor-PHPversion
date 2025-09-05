@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Upload Mobile - Composant</title>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test du Composant Upload Mobile</h1>
+        <p>Test direct des fonctionnalités du composant sans Livewire</p>
+        
+        <!-- Test du composant -->
+        <div x-data="robustMobileUpload()" class="space-y-4" x-init="init()">
+            <!-- Méthode 1: Drag & Drop moderne avec preview -->
+            <div x-show="method === 'modern'" x-transition>
+                <div class="relative group">
+                    <input 
+                        type="file" 
+                        x-ref="modernInput"
+                        accept="image/*,.heic,.heif,.webp"
+                        capture="environment"
+                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                        @change="handleModernUpload($event)"
+                    >
+                    
+                    <div 
+                        class="border-2 border-dashed rounded-xl p-6 text-center transition-all"
+                        :class="preview ? 'border-green-400 bg-green-50' : 'border-gray-300 group-hover:border-orange-400 group-hover:bg-orange-50'"
+                    >
+                        <!-- Preview existant -->
+                        <div x-show="preview" class="space-y-4">
+                            <img :src="preview" class="mx-auto max-h-48 rounded-lg shadow-lg">
+                            <div class="text-sm text-green-700">
+                                <p class="font-medium" x-text="fileName"></p>
+                                <p x-text="fileSize"></p>
+                            </div>
+                        </div>
+                        
+                        <!-- Interface upload -->
+                        <div x-show="!preview" class="space-y-3">
+                            <div class="text-4xl">📸</div>
+                            <div>
+                                <p class="text-lg font-medium text-gray-700">
+                                    Ajoutez votre photo
+                                </p>
+                                <p class="text-sm text-gray-500">
+                                    Cliquez ou glissez une image ici
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Messages d'erreur -->
+            <div x-show="error" x-transition class="p-3 bg-red-50 border border-red-200 rounded-lg">
+                <p class="text-sm text-red-800" x-text="error"></p>
+            </div>
+
+            <!-- Instructions -->
+            <div class="text-xs text-gray-500 bg-gray-50 p-3 rounded-lg">
+                <p><strong>📁 Mode fichier:</strong> Cliquez pour sélectionner depuis votre galerie/appareil photo.</p>
+                <p class="mt-1"><strong>Formats:</strong> JPG, PNG, WebP, HEIC • <strong>Taille max:</strong> 5MB</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function robustMobileUpload() {
+        return {
+            method: 'modern',
+            preview: null,
+            fileName: null,
+            fileSize: null,
+            error: null,
+            
+            init() {
+                console.log('🔧 Composant upload initialisé');
+            },
+            
+            handleModernUpload(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    console.log('📁 Fichier sélectionné:', file);
+                    this.processFile(file);
+                }
+            },
+            
+            processFile(file) {
+                this.error = null;
+                
+                // Validation taille
+                const maxBytes = 5 * 1024 * 1024;
+                if (file.size > maxBytes) {
+                    this.error = `Fichier trop volumineux (${this.formatBytes(file.size)}). Taille maximum: 5MB`;
+                    return;
+                }
+                
+                // Validation type
+                const allowedTypes = [
+                    'image/jpeg', 'image/jpg', 'image/png', 'image/gif', 
+                    'image/webp', 'image/heic', 'image/heif'
+                ];
+                
+                if (!allowedTypes.some(type => type.toLowerCase() === file.type.toLowerCase())) {
+                    this.error = 'Format non supporté. Utilisez JPG, PNG, WebP ou HEIC.';
+                    return;
+                }
+                
+                this.fileName = file.name;
+                this.fileSize = this.formatBytes(file.size);
+                
+                // Créer preview (sauf HEIC qui ne peut pas être prévisualisé)
+                if (!['image/heic', 'image/heif'].includes(file.type.toLowerCase())) {
+                    this.createPreview(file);
+                } else {
+                    this.preview = null;
+                    console.log('✅ HEIC détecté - pas de preview mais fichier valide');
+                }
+                
+                console.log('✅ Fichier traité avec succès:', {
+                    name: this.fileName,
+                    size: this.fileSize,
+                    hasPreview: !!this.preview
+                });
+            },
+            
+            createPreview(file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    this.preview = e.target.result;
+                    console.log('🖼️ Preview créé');
+                };
+                reader.readAsDataURL(file);
+            },
+            
+            formatBytes(bytes) {
+                if (bytes === 0) return '0 B';
+                const k = 1024;
+                const sizes = ['B', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+        }
+    }
+    </script>
+</body>
+</html>

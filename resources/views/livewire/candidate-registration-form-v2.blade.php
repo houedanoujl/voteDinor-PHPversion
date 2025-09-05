@@ -2,7 +2,7 @@
     <!-- En-tête du formulaire -->
     <div class="text-center mb-8">
         <h2 class="text-3xl font-bold text-gray-900 mb-2">🎯 Participer au concours</h2>
-        <p class="text-gray-600">Remplissez le formulaire ci-dessous pour vous inscrire</p>
+        <p class="text-gray-600">Version mobile optimisée avec preview</p>
     </div>
 
     <!-- Messages de succès/erreur -->
@@ -49,7 +49,7 @@
             </label>
 
             @if(($settings?->uploads_enabled ?? true) !== false)
-                <x-robust-mobile-upload wire-model="photo" max-size="5" />
+                <x-mobile-photo-upload wire-model="photo" max-size="5" />
             @else
                 <div class="p-4 bg-gray-100 border border-gray-300 rounded-lg text-center">
                     <p class="text-gray-600">📴 Upload temporairement désactivé</p>
@@ -90,8 +90,6 @@
             </div>
         </div>
 
-        <!-- Email supprimé -->
-
         <!-- WhatsApp -->
         <div>
             <label for="whatsapp" class="block text-sm font-semibold text-gray-700 mb-2">
@@ -105,8 +103,6 @@
                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
             @enderror
         </div>
-
-
 
         <!-- Bouton de soumission -->
         <div class="pt-4">
@@ -135,4 +131,18 @@
             </p>
         </div>
     </form>
+
+    <!-- Instructions mobiles spécifiques -->
+    <div class="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+        <h4 class="font-semibold text-blue-900 mb-2">📱 Guide Mobile</h4>
+        <div class="text-sm text-blue-800 space-y-1">
+            <p><strong>iPhone:</strong> Safari → Choisir fichier → Caméra ou Photothèque</p>
+            <p><strong>Android:</strong> Chrome → Choisir fichier → Caméra ou Galerie</p>
+            <p><strong>Formats supportés:</strong> JPG, PNG, WebP, HEIC (5MB max)</p>
+        </div>
+    </div>
 </div>
+
+@push('scripts')
+<script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+@endpush
