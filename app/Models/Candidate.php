@@ -125,7 +125,7 @@ class Candidate extends Model implements HasMedia
 
         $imageService = app(\App\Services\ImageOptimizationService::class);
         $originalPath = $this->photo_url ?? $this->getFirstMediaUrl('photos');
-        
+
         // Extraire le chemin relatif pour le service d'optimisation
         if (str_starts_with($originalPath, 'http')) {
             $relativePath = str_replace(Storage::disk('public')->url(''), '', $originalPath);
@@ -164,6 +164,30 @@ class Candidate extends Model implements HasMedia
     }
 
     /**
+     * Retourne l'URL de l'image thumbnail sans double suffixe
+     */
+    public function getCleanThumbUrl(): string
+    {
+        $photoUrl = $this->getPhotoUrl();
+
+        if (!$photoUrl || $photoUrl === '/images/placeholder-avatar.svg') {
+            return '/images/placeholder-avatar.svg';
+        }
+
+        // Si l'URL contient déjà _thumb, la retourner telle quelle
+        if (strpos($photoUrl, '_thumb') !== false) {
+            return $photoUrl;
+        }
+
+        // Sinon, générer l'URL thumbnail
+        $pathInfo = pathinfo($photoUrl);
+        $extension = $pathInfo['extension'] ?? 'jpg';
+        $filename = $pathInfo['filename'];
+
+        return str_replace($filename . '.' . $extension, $filename . '_thumb.' . $extension, $photoUrl);
+    }
+
+    /**
      * Vérifie si les images optimisées existent pour ce candidat
      */
     public function hasOptimizedImages(): bool
@@ -175,10 +199,10 @@ class Candidate extends Model implements HasMedia
         $pathInfo = pathinfo($this->photo_url);
         $filename = $pathInfo['filename'];
         $extension = $pathInfo['extension'];
-        
+
         // Vérifier si au moins le thumbnail existe
         $thumbPath = "candidates/{$filename}_thumb.{$extension}";
-        
+
         return Storage::disk('public')->exists($thumbPath);
     }
 
@@ -192,9 +216,9 @@ class Candidate extends Model implements HasMedia
         }
 
         $this->update(['photo_optimization_status' => 'processing']);
-        
+
         \App\Events\CandidatePhotoUploaded::dispatch($this, $this->photo_url);
-        
+
         return true;
     }
 
@@ -235,7 +259,7 @@ class Candidate extends Model implements HasMedia
         }
 
         $today = now()->toDateString();
-        
+
         return $this->votes()
             ->where('vote_date', $today)
             ->when($user, function ($query) use ($user) {

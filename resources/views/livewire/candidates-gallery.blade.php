@@ -28,13 +28,16 @@
                 <!-- Image optimisée directe -->
                 <div onclick="openPhotoLightbox('{{ $candidate['photo_url'] }}', '{{ $candidate['prenom'] }} {{ $candidate['nom'] }}')" class="relative">
                     @php
-                        // Générer l'URL de l'image thumbnail optimisée
+                        // Utiliser l'URL thumbnail propre sans double suffixe
                         $thumbUrl = $candidate['photo_url'];
                         if ($thumbUrl !== '/images/placeholder-avatar.svg') {
-                            $thumbUrl = str_replace(['.jpg', '.jpeg', '.png'], '_thumb.jpg', $thumbUrl);
+                            // Éviter la double génération de _thumb
+                            if (strpos($thumbUrl, '_thumb') === false) {
+                                $thumbUrl = str_replace(['.jpg', '.jpeg', '.png'], '_thumb.jpg', $thumbUrl);
+                            }
                         }
                     @endphp
-                    
+
                     <!-- Image directe (avec fallback vers originale si optimisée n'existe pas) -->
                     <img
                         src="{{ $thumbUrl }}"
@@ -58,8 +61,8 @@
                     <div class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         @auth
                             @if(!$this->hasVotedToday($candidate['id']))
-                                <button 
-                                    wire:click="vote({{ $candidate['id'] }})" 
+                                <button
+                                    wire:click="vote({{ $candidate['id'] }})"
                                     @if($this->isLoading($candidate['id'])) disabled @endif
                                     class="bg-red-500 hover:bg-red-600 disabled:bg-red-300 text-white p-2 rounded-full transition-colors shadow-lg"
                                     title="Voter pour {{ $candidate['prenom'] }}"
@@ -82,7 +85,7 @@
                                 </div>
                             @endif
                         @else
-                            <button 
+                            <button
                                 wire:click="vote({{ $candidate['id'] }})"
                                 class="bg-orange-500 hover:bg-orange-600 text-white p-2 rounded-full transition-colors shadow-lg"
                                 title="Se connecter pour voter"
@@ -138,8 +141,8 @@
     <!-- Bouton "Charger plus" -->
     @if($this->hasMoreCandidates())
         <div class="text-center mt-8">
-            <button 
-                wire:click="loadMore" 
+            <button
+                wire:click="loadMore"
                 class="bg-orange-600 hover:bg-orange-700 text-white px-8 py-3 rounded-lg font-medium transition-colors inline-flex items-center"
             >
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -162,7 +165,7 @@
                     </div>
                     <h3 class="text-xl font-bold text-gray-900 mb-2">Connectez-vous pour voter</h3>
                     <p class="text-gray-600 mb-6">Soutenez vos candidats préférés en vous connectant ou en créant un compte.</p>
-                    
+
                     <div class="space-y-3">
                         <a href="{{ route('login') }}" class="w-full bg-orange-600 hover:bg-orange-700 text-white py-3 px-4 rounded-lg font-medium transition-colors block">
                             Se connecter
@@ -171,7 +174,7 @@
                             Créer un compte
                         </a>
                     </div>
-                    
+
                     <button wire:click="closeAuthModal" class="mt-4 text-gray-500 hover:text-gray-700 text-sm">
                         Fermer
                     </button>
@@ -204,20 +207,20 @@
 <script>
 
     function openPhotoLightbox(photoUrl, candidateName) {
-        // Utiliser l'image principale pour le lightbox (ou originale en fallback)
-        let mainPhotoUrl = photoUrl.replace(/\.(jpg|jpeg|png)$/i, '_main.$1');
-        
+        // Utiliser l'image originale pour le lightbox (sans _thumb)
+        let originalPhotoUrl = photoUrl.replace('_thumb.jpg', '.jpg');
+
         // Update lightbox content
         const lightboxImg = document.getElementById('lightbox-photo');
-        lightboxImg.src = mainPhotoUrl;
+        lightboxImg.src = originalPhotoUrl;
         lightboxImg.alt = candidateName;
-        
-        // Fallback vers l'originale si la main n'existe pas
+
+        // Fallback vers l'URL fournie si l'originale n'existe pas
         lightboxImg.onerror = function() {
             this.src = photoUrl;
             this.onerror = null;
         };
-        
+
         document.getElementById('lightbox-candidate-name').textContent = candidateName;
 
         // Show lightbox

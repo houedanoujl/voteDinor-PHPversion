@@ -32,7 +32,7 @@ class CandidateRegistrationForm extends Component
         'prenom' => 'required|min:2|max:255',
         'nom' => 'required|min:2|max:255',
         'whatsapp' => 'required|regex:/^\+225[0-9]{10}$/|unique:candidates,whatsapp',
-        'photo' => 'required|mimes:jpeg,jpg,png,gif,webp,heic|max:5120',
+        'photo' => 'required|mimes:jpeg,jpg,png,gif,webp,heic|max:51200',
     ];
 
     protected $messages = [
@@ -43,7 +43,7 @@ class CandidateRegistrationForm extends Component
         'whatsapp.unique' => 'Ce numéro WhatsApp est déjà utilisé.',
         'photo.required' => 'Une photo est obligatoire.',
         'photo.mimes' => 'Formats acceptés: JPEG, JPG, PNG, GIF, WebP, HEIC.',
-        'photo.max' => 'La photo ne doit pas dépasser 5MB.',
+        'photo.max' => 'La photo ne doit pas dépasser 50MB.',
     ];
 
     public function updatedPhoto()
@@ -156,10 +156,10 @@ class CandidateRegistrationForm extends Component
                     'photo_url' => $photoPath,
                     'photo_optimization_status' => 'processing'
                 ]);
-                
+
                 // Déclencher l'événement d'optimisation (asynchrone)
                 CandidatePhotoUploaded::dispatch($candidate, $photoPath);
-                
+
                 Log::info('Événement d\'optimisation déclenché', [
                     'candidate_id' => $candidate->id,
                     'photo_path' => $photoPath

@@ -31,7 +31,7 @@ class CandidateRegistrationModal extends Component
         'prenom' => 'required|min:2|max:255',
         'nom' => 'required|min:2|max:255',
         'whatsapp' => 'required|regex:/^\+225[0-9]{10}$/|unique:candidates,whatsapp',
-        'photo' => 'required|image|max:3072',
+        'photo' => 'required|image|max:51200',
     ];
 
     protected $messages = [
@@ -42,8 +42,8 @@ class CandidateRegistrationModal extends Component
         'whatsapp.unique' => 'Ce numéro WhatsApp est déjà utilisé.',
         'photo.required' => 'Une photo est obligatoire.',
         'photo.image' => 'Le fichier doit être une image.',
-        'photo.max' => 'La photo ne doit pas dépasser 3MB.',
-        'photo.max_file_size' => 'La photo est trop grande. Maximum autorisé: 3MB.'
+        'photo.max' => 'La photo ne doit pas dépasser 50MB.',
+        'photo.max_file_size' => 'La photo est trop grande. Maximum autorisé: 50MB.'
     ];
 
     public function openModal()

@@ -73,3 +73,8 @@ Route::middleware('guest')->group(function () {
     Route::get('/password/whatsapp', [WhatsAppResetController::class, 'show'])->name('password.whatsapp');
     Route::post('/password/whatsapp', [WhatsAppResetController::class, 'send'])->name('password.whatsapp.send');
 });
+
+// Routes Livewire avec middleware pour les uploads
+Route::middleware(['livewire.upload'])->group(function () {
+    // Les routes Livewire sont automatiquement gérées par le package
+});

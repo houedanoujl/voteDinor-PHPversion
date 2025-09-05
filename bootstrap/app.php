@@ -11,7 +11,14 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->alias([
+            'livewire.upload' => \App\Http\Middleware\LivewireUploadMiddleware::class,
+        ]);
+        
+        // Appliquer le middleware globalement
+        $middleware->web(append: [
+            \App\Http\Middleware\LivewireUploadMiddleware::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
