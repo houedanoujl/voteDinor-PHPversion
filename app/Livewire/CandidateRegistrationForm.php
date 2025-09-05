@@ -32,7 +32,7 @@ class CandidateRegistrationForm extends Component
         'prenom' => 'required|min:2|max:255',
         'nom' => 'required|min:2|max:255',
         'whatsapp' => 'required|regex:/^\+225[0-9]{10}$/|unique:candidates,whatsapp',
-        'photo' => 'required|image|max:3072',
+        'photo' => 'required|mimes:jpeg,jpg,png,gif,webp,heic|max:5120',
     ];
 
     protected $messages = [
@@ -42,8 +42,8 @@ class CandidateRegistrationForm extends Component
         'whatsapp.regex' => 'Format requis: +225 suivi de 10 chiffres',
         'whatsapp.unique' => 'Ce numéro WhatsApp est déjà utilisé.',
         'photo.required' => 'Une photo est obligatoire.',
-        'photo.image' => 'Le fichier doit être une image.',
-        'photo.max' => 'La photo ne doit pas dépasser 3MB.',
+        'photo.mimes' => 'Formats acceptés: JPEG, JPG, PNG, GIF, WebP, HEIC.',
+        'photo.max' => 'La photo ne doit pas dépasser 5MB.',
     ];
 
     public function updatedPhoto()

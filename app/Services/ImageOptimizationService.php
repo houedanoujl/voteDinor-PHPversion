@@ -111,7 +111,7 @@ class ImageOptimizationService
             }
 
             $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-            if (in_array($extension, ['jpg', 'jpeg', 'png', 'gif'])) {
+            if (in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'heic'])) {
                 try {
                     $fullPath = Storage::disk('public')->path($file);
                     $this->optimizeImage($fullPath, $directory);
