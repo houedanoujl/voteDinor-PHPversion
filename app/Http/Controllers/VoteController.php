@@ -4,13 +4,26 @@ namespace App\Http\Controllers;
 
 use App\Models\Candidate;
 use App\Models\Vote;
+use App\Models\SiteSetting;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Cache;
 
 class VoteController extends Controller
 {
     public function vote(Request $request, $candidateId): JsonResponse
     {
+        // Vérifier si les votes sont activés dans les paramètres du site
+        $settings = Cache::remember('site_settings', 3600, function () {
+            return SiteSetting::first();
+        });
+        if ($settings && !$settings->votes_enabled) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Les votes sont temporairement désactivés'
+            ], 403);
+        }
+
         // Vérifier que l'utilisateur est connecté
         if (!auth()->check()) {
             return response()->json([

@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\Candidate;
 use App\Models\Vote;
 use App\Models\VoteLimit;
+use App\Models\SiteSetting;
 use App\Events\CandidateRegisteredEvent;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -23,11 +24,15 @@ class CandidatesGallery extends Component
     public $page = 1;
     public $totalCandidates = 0;
     public $showAuthModal = false;
+    public $settings;
 
     public function mount()
     {
         $this->loadCandidates();
         $this->checkUserVotesToday();
+        $this->settings = Cache::remember('site_settings', 3600, function () {
+            return SiteSetting::first();
+        });
     }
 
     public function loadCandidates()
@@ -85,6 +90,15 @@ class CandidatesGallery extends Component
 
     public function vote($candidateId)
     {
+        // Vérifier si les votes sont activés
+        $this->settings = Cache::remember('site_settings', 3600, function () {
+            return SiteSetting::first();
+        });
+        if ($this->settings && !$this->settings->votes_enabled) {
+            session()->flash('error', 'Les votes sont temporairement désactivés');
+            return;
+        }
+
         // Vérifier si l'utilisateur est connecté
         if (!Auth::check()) {
             $this->showAuthModal = true;
@@ -197,6 +211,11 @@ class CandidatesGallery extends Component
 
     public function render()
     {
-        return view('livewire.candidates-gallery');
+        // Rafraîchir les paramètres depuis le cache à chaque rendu pour refléter un éventuel changement admin
+        $this->settings = Cache::remember('site_settings', 3600, function () {
+            return SiteSetting::first();
+        });
+
+        return view('livewire.candidates-gallery', ['settings' => $this->settings]);
     }
 }

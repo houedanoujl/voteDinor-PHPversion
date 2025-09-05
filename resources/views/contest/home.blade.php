@@ -33,12 +33,21 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 w-full max-w-2xl mx-auto lg:mx-0 mb-6">
                         @guest
                             <!-- Boutons pour les invités -->
-                                <button onclick="openVoteChoiceModal()" class="btn-dinor w-full">
-                                    Voter
-                                    <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                                    </svg>
-                                </button>
+                                @if(($settings->votes_enabled ?? true))
+                                    <button onclick="openVoteChoiceModal()" class="btn-dinor w-full">
+                                        Voter
+                                        <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                        </svg>
+                                    </button>
+                                @else
+                                    <button class="btn-dinor w-full opacity-60 cursor-not-allowed" disabled>
+                                        Votes désactivés
+                                        <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                        </svg>
+                                    </button>
+                                @endif
                                 @if(($settings->uploads_enabled ?? true) && ($settings->applications_open ?? true))
                                 <button onclick="openCandidateModal()" class="btn-dinor btn-dinor-accent w-full">
                                     Poster ma photo du FGA

@@ -50,42 +50,50 @@
 
                     <!-- Bouton de vote rapide -->
                     <div class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        @auth
-                            @if(!$this->hasVotedToday($candidate['id']))
+                        @if(($settings->votes_enabled ?? true))
+                            @auth
+                                @if(!$this->hasVotedToday($candidate['id']))
+                                    <button
+                                        wire:click="vote({{ $candidate['id'] }})"
+                                        @if($this->isLoading($candidate['id'])) disabled @endif
+                                        class="bg-red-500 hover:bg-red-600 disabled:bg-red-300 text-white p-2 rounded-full transition-colors shadow-lg"
+                                        title="Voter pour {{ $candidate['prenom'] }}"
+                                    >
+                                        @if($this->isLoading($candidate['id']))
+                                            <svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                            </svg>
+                                        @else
+                                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
+                                            </svg>
+                                        @endif
+                                    </button>
+                                @else
+                                    <div class="bg-green-500 text-white p-2 rounded-full shadow-lg" title="Déjà voté aujourd'hui">
+                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                        </svg>
+                                    </div>
+                                @endif
+                            @else
                                 <button
                                     wire:click="vote({{ $candidate['id'] }})"
-                                    @if($this->isLoading($candidate['id'])) disabled @endif
-                                    class="bg-red-500 hover:bg-red-600 disabled:bg-red-300 text-white p-2 rounded-full transition-colors shadow-lg"
-                                    title="Voter pour {{ $candidate['prenom'] }}"
+                                    class="bg-orange-500 hover:bg-orange-600 text-white p-2 rounded-full transition-colors shadow-lg"
+                                    title="Se connecter pour voter"
                                 >
-                                    @if($this->isLoading($candidate['id']))
-                                        <svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                        </svg>
-                                    @else
-                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
-                                        </svg>
-                                    @endif
-                                </button>
-                            @else
-                                <div class="bg-green-500 text-white p-2 rounded-full shadow-lg" title="Déjà voté aujourd'hui">
                                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                        <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
                                     </svg>
-                                </div>
-                            @endif
+                                </button>
+                            @endauth
                         @else
-                            <button
-                                wire:click="vote({{ $candidate['id'] }})"
-                                class="bg-orange-500 hover:bg-orange-600 text-white p-2 rounded-full transition-colors shadow-lg"
-                                title="Se connecter pour voter"
-                            >
+                            <div class="bg-gray-300 text-gray-700 p-2 rounded-full shadow-lg cursor-not-allowed" title="Votes désactivés">
                                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm2-9a2 2 0 11-4 0 2 2 0 014 0z" clip-rule="evenodd"></path>
                                 </svg>
-                            </button>
-                        @endauth
+                            </div>
+                        @endif
                     </div>
 
                     <!-- Nom au hover -->

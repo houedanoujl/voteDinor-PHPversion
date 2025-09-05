@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Candidate;
+use App\Models\SiteSetting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class CandidateDetailController extends Controller
 {
@@ -32,11 +34,18 @@ class CandidateDetailController extends Controller
                 ->exists();
         }
 
+        // Paramètres du site (mis en cache)
+        $settings = Cache::remember('site_settings', 3600, function () {
+            return SiteSetting::first();
+        });
+
         return view('candidates.detail', compact(
             'candidate',
             'votesCount',
             'recentVotes',
-            'hasVotedToday'
+            'hasVotedToday',
+            'settings'
         ));
     }
 }
+

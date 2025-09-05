@@ -35,6 +35,10 @@ class SiteSettingResource extends Resource
                     ->label('Upload de photos activé')
                     ->helperText('Désactivez en phase de vote pour bloquer les nouveaux uploads')
                     ->default(true),
+                Forms\Components\Toggle::make('votes_enabled')
+                    ->label('Votes activés')
+                    ->helperText("Désactivez pour fermer temporairement les votes sur le site")
+                    ->default(true),
                 Forms\Components\TextInput::make('live_url')
                     ->label('Lien Live Facebook')
                     ->placeholder('https://www.facebook.com/...')
@@ -74,5 +78,6 @@ class SiteSettingResource extends Resource
         ];
     }
 }
+
 
 
