@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Dropzone</title>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+</head>
+<body>
+    <div x-data="{ file: null }" style="padding: 20px;">
+        <h1>🧪 Test Dropzone Debug</h1>
+        
+        <!-- Input file simple pour comparaison -->
+        <h3>1. Input File Simple</h3>
+        <input type="file" accept="image/*,.heic" onchange="console.log('Simple input:', this.files[0]);">
+        
+        <h3>2. Notre Dropzone</h3>
+        <div x-data="testDropzone()">
+            <input type="file" x-ref="fileInput" accept="image/*,.heic" @change="handleFile($event)" style="display:none;">
+            
+            <div @click="$refs.fileInput.click()" 
+                 style="border: 2px dashed #ccc; padding: 40px; text-align: center; cursor: pointer;">
+                <p>Cliquez ici pour tester</p>
+                <p x-show="fileName" x-text="'Fichier: ' + fileName"></p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+    function testDropzone() {
+        return {
+            fileName: null,
+            
+            handleFile(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    this.fileName = file.name;
+                    console.log('🔧 Dropzone file:', file);
+                    console.log('🔧 File details:', {
+                        name: file.name,
+                        size: file.size,
+                        type: file.type
+                    });
+                }
+            }
+        }
+    }
+    </script>
+</body>
+</html>

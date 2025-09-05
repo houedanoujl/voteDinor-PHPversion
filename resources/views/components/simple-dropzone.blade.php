@@ -56,7 +56,7 @@
         <!-- Fichier HEIC info -->
         <div x-show="isHeic && !preview" class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
             <p class="text-sm text-blue-800">
-                📱 <strong>Fichier HEIC détecté :</strong> {{ fileName || 'Fichier sélectionné' }}
+                📱 <strong>Fichier HEIC détecté :</strong> <span x-text="fileName || 'Fichier sélectionné'"></span>
             </p>
             <p class="text-xs text-blue-600 mt-1">
                 Les fichiers HEIC ne peuvent pas être prévisualisés mais sont acceptés
@@ -88,8 +88,13 @@ function simpleDropzone() {
         
         handleFileSelect(event) {
             const file = event.target.files[0];
+            console.log('🔧 File selected:', file);
             if (file) {
                 this.processFile(file);
+                // S'assurer que Livewire détecte le changement
+                this.$nextTick(() => {
+                    this.$refs.fileInput.dispatchEvent(new Event('input', { bubbles: true }));
+                });
             }
         },
         
@@ -97,13 +102,30 @@ function simpleDropzone() {
             this.dragover = false;
             const files = event.dataTransfer.files;
             if (files.length > 0) {
-                this.processFile(files[0]);
+                // Assigner le fichier déposé à l'input caché pour que Livewire le prenne en compte
+                try {
+                    const dt = new DataTransfer();
+                    dt.items.add(files[0]);
+                    this.$refs.fileInput.files = dt.files;
+                    // Déclencher l'événement change et input pour Livewire
+                    this.$refs.fileInput.dispatchEvent(new Event('change', { bubbles: true }));
+                    this.$refs.fileInput.dispatchEvent(new Event('input', { bubbles: true }));
+                } catch (e) {
+                    // Fallback: si DataTransfer n'est pas supporté, traiter directement pour l'aperçu
+                    this.processFile(files[0]);
+                }
             }
         },
         
         processFile(file) {
             this.error = null;
             this.isHeic = false;
+            
+            console.log('🔧 Processing file:', {
+                name: file.name,
+                size: file.size,
+                type: file.type
+            });
             
             // Validation taille
             const maxBytes = {{ $maxSize }} * 1024 * 1024;

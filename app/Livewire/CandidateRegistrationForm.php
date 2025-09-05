@@ -32,8 +32,8 @@ class CandidateRegistrationForm extends Component
         'prenom' => 'required|min:2|max:255',
         'nom' => 'required|min:2|max:255',
         'whatsapp' => 'required|regex:/^\+225[0-9]{10}$/|unique:candidates,whatsapp',
-        // Par défaut: autoriser les formats y compris HEIC/HEIF, taille 5MB
-        'photo' => 'required|mimes:jpeg,jpg,png,gif,webp,heic,heif|max:5120',
+        // JPG et PNG uniquement, taille 5MB
+        'photo' => 'required|mimes:jpeg,jpg,png|max:5120',
     ];
 
     protected $messages = [
@@ -43,7 +43,7 @@ class CandidateRegistrationForm extends Component
         'whatsapp.regex' => 'Format requis: +225 suivi de 10 chiffres',
         'whatsapp.unique' => 'Ce numéro WhatsApp est déjà utilisé.',
         'photo.required' => 'Une photo est obligatoire.',
-        'photo.mimes' => 'Formats acceptés: JPEG, JPG, PNG, GIF, WebP, HEIC.',
+        'photo.mimes' => 'Formats acceptés: JPG, PNG uniquement.',
         'photo.max' => 'La photo ne doit pas dépasser 5MB.',
     ];
 
@@ -69,7 +69,7 @@ class CandidateRegistrationForm extends Component
             try {
                 // Validation immédiate pour voir si le fichier est accepté
                 $this->validate([
-                    'photo' => 'file|mimes:jpeg,jpg,png,gif,webp,heic,heif|max:5120'
+                    'photo' => 'file|mimes:jpeg,jpg,png|max:5120'
                 ]);
                 
                 Log::info('✅ Photo mobile validée avec succès');
@@ -144,12 +144,12 @@ class CandidateRegistrationForm extends Component
             // Validation dynamique: photo obligatoire si les uploads sont activés
             $dynamicRules = $this->rules;
             $uploadsEnabled = $settings?->uploads_enabled ?? true;
-            $photoRule = 'file|mimes:jpeg,jpg,png,gif,webp,heic,heif|max:5120'; // 5MB
+            $photoRule = 'file|mimes:jpeg,jpg,png|max:5120'; // 5MB, JPG/PNG seulement
             
             if ($uploadsEnabled === false) {
                 $dynamicRules['photo'] = 'nullable|' . $photoRule;
             } else {
-                // Validation plus permissive pour mobile avec 'file' explicite
+                // Validation stricte JPG/PNG seulement
                 $dynamicRules['photo'] = 'required|' . $photoRule;
             }
             

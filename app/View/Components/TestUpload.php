@@ -6,18 +6,14 @@ use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class SimpleDropzone extends Component
+class TestUpload extends Component
 {
-    public string $wireModel;
-    public int $maxSize;
-
     /**
      * Create a new component instance.
      */
-    public function __construct(string $wireModel = 'photo', int $maxSize = 5)
+    public function __construct()
     {
-        $this->wireModel = $wireModel;
-        $this->maxSize = $maxSize;
+        //
     }
 
     /**
@@ -25,6 +21,6 @@ class SimpleDropzone extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.simple-dropzone');
+        return view('components.test-upload');
     }
 }

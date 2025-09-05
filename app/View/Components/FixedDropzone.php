@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class SimpleDropzone extends Component
+class FixedDropzone extends Component
 {
     public string $wireModel;
     public int $maxSize;
@@ -25,6 +25,6 @@ class SimpleDropzone extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.simple-dropzone');
+        return view('components.fixed-dropzone');
     }
 }
