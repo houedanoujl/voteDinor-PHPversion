@@ -32,7 +32,8 @@ class CandidateRegistrationForm extends Component
         'prenom' => 'required|min:2|max:255',
         'nom' => 'required|min:2|max:255',
         'whatsapp' => 'required|regex:/^\+225[0-9]{10}$/|unique:candidates,whatsapp',
-        'photo' => 'required|mimes:jpeg,jpg,png,gif,webp,heic|max:51200',
+        // Par défaut: autoriser les formats y compris HEIC/HEIF, taille 5MB
+        'photo' => 'required|mimes:jpeg,jpg,png,gif,webp,heic,heif|max:5120',
     ];
 
     protected $messages = [
@@ -43,13 +44,27 @@ class CandidateRegistrationForm extends Component
         'whatsapp.unique' => 'Ce numéro WhatsApp est déjà utilisé.',
         'photo.required' => 'Une photo est obligatoire.',
         'photo.mimes' => 'Formats acceptés: JPEG, JPG, PNG, GIF, WebP, HEIC.',
-        'photo.max' => 'La photo ne doit pas dépasser 50MB.',
+        'photo.max' => 'La photo ne doit pas dépasser 5MB.',
     ];
 
     public function updatedPhoto()
     {
         if ($this->photo) {
-            $this->tempPhotoUrl = $this->photo->temporaryUrl();
+            try {
+                $ext = strtolower($this->photo->getClientOriginalExtension() ?? pathinfo($this->photo->getClientOriginalName(), PATHINFO_EXTENSION));
+                $previewable = in_array($ext, config('livewire.temporary_file_upload.preview_mimes', []));
+                if ($previewable) {
+                    $this->tempPhotoUrl = $this->photo->temporaryUrl();
+                } else {
+                    // Fichier non prévisualisable (ex: si config non à jour) -> pas d'URL temporaire
+                    $this->tempPhotoUrl = null;
+                }
+            } catch (\Throwable $e) {
+                \Log::warning('Livewire temporaryUrl() failed for uploaded photo', [
+                    'error' => $e->getMessage(),
+                ]);
+                $this->tempPhotoUrl = null;
+            }
         }
     }
 
@@ -68,10 +83,11 @@ class CandidateRegistrationForm extends Component
             // Validation dynamique: photo obligatoire si les uploads sont activés
             $dynamicRules = $this->rules;
             $uploadsEnabled = $settings?->uploads_enabled ?? true;
+            $photoRule = 'mimes:jpeg,jpg,png,gif,webp,heic,heif|max:5120'; // 5MB
             if ($uploadsEnabled === false) {
-                $dynamicRules['photo'] = 'nullable|image|max:3072';
+                $dynamicRules['photo'] = 'nullable|' . $photoRule;
             } else {
-                $dynamicRules['photo'] = 'required|image|max:3072';
+                $dynamicRules['photo'] = 'required|' . $photoRule;
             }
             $this->validate($dynamicRules);
 

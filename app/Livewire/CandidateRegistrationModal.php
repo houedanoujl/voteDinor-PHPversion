@@ -31,7 +31,8 @@ class CandidateRegistrationModal extends Component
         'prenom' => 'required|min:2|max:255',
         'nom' => 'required|min:2|max:255',
         'whatsapp' => 'required|regex:/^\+225[0-9]{10}$/|unique:candidates,whatsapp',
-        'photo' => 'required|image|max:51200',
+        // Autoriser HEIC/HEIF (50MB max au niveau global du composant)
+        'photo' => 'required|mimes:jpeg,jpg,png,gif,webp,heic,heif|max:51200',
     ];
 
     protected $messages = [
@@ -41,7 +42,7 @@ class CandidateRegistrationModal extends Component
         'whatsapp.regex' => 'Format requis: +225 suivi de 10 chiffres',
         'whatsapp.unique' => 'Ce numéro WhatsApp est déjà utilisé.',
         'photo.required' => 'Une photo est obligatoire.',
-        'photo.image' => 'Le fichier doit être une image.',
+        'photo.mimes' => 'Formats acceptés: JPEG, JPG, PNG, GIF, WebP, HEIC.',
         'photo.max' => 'La photo ne doit pas dépasser 50MB.',
         'photo.max_file_size' => 'La photo est trop grande. Maximum autorisé: 50MB.'
     ];
@@ -62,7 +63,7 @@ class CandidateRegistrationModal extends Component
 
     public function updatedPhoto()
     {
-        // Vérifier la taille du fichier avant la validation
+        // Vérifier la taille du fichier avant la validation (3MB pour l'aperçu rapide)
         if ($this->photo && $this->photo->getSize() > 3072000) { // 3MB en bytes
             $this->addError('photo', 'La photo est trop grande. Maximum autorisé: 3MB.');
             $this->photo = null;
@@ -70,10 +71,24 @@ class CandidateRegistrationModal extends Component
             return;
         }
 
-        $this->validate(['photo' => 'image|max:3072']);
+        // Valider avec mimes incluant HEIC/HEIF pour compatibilité
+        $this->validate(['photo' => 'mimes:jpeg,jpg,png,gif,webp,heic,heif|max:3072']);
 
         if ($this->photo) {
-            $this->tempPhotoUrl = $this->photo->temporaryUrl();
+            try {
+                $ext = strtolower($this->photo->getClientOriginalExtension() ?? pathinfo($this->photo->getClientOriginalName(), PATHINFO_EXTENSION));
+                $previewable = in_array($ext, config('livewire.temporary_file_upload.preview_mimes', []));
+                if ($previewable) {
+                    $this->tempPhotoUrl = $this->photo->temporaryUrl();
+                } else {
+                    $this->tempPhotoUrl = null;
+                }
+            } catch (\Throwable $e) {
+                \Log::warning('Livewire temporaryUrl() failed in modal for uploaded photo', [
+                    'error' => $e->getMessage(),
+                ]);
+                $this->tempPhotoUrl = null;
+            }
         }
     }
 
@@ -90,7 +105,7 @@ class CandidateRegistrationModal extends Component
             'prenom' => 'required|min:2|max:255',
             'nom' => 'required|min:2|max:255',
             'whatsapp' => 'required|regex:/^\+225[0-9]{10}$/|unique:candidates,whatsapp',
-            'photo' => 'required|image|max:3072',
+            'photo' => 'required|mimes:jpeg,jpg,png,gif,webp,heic,heif|max:3072',
         ];
 
         // Ajouter la validation email seulement si l'utilisateur n'est pas connecté

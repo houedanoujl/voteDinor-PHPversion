@@ -45,7 +45,7 @@
                 Votre photo de concours @if(($settings?->uploads_enabled ?? true) === false)<span class="text-xs text-gray-500 font-normal">(upload temporairement désactivé)</span>@endif
             </label>
 
-            <input type="file" id="photo" wire:model="photo" accept="image/*,.heic,.webp" @if(($settings?->uploads_enabled ?? true) === false) disabled @endif
+            <input type="file" id="photo" wire:model="photo" accept="image/*,.heic,.heif,.webp" @if(($settings?->uploads_enabled ?? true) === false) disabled @endif
                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100">
 
             <p class="mt-2 text-sm text-gray-500">Formats acceptés: PNG, JPG, JPEG, WebP, HEIC. Taille maximale: 5MB.</p>

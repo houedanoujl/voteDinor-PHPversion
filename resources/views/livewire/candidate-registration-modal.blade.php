@@ -66,7 +66,7 @@
                                     <input
                                         type="file"
                                         wire:model="photo"
-                                        accept="image/*"
+                                        accept="image/*,.heic,.heif,.webp"
                                         class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                                     >
                                 </div>
