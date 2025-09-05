@@ -14,7 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'livewire.upload' => \App\Http\Middleware\LivewireUploadMiddleware::class,
         ]);
-        
+
         // Appliquer le middleware globalement
         $middleware->web(append: [
             \App\Http\Middleware\LivewireUploadMiddleware::class,

@@ -19,14 +19,14 @@ class LivewireUploadMiddleware
         if ($request->is('livewire/upload-file') || $request->is('livewire/*')) {
             // Augmenter la limite de mémoire pour les gros fichiers
             ini_set('memory_limit', '1024M');
-            
+
             // Augmenter le temps d'exécution
             ini_set('max_execution_time', 300);
-            
+
             // Augmenter la limite de taille de fichier
             ini_set('upload_max_filesize', '50M');
             ini_set('post_max_size', '50M');
-            
+
             // Log pour debug
             \Log::info('LivewireUploadMiddleware applied', [
                 'url' => $request->url(),
