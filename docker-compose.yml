@@ -27,7 +27,7 @@ services:
     container_name: dinor_webserver
     restart: unless-stopped
     ports:
-      - "8080:80"
+      - "0.0.0.0:8080:80"
     volumes:
       - ./:/var/www
       - ./docker/nginx/conf.d/:/etc/nginx/conf.d/

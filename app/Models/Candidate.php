@@ -150,8 +150,30 @@ class Candidate extends Model implements HasMedia
      */
     public function getThumbPhotoUrl(): string
     {
+        // D'abord essayer les URLs optimisées
         $urls = $this->getOptimizedPhotoUrls();
-        return $urls['thumb'] ?? $urls['original'] ?? '/images/placeholder-avatar.svg';
+        
+        // Si on a un thumbnail optimisé, l'utiliser
+        if (isset($urls['thumb']) && $urls['thumb'] !== '/images/placeholder-avatar.svg') {
+            return $urls['thumb'];
+        }
+        
+        // Sinon, essayer de générer dynamiquement l'URL du thumbnail
+        $photoUrl = $this->getPhotoUrl();
+        if ($photoUrl && $photoUrl !== '/images/placeholder-avatar.svg') {
+            $pathInfo = pathinfo($photoUrl);
+            $filename = $pathInfo['filename'];
+            $extension = $pathInfo['extension'] ?? 'jpg';
+            
+            // Vérifier si un thumbnail existe
+            $thumbPath = "candidates/{$filename}_thumb.{$extension}";
+            if (Storage::disk('public')->exists($thumbPath)) {
+                return Storage::disk('public')->url($thumbPath);
+            }
+        }
+        
+        // En dernier recours, retourner l'image originale ou le placeholder
+        return $urls['original'] ?? '/images/placeholder-avatar.svg';
     }
 
     /**

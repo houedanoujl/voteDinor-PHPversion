@@ -26,9 +26,20 @@ class ImageOptimizationService
     public function optimizeImage(string $imagePath, string $directory = 'candidates'): array
     {
         try {
+            $originalPath = $imagePath;
+            $isHeic = strtolower(pathinfo($imagePath, PATHINFO_EXTENSION)) === 'heic';
+            
+            // Gestion spéciale pour les fichiers HEIC - convertir en JPEG mais garder l'original
+            if ($isHeic) {
+                $convertedPath = $this->convertHeicToJpeg($imagePath, true); // true = conserver original
+                if ($convertedPath !== $imagePath) {
+                    $imagePath = $convertedPath; // Utiliser le JPEG converti pour l'optimisation
+                }
+            }
+            
             $image = $this->manager->read($imagePath);
-            $filename = pathinfo($imagePath, PATHINFO_FILENAME);
-            $extension = pathinfo($imagePath, PATHINFO_EXTENSION);
+            $filename = pathinfo($originalPath, PATHINFO_FILENAME); // Utiliser le nom original
+            $extension = $isHeic ? 'jpg' : pathinfo($imagePath, PATHINFO_EXTENSION);
             
             $optimizedImages = [];
 
@@ -185,5 +196,75 @@ class ImageOptimizationService
         }
 
         return $urls;
+    }
+
+    /**
+     * Convertit un fichier HEIC en JPEG pour compatibilité
+     * 
+     * @param string $heicPath
+     * @param bool $preserveOriginal Conserver le fichier HEIC original
+     * @return string
+     */
+    private function convertHeicToJpeg(string $heicPath, bool $preserveOriginal = false): string
+    {
+        try {
+            // Utiliser le convertisseur système si disponible (ImageMagick avec support HEIC)
+            $filename = pathinfo($heicPath, PATHINFO_FILENAME);
+            $directory = dirname($heicPath);
+            $jpegPath = $directory . '/' . $filename . '_converted.jpg';
+            
+            // Tentative avec convert (ImageMagick)
+            $command = "convert " . escapeshellarg($heicPath) . " -quality 90 " . escapeshellarg($jpegPath);
+            exec($command, $output, $returnCode);
+            
+            if ($returnCode === 0 && file_exists($jpegPath)) {
+                if (!$preserveOriginal) {
+                    unlink($heicPath); // Supprimer seulement si on ne veut pas préserver
+                }
+                Log::info("HEIC converti avec ImageMagick", ['original' => $heicPath, 'converted' => $jpegPath]);
+                return $jpegPath;
+            }
+            
+            // Fallback : utiliser Intervention Image (peut ne pas supporter HEIC)
+            try {
+                $image = $this->manager->read($heicPath);
+                file_put_contents($jpegPath, $image->toJpeg(90));
+                
+                if (!$preserveOriginal) {
+                    unlink($heicPath);
+                }
+                Log::info("HEIC converti avec Intervention Image", ['original' => $heicPath, 'converted' => $jpegPath]);
+                return $jpegPath;
+            } catch (\Exception $interventionError) {
+                Log::warning("Intervention Image ne peut pas lire le HEIC: " . $interventionError->getMessage());
+            }
+            
+            // Si tout échoue, retourner l'original
+            Log::warning("Impossible de convertir le fichier HEIC, utilisation de l'original", [
+                'file' => $heicPath
+            ]);
+            return $heicPath;
+            
+        } catch (\Exception $e) {
+            Log::error("Erreur lors de la conversion HEIC: " . $e->getMessage(), [
+                'file' => $heicPath
+            ]);
+            return $heicPath;
+        }
+    }
+
+    /**
+     * Optimise une image avec mise en cache pour éviter les retraitements
+     */
+    public function getOptimizedImageUrl(string $originalPath, string $size = 'thumb'): string
+    {
+        $cacheKey = "optimized_image_" . md5($originalPath . $size);
+        
+        return \Illuminate\Support\Facades\Cache::remember($cacheKey, 3600, function () use ($originalPath, $size) {
+            $urls = $this->getOptimizedUrls($originalPath);
+            
+            // Retourner l'URL selon la taille demandée
+            return $urls[$size] ?? $urls['original'] ?? $originalPath;
+        });
     }
 }

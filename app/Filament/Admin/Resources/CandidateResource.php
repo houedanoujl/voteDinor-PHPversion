@@ -226,6 +226,78 @@ class CandidateResource extends Resource
                     DeleteBulkAction::make(),
                 ]),
             ])
+            ->headerActions([
+                Action::make('convertHeic')
+                    ->label('🍎 Convertir HEIC')
+                    ->icon('heroicon-o-photo')
+                    ->color('warning')
+                    ->form([
+                        Forms\Components\Toggle::make('backup')
+                            ->label('Sauvegarder les fichiers originaux')
+                            ->default(true)
+                            ->helperText('Les fichiers HEIC originaux seront conservés dans un dossier backup'),
+                        Forms\Components\Toggle::make('update_db')
+                            ->label('Mettre à jour la base de données')
+                            ->default(true)
+                            ->helperText('Met à jour automatiquement les références dans la base de données'),
+                    ])
+                    ->action(function (array $data) {
+                        try {
+                            $command = 'candidates:convert-heic';
+                            $parameters = [];
+                            
+                            if ($data['backup']) {
+                                $parameters['--backup'] = true;
+                            }
+                            if ($data['update_db']) {
+                                $parameters['--update-db'] = true;
+                            }
+                            
+                            $exitCode = \Illuminate\Support\Facades\Artisan::call($command, $parameters);
+                            $output = \Illuminate\Support\Facades\Artisan::output();
+                            
+                            \Log::info('HEIC Conversion Output:', ['output' => $output, 'exitCode' => $exitCode]);
+                            
+                            // Parser le résultat pour extraire les statistiques
+                            preg_match('/✅ Convertis.*?(\d+)/', $output, $converted);
+                            preg_match('/❌ Erreurs.*?(\d+)/', $output, $errors);
+                            
+                            $convertedCount = isset($converted[1]) ? (int)$converted[1] : 0;
+                            $errorCount = isset($errors[1]) ? (int)$errors[1] : 0;
+                            
+                            if ($exitCode !== 0) {
+                                throw new \Exception("Commande échouée (code {$exitCode}): " . strip_tags($output));
+                            }
+                            
+                            if ($convertedCount > 0) {
+                                Notification::make()
+                                    ->title('Conversion HEIC terminée !')
+                                    ->body("✅ {$convertedCount} fichier(s) converti(s) • ❌ {$errorCount} erreur(s)")
+                                    ->success()
+                                    ->duration(10000)
+                                    ->send();
+                            } else {
+                                Notification::make()
+                                    ->title('Aucun fichier HEIC trouvé')
+                                    ->body('Pas de conversion nécessaire')
+                                    ->info()
+                                    ->send();
+                            }
+                            
+                        } catch (\Exception $e) {
+                            Notification::make()
+                                ->title('Erreur lors de la conversion HEIC')
+                                ->body($e->getMessage())
+                                ->danger()
+                                ->duration(10000)
+                                ->send();
+                        }
+                    })
+                    ->modalHeading('🍎 Conversion HEIC → JPEG (Anti-iOS)')
+                    ->modalDescription('Convertit automatiquement tous les fichiers HEIC uploadés par les utilisateurs iOS en format JPEG standard.')
+                    ->modalSubmitActionLabel('Lancer la conversion')
+                    ->requiresConfirmation(),
+            ])
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
                     ->label('Statut')

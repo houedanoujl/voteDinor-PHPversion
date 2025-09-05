@@ -27,23 +27,14 @@
             <div class="group relative overflow-hidden cursor-pointer transform hover:scale-105 transition-all duration-300">
                 <!-- Image optimisée directe -->
                 <div onclick="openPhotoLightbox('{{ $candidate['photo_url'] }}', '{{ $candidate['prenom'] }} {{ $candidate['nom'] }}')" class="relative">
-                    @php
-                        // Utiliser l'URL thumbnail propre sans double suffixe
-                        $thumbUrl = $candidate['photo_url'];
-                        if ($thumbUrl !== '/images/placeholder-avatar.svg') {
-                            // Éviter la double génération de _thumb
-                            if (strpos($thumbUrl, '_thumb') === false) {
-                                $thumbUrl = str_replace(['.jpg', '.jpeg', '.png'], '_thumb.jpg', $thumbUrl);
-                            }
-                        }
-                    @endphp
-
-                    <!-- Image directe (avec fallback vers originale si optimisée n'existe pas) -->
+                    <!-- Image optimisée avec lazy loading et cache intelligent -->
                     <img
-                        src="{{ $thumbUrl }}"
+                        src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect width='100%25' height='100%25' fill='%23f3f4f6'/%3E%3C/svg%3E"
+                        data-src="{{ $candidate['thumb_url'] ?? $candidate['photo_url'] }}"
                         alt="Photo de {{ $candidate['prenom'] }} {{ $candidate['nom'] }}"
-                        class="w-full h-[300px] object-cover rounded-lg"
-                        onerror="this.src='{{ $candidate['photo_url'] }}'"
+                        class="w-full h-[300px] object-cover rounded-lg lazy-image"
+                        loading="lazy"
+                        data-fallback="{{ $candidate['photo_url'] }}"
                     >
 
                     <!-- Overlay au hover -->
@@ -250,6 +241,49 @@
         if (event.key === 'Escape') {
             closePhotoLightbox();
         }
+    });
+
+    // Lazy loading intelligent pour les images
+    const lazyImageObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                const src = img.dataset.src;
+                const fallback = img.dataset.fallback;
+                
+                if (src) {
+                    // Charger l'image optimisée
+                    const newImg = new Image();
+                    newImg.onload = () => {
+                        img.src = src;
+                        img.classList.remove('lazy-image');
+                    };
+                    newImg.onerror = () => {
+                        // Fallback vers l'image originale seulement en cas d'erreur
+                        if (fallback && fallback !== src) {
+                            img.src = fallback;
+                        }
+                        img.classList.remove('lazy-image');
+                    };
+                    newImg.src = src;
+                }
+                observer.unobserve(img);
+            }
+        });
+    });
+
+    // Observer toutes les images lazy
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.lazy-image').forEach(img => {
+            lazyImageObserver.observe(img);
+        });
+    });
+
+    // Observer les nouvelles images après les mises à jour Livewire
+    document.addEventListener('livewire:navigated', function() {
+        document.querySelectorAll('.lazy-image').forEach(img => {
+            lazyImageObserver.observe(img);
+        });
     });
 
     // Écouter l'événement Livewire pour afficher le modal

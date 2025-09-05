@@ -47,17 +47,9 @@ class CandidatesGallery extends Component
 
             return [
                 'candidates' => $candidates->map(function ($candidate) {
-                    // Utiliser les URLs optimisées si disponibles
+                    // Utiliser les URLs optimisées du modèle
                     $photoUrl = $candidate->getPhotoUrl() ?: '/images/placeholder-avatar.svg';
-                    
-                    // Essayer de générer une URL thumbnail optimisée
-                    if ($photoUrl !== '/images/placeholder-avatar.svg') {
-                        // Si l'URL contient déjà une version optimisée, la garder
-                        if (!str_contains($photoUrl, '_thumb') && !str_contains($photoUrl, '_main') && !str_contains($photoUrl, '_small')) {
-                            // Sinon essayer de créer une version thumbnail
-                            $photoUrl = str_replace(['.jpg', '.jpeg', '.png'], '_thumb.jpg', $photoUrl);
-                        }
-                    }
+                    $thumbUrl = $candidate->getThumbPhotoUrl();
                     
                     return [
                         'id' => $candidate->id,
@@ -65,6 +57,7 @@ class CandidatesGallery extends Component
                         'nom' => $candidate->nom,
                         'votes_count' => $candidate->votes_count,
                         'photo_url' => $photoUrl,
+                        'thumb_url' => $thumbUrl,
                         'description' => $candidate->description,
                     ];
                 })->toArray(),
