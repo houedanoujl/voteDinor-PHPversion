@@ -45,10 +45,26 @@
                 Votre photo de concours @if(($settings?->uploads_enabled ?? true) === false)<span class="text-xs text-gray-500 font-normal">(upload temporairement désactivé)</span>@endif
             </label>
 
-            <input type="file" id="photo" wire:model="photo" accept="image/*,.heic,.heif,.webp" @if(($settings?->uploads_enabled ?? true) === false) disabled @endif
-                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100">
+            <input type="file" 
+                   id="photo" 
+                   wire:model="photo" 
+                   accept="image/*,.heic,.heif,.webp,.jpg,.jpeg,.png,.gif" 
+                   capture="environment"
+                   @if(($settings?->uploads_enabled ?? true) === false) disabled @endif
+                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100"
+                   onchange="console.log('Fichier sélectionné:', this.files[0]); window.Livewire.emit('photoSelected', this.files[0]?.name);">
 
-            <p class="mt-2 text-sm text-gray-500">Formats acceptés: PNG, JPG, JPEG, WebP, HEIC. Taille maximale: 5MB.</p>
+            <p class="mt-2 text-sm text-gray-500">
+                📱 <strong>Mobile:</strong> Choisir un fichier ou prendre une photo<br>
+                📁 Formats acceptés: PNG, JPG, JPEG, WebP, HEIC. Taille max: 5MB
+            </p>
+            
+            <!-- Debug info pour mobile -->
+            @if(app()->environment('local'))
+                <div class="mt-2 text-xs text-blue-600 bg-blue-50 p-2 rounded">
+                    🔧 Debug: @if($photo) Fichier détecté: {{ $photo->getClientOriginalName() ?? 'Nom non disponible' }} @else Aucun fichier sélectionné @endif
+                </div>
+            @endif
 
             @error('photo')
                 <p class="mt-2 text-sm text-red-600">{{ $message }}</p>

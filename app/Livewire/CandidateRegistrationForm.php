@@ -49,23 +49,60 @@ class CandidateRegistrationForm extends Component
 
     public function updatedPhoto()
     {
+        Log::info('📱 PHOTO UPDATED - Debug Mobile', [
+            'photo_present' => $this->photo !== null,
+            'photo_class' => $this->photo ? get_class($this->photo) : 'null',
+            'user_agent' => request()->header('User-Agent'),
+        ]);
+        
         if ($this->photo) {
+            Log::info('📱 DÉTAILS PHOTO MOBILE', [
+                'filename' => $this->photo->getClientOriginalName(),
+                'size' => $this->photo->getSize(),
+                'mime' => $this->photo->getMimeType(),
+                'extension' => $this->photo->getClientOriginalExtension(),
+                'is_valid' => $this->photo->isValid(),
+                'error' => $this->photo->getError(),
+                'path' => $this->photo->getRealPath(),
+            ]);
+            
             try {
+                // Validation immédiate pour voir si le fichier est accepté
+                $this->validate([
+                    'photo' => 'file|mimes:jpeg,jpg,png,gif,webp,heic,heif|max:5120'
+                ]);
+                
+                Log::info('✅ Photo mobile validée avec succès');
+                
+                // Générer preview
                 $ext = strtolower($this->photo->getClientOriginalExtension() ?? pathinfo($this->photo->getClientOriginalName(), PATHINFO_EXTENSION));
                 $previewable = in_array($ext, config('livewire.temporary_file_upload.preview_mimes', []));
                 if ($previewable) {
                     $this->tempPhotoUrl = $this->photo->temporaryUrl();
                 } else {
-                    // Fichier non prévisualisable (ex: si config non à jour) -> pas d'URL temporaire
                     $this->tempPhotoUrl = null;
                 }
+                
             } catch (\Throwable $e) {
-                \Log::warning('Livewire temporaryUrl() failed for uploaded photo', [
+                Log::error('❌ Erreur validation photo mobile', [
                     'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString()
                 ]);
                 $this->tempPhotoUrl = null;
             }
+        } else {
+            Log::warning('⚠️  Photo est null après update');
         }
+    }
+    
+    protected $listeners = ['photoSelected'];
+    
+    public function photoSelected($filename)
+    {
+        Log::info('🎯 Photo sélectionnée via JavaScript', [
+            'filename' => $filename,
+            'current_photo_state' => $this->photo !== null ? 'present' : 'null'
+        ]);
     }
 
     public function submit()
@@ -73,6 +110,29 @@ class CandidateRegistrationForm extends Component
         $this->isSubmitting = true;
 
         try {
+            Log::info('Début de soumission candidature mobile', [
+                'prenom' => $this->prenom,
+                'nom' => $this->nom,
+                'whatsapp' => $this->whatsapp,
+                'photo_present' => $this->photo !== null,
+                'photo_type' => $this->photo ? get_class($this->photo) : 'null',
+                'user_agent' => request()->header('User-Agent'),
+            ]);
+
+            // Debug de la photo uploadée
+            if ($this->photo) {
+                Log::info('Photo upload details', [
+                    'filename' => $this->photo->getClientOriginalName(),
+                    'size' => $this->photo->getSize(),
+                    'mime' => $this->photo->getMimeType(),
+                    'extension' => $this->photo->getClientOriginalExtension(),
+                    'is_valid' => $this->photo->isValid(),
+                    'path' => $this->photo->getRealPath(),
+                ]);
+            } else {
+                Log::warning('Aucune photo détectée lors de la soumission mobile');
+            }
+
             // Check if applications are open
             $settings = SiteSetting::first();
             if ($settings && !$settings->applications_open) {
@@ -80,15 +140,24 @@ class CandidateRegistrationForm extends Component
                 session()->flash('error', 'Les candidatures sont actuellement fermées.');
                 return;
             }
+            
             // Validation dynamique: photo obligatoire si les uploads sont activés
             $dynamicRules = $this->rules;
             $uploadsEnabled = $settings?->uploads_enabled ?? true;
-            $photoRule = 'mimes:jpeg,jpg,png,gif,webp,heic,heif|max:5120'; // 5MB
+            $photoRule = 'file|mimes:jpeg,jpg,png,gif,webp,heic,heif|max:5120'; // 5MB
+            
             if ($uploadsEnabled === false) {
                 $dynamicRules['photo'] = 'nullable|' . $photoRule;
             } else {
+                // Validation plus permissive pour mobile avec 'file' explicite
                 $dynamicRules['photo'] = 'required|' . $photoRule;
             }
+            
+            Log::info('Règles de validation mobile', [
+                'rules' => $dynamicRules,
+                'uploads_enabled' => $uploadsEnabled
+            ]);
+            
             $this->validate($dynamicRules);
 
             // Si un utilisateur est connecté, interdire la création si une candidature existe déjà
