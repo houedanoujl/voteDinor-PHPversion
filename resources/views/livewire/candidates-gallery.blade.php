@@ -117,21 +117,12 @@
                     <h3 class="text-3xl font-bold text-gray-900 mb-4">Aucun candidat pour le moment</h3>
                     <p class="text-gray-600 mb-8 text-lg">Soyez le premier à participer au concours photo DINOR !</p>
 
-                    @auth
-                        <button
-                            onclick="openCandidateModal()"
-                            class="bg-orange-600 hover:bg-orange-700 text-white px-8 py-4 text-lg inline-block rounded-lg font-medium transition-colors"
-                        >
-                            📸 S'inscrire et poster une photo
-                        </button>
-                    @else
-                        <button
-                            onclick="openCandidateModal()"
-                            class="bg-orange-600 hover:bg-orange-700 text-white px-8 py-4 text-lg inline-block rounded-lg font-medium transition-colors"
-                        >
-                            📸 S'inscrire et poster une photo
-                        </button>
-                    @endauth
+                    <a
+                        href="{{ route('register') }}"
+                        class="bg-orange-600 hover:bg-orange-700 text-white px-8 py-4 text-lg inline-block rounded-lg font-medium transition-colors"
+                    >
+                        📸 S'inscrire et poster une photo
+                    </a>
                 </div>
             </div>
         @endforelse
