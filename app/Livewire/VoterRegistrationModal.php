@@ -37,6 +37,7 @@ class VoterRegistrationModal extends Component
 
     public function openModal()
     {
+        \Log::info('VoterRegistrationModal: openModal called');
         $this->showModal = true;
         $this->resetForm();
     }

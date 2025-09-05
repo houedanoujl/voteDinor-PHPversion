@@ -15,6 +15,11 @@ class RegisterController extends Controller
     {
         return view('auth.register');
     }
+    
+    public function showVoterRegistrationForm()
+    {
+        return view('auth.register-voter');
+    }
 
     public function register(Request $request)
     {

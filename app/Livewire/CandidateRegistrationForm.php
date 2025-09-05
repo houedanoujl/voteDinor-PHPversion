@@ -298,13 +298,21 @@ class CandidateRegistrationForm extends Component
             // Réinitialiser le formulaire
             $this->resetForm();
 
-            // Message de succès
+            // Message de succès avec informations détaillées
             session()->flash('success', 'Votre inscription a été envoyée avec succès ! ' .
                 ($existingUser ? 'Votre numéro était déjà enregistré, nous avons connecté votre compte. ' : '') .
                 'Vous recevrez une notification WhatsApp dès validation.');
+            
+            // Stocker les données pour la page de confirmation
+            session()->flash('candidate_data', [
+                'name' => $this->prenom . ' ' . $this->nom,
+                'photo' => $photoPath,
+                'whatsapp' => $whatsappWithPrefix,
+                'existing_user' => (bool) $existingUser
+            ]);
 
-            // Redirection vers le tableau de bord
-            return redirect()->route('dashboard');
+            // Redirection vers la page de confirmation candidat
+            return redirect()->route('candidate.confirmation');
 
         } catch (\Illuminate\Validation\ValidationException $e) {
             $this->isSubmitting = false;

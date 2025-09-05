@@ -61,10 +61,16 @@
 
             <div class="mt-6">
                 <p class="text-sm text-gray-700 mb-3">Pas encore de compte ?</p>
-                <button type="button" onclick="openVoterModal()"
-                        class="w-full py-2.5 px-4 rounded-lg border border-dinor-beige text-dinor-brown hover:bg-dinor-beige/40 transition">
-                    Créer un compte
-                </button>
+                <div class="space-y-3">
+                    <a href="{{ route('register.voter') }}"
+                       class="w-full py-2.5 px-4 rounded-lg border border-dinor-beige text-dinor-brown hover:bg-dinor-beige/40 transition block text-center">
+                        Créer un compte votant
+                    </a>
+                    <a href="{{ route('register') }}"
+                       class="w-full py-2.5 px-4 rounded-lg bg-dinor-orange text-white hover:bg-dinor-orange/90 transition block text-center">
+                        Poster ma photo
+                    </a>
+                </div>
             </div>
 
             <div class="mt-4 pt-4 border-t border-dinor-beige">
@@ -76,46 +82,5 @@
     </div>
 </div>
 
-<!-- Modal d'inscription votant -->
-<div id="voterModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center p-4">
-    <div class="bg-white rounded-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
-        <div class="p-6">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-xl font-bold text-gray-900">Créer un compte votant</h2>
-                <button onclick="closeVoterModal()" class="text-gray-400 hover:text-gray-600">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
-            </div>
-            @livewire('voter-registration-form')
-        </div>
-    </div>
-    </div>
 
-@push('scripts')
-<script>
-    function openVoterModal() {
-        document.getElementById('voterModal').classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeVoterModal() {
-        document.getElementById('voterModal').classList.add('hidden');
-        document.body.style.overflow = 'auto';
-    }
-
-    // Fermer la modale en cliquant à l'extérieur
-    document.getElementById('voterModal').addEventListener('click', function(e) {
-        if (e.target === this) closeVoterModal();
-    });
-
-    // Fermer avec Escape
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            closeVoterModal();
-        }
-    });
-</script>
-@endpush
 @endsection

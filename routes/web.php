@@ -15,6 +15,13 @@ Route::get('/', [HomeController::class, 'index'])->name('contest.home');
 Route::get('/classement', [HomeController::class, 'ranking'])->name('contest.ranking');
 Route::get('/regles', [\App\Http\Controllers\ContestRulesController::class, 'index'])->name('contest.rules');
 Route::get('/inscription/confirmation', [\App\Http\Controllers\RegistrationConfirmationController::class, 'show'])->name('registration.confirmation');
+Route::get('/candidat/confirmation', function() {
+    // Vérifier que nous avons les données de session
+    if (!session()->has('candidate_data')) {
+        return redirect()->route('contest.home')->with('info', 'Aucune candidature en cours.');
+    }
+    return view('auth.candidate-confirmation');
+})->name('candidate.confirmation');
 Route::get('/candidat/{id}', [\App\Http\Controllers\CandidateDetailController::class, 'show'])->name('candidate.detail');
 Route::post('/vote/{id}', [\App\Http\Controllers\VoteController::class, 'vote'])->name('vote.candidate');
 
@@ -24,6 +31,7 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [LoginController::class, 'login']);
     Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
     Route::post('/register', [RegisterController::class, 'register']);
+    Route::get('/register/voter', [RegisterController::class, 'showVoterRegistrationForm'])->name('register.voter');
 });
 
 Route::post('/logout', [LoginController::class, 'logout'])

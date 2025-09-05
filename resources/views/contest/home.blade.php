@@ -34,12 +34,12 @@
                         @guest
                             <!-- Boutons pour les invités -->
                                 @if(($settings->votes_enabled ?? true))
-                                    <button onclick="openVoteChoiceModal()" class="btn-dinor w-full">
+                                    <a href="{{ route('register.voter') }}" class="btn-dinor w-full">
                                         Voter
                                         <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                                         </svg>
-                                    </button>
+                                    </a>
                                 @else
                                     <button class="btn-dinor w-full opacity-60 cursor-not-allowed" disabled>
                                         Votes désactivés
@@ -49,12 +49,12 @@
                                     </button>
                                 @endif
                                 @if(($settings->uploads_enabled ?? true) && ($settings->applications_open ?? true))
-                                <button onclick="openCandidateModal()" class="btn-dinor btn-dinor-accent w-full">
+                                <a href="{{ route('register') }}" class="btn-dinor btn-dinor-accent w-full">
                                     Poster ma photo du FGA
                                     <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                                     </svg>
-                                </button>
+                                </a>
                                 @endif
                                 <!-- <a href="{{ route('login') }}" class="btn-dinor btn-dinor-secondary w-full">
                                     Connexion
@@ -62,12 +62,12 @@
                         @else
                             <!-- Boutons pour les utilisateurs connectés -->
                                 @if(!auth()->user()->candidate && ($settings->uploads_enabled ?? true) && ($settings->applications_open ?? true))
-                                    <button onclick="openCandidateModal()" class="btn-dinor btn-dinor-accent w-full">
+                                    <a href="{{ route('register') }}" class="btn-dinor btn-dinor-accent w-full">
                                         Poster ma photo du FGA
                                         <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                                         </svg>
-                                    </button>
+                                    </a>
                                 @else
                                     <button class="btn-dinor btn-dinor-secondary w-full opacity-60 cursor-not-allowed" disabled>
                                         Photo déjà postée
@@ -221,119 +221,12 @@
 
     <!-- Modales -->
     <!-- Modal choix connexion/inscription pour voter -->
-    <div id="voteChoiceModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center p-4">
-        <div class="bg-white rounded-xl w-full max-w-md overflow-hidden">
-            <div class="p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl font-bold text-gray-900">Pour voter</h2>
-                    <button onclick="closeVoteChoiceModal()" class="text-gray-400 hover:text-gray-600">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
-                </div>
-                <p class="text-gray-600 mb-6">Connectez-vous ou créez votre compte pour participer au vote.</p>
-                <div class="grid grid-cols-1 gap-3">
-                    <a href="{{ route('login') }}" class="btn-dinor w-full text-center">Se connecter</a>
-                    <button onclick="switchToVoterRegistration()" class="btn-dinor btn-dinor-secondary w-full">Créer un compte</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Modal Votant -->
-    <div id="voterModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center p-4">
-        <div class="bg-white rounded-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
-            <div class="p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl font-bold text-gray-900">Créer un compte votant</h2>
-                    <button onclick="closeVoterModal()" class="text-gray-400 hover:text-gray-600">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
-                </div>
-                @livewire('voter-registration-form')
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Candidat -->
-    <div id="candidateModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center p-4">
-        <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div class="p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl font-bold text-gray-900">Poster ma photo du FGA</h2>
-                    <button onclick="closeCandidateModal()" class="text-gray-400 hover:text-gray-600">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
-                </div>
-                @livewire('candidate-registration-form')
-            </div>
-        </div>
-    </div>
 
 </div>
 
 @push('scripts')
 <script>
-    // Fonctions pour les modales
-    function openVoteChoiceModal() {
-        document.getElementById('voteChoiceModal').classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeVoteChoiceModal() {
-        document.getElementById('voteChoiceModal').classList.add('hidden');
-        document.body.style.overflow = 'auto';
-    }
-
-    function switchToVoterRegistration() {
-        closeVoteChoiceModal();
-        openVoterModal();
-    }
-    function openVoterModal() {
-        document.getElementById('voterModal').classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeVoterModal() {
-        document.getElementById('voterModal').classList.add('hidden');
-        document.body.style.overflow = 'auto';
-    }
-
-    function openCandidateModal() {
-        document.getElementById('candidateModal').classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeCandidateModal() {
-        document.getElementById('candidateModal').classList.add('hidden');
-        document.body.style.overflow = 'auto';
-    }
-
-    // Fermer les modales en cliquant à l'extérieur
-    document.getElementById('voteChoiceModal').addEventListener('click', function(e) {
-        if (e.target === this) closeVoteChoiceModal();
-    });
-
-    document.getElementById('voterModal').addEventListener('click', function(e) {
-        if (e.target === this) closeVoterModal();
-    });
-
-    document.getElementById('candidateModal').addEventListener('click', function(e) {
-        if (e.target === this) closeCandidateModal();
-    });
-
-    // Fermer avec Escape
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            closeVoteChoiceModal();
-            closeVoterModal();
-            closeCandidateModal();
-        }
-    });
+    // Scripts nettoyés - plus de modales nécessaires
 
     function scrollToGallery() {
         document.getElementById('gallery').scrollIntoView({

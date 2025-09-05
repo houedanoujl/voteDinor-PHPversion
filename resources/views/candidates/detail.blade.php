@@ -282,15 +282,15 @@
                         </svg>
                         Se connecter
                     </a>
-                    <a 
-                        href="{{ route('register') }}?redirect={{ urlencode(request()->url()) }}" 
-                        class="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 py-3 px-4 rounded-xl font-medium transition-colors block text-center"
+                    <button 
+                        onclick="window.location.href='{{ route('register.voter') }}'" 
+                        class="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 py-3 px-4 rounded-xl font-medium transition-colors"
                     >
                         <svg class="w-5 h-5 mr-2 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-5-4h1a3 3 0 013 3v1M9 9l3 3m-3-3l3-3m0 0h7a3 3 0 013 3v1M3 12h7a3 3 0 013-3V5a3 3 0 00-3-3H5a3 3 0 00-3 3v4z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-5-4h1a3 3 0 013 3v1M9 9l3 3m-3-3l3-3m0 0h7a3 3 0 013 3v1M3 12h7a3 3 0 713-3V5a3 3 0 00-3-3H5a3 3 0 00-3 3v4z"></path>
                         </svg>
-                        Créer un compte
-                    </a>
+                        Créer un compte votant
+                    </button>
                 </div>
                 
                 <div class="mt-6 pt-4 border-t border-gray-200">
@@ -458,6 +458,7 @@ document.addEventListener('keydown', function(e) {
         closeAuthModal();
     }
 });
+
 </script>
 
 <!-- Lightbox Modal -->
@@ -499,5 +500,6 @@ document.addEventListener('keydown', function(e) {
         <p>Cliquez en dehors de l'image ou appuyez sur <kbd class="bg-white/20 px-2 py-1 rounded">Échap</kbd> pour fermer</p>
     </div>
 </div>
+
 
 @endsection
