@@ -20,7 +20,6 @@
         <div class="bg-white rounded-lg border border-gray-200 p-8 mb-8">
             <h2 class="text-2xl font-bold text-dinor-brown mb-6">🏆 Objectif du Concours</h2>
             <p class="text-gray-700 mb-6">
-                Le concours photo DINOR vise à célébrer la créativité et l'art photographique dans un style  .
                 Les participants peuvent soumettre leurs meilleures photos et voter pour leurs candidats préférés.
             </p>
 
@@ -43,7 +42,7 @@
                         </li>
                         <li class="flex items-start">
                             <span class="text-green-500 mr-2 mt-1">✓</span>
-                            <span>Format accepté : JPG, PNG, WebP</span>
+                            <span>Format accepté : JPG, PNG</span>
                         </li>
                     </ul>
                 </div>
@@ -83,8 +82,6 @@
                     <h3 class="text-xl font-semibold text-green-600 mb-4">✅ Contenu Autorisé</h3>
                     <ul class="space-y-2 text-gray-700">
                         <li>• Photos originales prises par le participant</li>
-                        <li>• Style   et rétro</li>
-                        <li>• Portraits, paysages, nature morte</li>
                         <li>• Photos artistiques et créatives</li>
                         <li>• Contenu approprié pour tous publics</li>
                     </ul>
@@ -157,68 +154,7 @@
             </div>
         </div>
 
-        <!-- Prix et récompenses -->
-        <div class="bg-white rounded-lg border border-gray-200 p-8 mb-8">
-            <h2 class="text-2xl font-bold text-dinor-brown mb-6">🏆 Prix et Récompenses</h2>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="text-center p-6 bg-yellow-50 rounded-lg border border-yellow-200">
-                    <div class="text-3xl mb-2">🥇</div>
-                    <h3 class="text-lg font-semibold text-dinor-brown mb-2">1er Prix</h3>
-                    <p class="text-sm text-gray-600">Lot principal + Certificat</p>
-                </div>
-
-                <div class="text-center p-6 bg-gray-50 rounded-lg border border-gray-200">
-                    <div class="text-3xl mb-2">🥈</div>
-                    <h3 class="text-lg font-semibold text-dinor-brown mb-2">2ème Prix</h3>
-                    <p class="text-sm text-gray-600">Lot secondaire + Certificat</p>
-                </div>
-
-                <div class="text-center p-6 bg-orange-50 rounded-lg border border-orange-200">
-                    <div class="text-3xl mb-2">🥉</div>
-                    <h3 class="text-lg font-semibold text-dinor-brown mb-2">3ème Prix</h3>
-                    <p class="text-sm text-gray-600">Lot tertiaire + Certificat</p>
-                </div>
-            </div>
-
-            <div class="mt-6 p-4 bg-blue-50 rounded-lg">
-                <p class="text-sm text-blue-800">
-                    <strong>Note :</strong> Les lots exacts seront annoncés avant la fin du concours.
-                    Tous les participants recevront un certificat de participation.
-                </p>
-            </div>
-        </div>
-
-        <!-- Calendrier -->
-        <div class="bg-white rounded-lg border border-gray-200 p-8 mb-8">
-            <h2 class="text-2xl font-bold text-dinor-brown mb-6">📅 Calendrier du Concours</h2>
-
-            <div class="space-y-4">
-                <div class="flex items-center p-4 bg-green-50 rounded-lg">
-                    <div class="flex-shrink-0 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">1</div>
-                    <div class="ml-4">
-                        <h3 class="font-semibold text-green-800">Phase d'inscription</h3>
-                        <p class="text-sm text-green-600">Ouverture des inscriptions et soumissions de photos</p>
-                    </div>
-                </div>
-
-                <div class="flex items-center p-4 bg-blue-50 rounded-lg">
-                    <div class="flex-shrink-0 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">2</div>
-                    <div class="ml-4">
-                        <h3 class="font-semibold text-blue-800">Phase de vote</h3>
-                        <p class="text-sm text-blue-600">Vote public pour les candidats approuvés</p>
-                    </div>
-                </div>
-
-                <div class="flex items-center p-4 bg-purple-50 rounded-lg">
-                    <div class="flex-shrink-0 w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-white font-bold">3</div>
-                    <div class="ml-4">
-                        <h3 class="font-semibold text-purple-800">Annonce des résultats</h3>
-                        <p class="text-sm text-purple-600">Proclamation des gagnants et remise des prix</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+    
 
         <!-- Contact et support -->
         <div class="bg-white rounded-lg border border-gray-200 p-8">
@@ -231,9 +167,7 @@
                         Si vous avez des questions sur les règles du concours, n'hésitez pas à nous contacter.
                     </p>
                     <ul class="text-sm text-gray-600 space-y-1">
-                        <li>• WhatsApp : +225 0123456789</li>
-                        <li>• Email : contact@dinor-concours.com</li>
-                        <li>• Support en ligne disponible</li>
+                        <li>• WhatsApp : +225 054029721</li>
                     </ul>
                 </div>
 
@@ -241,9 +175,6 @@
                     <h3 class="text-lg font-semibold text-dinor-brown mb-3">📋 Modifications</h3>
                     <p class="text-gray-700 mb-3">
                         L'organisation se réserve le droit de modifier ces règles à tout moment.
-                    </p>
-                    <p class="text-sm text-gray-600">
-                        Les participants seront informés de toute modification par WhatsApp et sur le site.
                     </p>
                 </div>
             </div>

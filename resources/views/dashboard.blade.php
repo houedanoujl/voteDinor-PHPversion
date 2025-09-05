@@ -82,7 +82,15 @@
                                     @if($candidate->status === 'approved') bg-green-100 text-green-800
                                     @elseif($candidate->status === 'pending') bg-yellow-100 text-yellow-800
                                     @else bg-red-100 text-red-800 @endif">
-                                    {{ ucfirst($candidate->status) }}
+                                    @if($candidate->status === 'pending')
+                                        En cours de validation par l'administrateur
+                                    @elseif($candidate->status === 'approved')
+                                        Approuvé
+                                    @elseif($candidate->status === 'rejected')
+                                        Rejeté
+                                    @else
+                                        {{ ucfirst($candidate->status) }}
+                                    @endif
                                 </span>
                                 @if($candidate->status === 'approved')
                                     <span class="text-sm text-gray-500">Position: #{{ $candidate->ranking_position }}</span>
@@ -110,6 +118,7 @@
         @endif
 
         <!-- Actions rapides -->
+        @php($liveUrl = \App\Models\SiteSetting::first()?->live_url)
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="bg-white rounded-lg border border-gray-200 p-6">
                 <h3 class="text-lg font-semibold text-gray-900 mb-4">Actions rapides</h3>
@@ -121,6 +130,27 @@
                         Voir le classement complet
                     </a>
                 </div>
+            </div>
+
+            <!-- Ressource Live (copie du lien) -->
+            <div class="bg-white rounded-lg border border-gray-200 p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full {{ $liveUrl ? 'bg-red-600 animate-pulse' : 'bg-gray-300' }}"></span>
+                    Live Facebook
+                </h3>
+                @if($liveUrl)
+                    <div class="space-y-3">
+                        <div class="text-sm text-gray-600 break-all border rounded p-3 bg-gray-50" id="liveLink">{{ $liveUrl }}</div>
+                        <div class="flex gap-3">
+                            <button type="button" onclick="copyLiveLink()" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-900 px-4 py-2 rounded-lg font-medium transition-colors">Copier le lien</button>
+                            <a href="{{ $liveUrl }}" target="_blank" rel="noopener" class="flex-1 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-colors text-center">Ouvrir le live</a>
+                        </div>
+                        <p class="text-xs text-gray-500">Partagez ce lien à votre audience pour suivre la diffusion en direct.</p>
+                    </div>
+                @else
+                    <p class="text-sm text-gray-600">Aucun live renseigné pour le moment.</p>
+                    <p class="text-xs text-gray-500 mt-2">Lorsque l'administrateur ajoute un lien dans les Paramètres du site, il apparaîtra ici avec des boutons pour le copier et l'ouvrir.</p>
+                @endif
             </div>
 
             <div class="bg-white rounded-lg border border-gray-200 p-6">
@@ -135,3 +165,39 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+function copyLiveLink() {
+    const el = document.getElementById('liveLink');
+    if (!el) return;
+    const text = el.textContent.trim();
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(() => {
+            showLiveToast('Lien copié dans le presse-papiers');
+        }).catch(() => fallbackCopy(text));
+    } else {
+        fallbackCopy(text);
+    }
+}
+
+function fallbackCopy(text) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.left = '-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); showLiveToast('Lien copié dans le presse-papiers'); } catch(e) {}
+    document.body.removeChild(ta);
+}
+
+function showLiveToast(message) {
+    const n = document.createElement('div');
+    n.className = 'fixed bottom-6 right-6 z-50 bg-gray-900 text-white px-4 py-2 rounded-lg shadow-lg';
+    n.textContent = message;
+    document.body.appendChild(n);
+    setTimeout(() => n.remove(), 2000);
+}
+</script>
+@endpush

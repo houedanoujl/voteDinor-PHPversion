@@ -213,7 +213,7 @@
                                     {{ $vote->user ? $vote->user->name : 'Visiteur' }}
                                 </p>
                                 <p class="text-sm text-gray-500">
-                                    {{ $vote->created_at->diffForHumans() }}
+                                    {{ $vote->created_at->locale('fr')->diffForHumans() }}
                                 </p>
                             </div>
                         </div>

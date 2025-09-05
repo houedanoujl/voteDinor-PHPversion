@@ -1,6 +1,13 @@
 @props(['wireModel' => 'photo', 'maxSize' => 5])
 
-<div x-data="simpleDropzone()" class="w-full">
+<div
+    x-data="simpleDropzone({ serverError: @js($errors->first($wireModel)) })"
+    class="w-full"
+    x-on:livewire-upload-start="onUploadStart()"
+    x-on:livewire-upload-progress="onUploadProgress($event)"
+    x-on:livewire-upload-error="onUploadError()"
+    x-on:livewire-upload-finish="onUploadFinish()"
+>
     <!-- Input file caché -->
     <input 
         type="file" 
@@ -19,7 +26,14 @@
         @dragleave="dragover = false"
         @drop.prevent="handleDrop($event)"
         class="relative border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-all duration-200"
-        :class="dragover ? 'border-orange-400 bg-orange-50' : (preview ? 'border-green-400 bg-green-50' : 'border-gray-300 hover:border-orange-300 hover:bg-orange-50')"
+        :class="{
+            'border-orange-400 bg-orange-50': dragover,
+            'border-orange-500 bg-orange-50 animate-pulse': uploading,
+            'border-green-500 bg-green-50': !uploading && uploadSuccess,
+            'border-red-500 bg-red-50': error,
+            'border-blue-400 bg-blue-50': !uploading && !uploadSuccess && preview && !error,
+            'border-gray-300 hover:border-orange-300 hover:bg-orange-50': !dragover && !preview && !uploading && !uploadSuccess && !error,
+        }"
     >
         <!-- Preview de l'image -->
         <div x-show="preview" class="space-y-4">
@@ -28,12 +42,36 @@
                 <p class="font-medium" x-text="fileName"></p>
                 <p x-text="fileSize"></p>
             </div>
+
+            <!-- États visuels -->
+            <div class="flex items-center justify-center gap-2">
+                <span
+                    x-show="!uploading && !uploadSuccess"
+                    class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-700"
+                >Sélectionné</span>
+                <span
+                    x-show="uploading"
+                    class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-orange-100 text-orange-700"
+                >Téléversement… <span class="ml-1" x-text="progress + '%' "></span></span>
+                <span
+                    x-show="!uploading && uploadSuccess"
+                    class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-700"
+                >✔️ Upload réussi</span>
+            </div>
+
             <button 
                 type="button"
                 @click.stop="clearFile()"
                 class="px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 text-sm"
             >
                 🗑️ Supprimer
+            </button>
+            <button
+                type="button"
+                @click.stop="$refs.fileInput.click()"
+                class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-sm"
+            >
+                🔄 Changer de photo
             </button>
         </div>
         
@@ -62,6 +100,11 @@
                 Les fichiers HEIC ne peuvent pas être prévisualisés mais sont acceptés
             </p>
         </div>
+
+        <!-- Barre de progression -->
+        <div x-show="uploading" class="absolute left-0 right-0 bottom-0 h-2 bg-gray-200 rounded-b-lg overflow-hidden">
+            <div class="h-full bg-orange-500 transition-all duration-150" :style="{ width: progress + '%' }"></div>
+        </div>
     </div>
     
     <!-- Messages d'erreur -->
@@ -74,22 +117,38 @@
         <p><strong>📱 Mobile :</strong> L'appareil photo s'ouvrira automatiquement</p>
         <p><strong>🖥️ Desktop :</strong> Glissez-déposez ou cliquez pour sélectionner</p>
     </div>
+
+    <!-- Conseils iPhone pour HEIC -->
+    <div x-show="isIOS" class="mt-2 text-xs text-gray-600 bg-amber-50 border border-amber-200 p-3 rounded-lg">
+        <p class="font-medium">📣 Utilisateurs iPhone :</p>
+        <p class="mt-1">Si votre photo est au format <strong>.HEIC</strong>, nous l'acceptons, mais certains aperçus peuvent ne pas s'afficher. Pour plus de compatibilité, vous pouvez la prendre en <strong>JPEG</strong> :</p>
+        <ul class="list-disc ml-5 mt-1">
+            <li>Réglages → Appareil photo → Formats → choisir <strong>Plus compatible</strong></li>
+            <li>Ou exporter la photo en JPEG depuis l'app Photos avant l'envoi</li>
+        </ul>
+    </div>
 </div>
 
 <script>
-function simpleDropzone() {
+function simpleDropzone(options = {}) {
     return {
         preview: null,
         fileName: null,
         fileSize: null,
-        error: null,
+        error: options.serverError || null,
         dragover: false,
         isHeic: false,
+        isIOS: /iPhone|iPad|iPod/i.test(navigator.userAgent),
+        uploading: false,
+        progress: 0,
+        uploadSuccess: false,
         
         handleFileSelect(event) {
             const file = event.target.files[0];
             console.log('🔧 File selected:', file);
             if (file) {
+                this.uploadSuccess = false;
+                this.progress = 0;
                 this.processFile(file);
                 // S'assurer que Livewire détecte le changement
                 this.$nextTick(() => {
@@ -173,10 +232,32 @@ function simpleDropzone() {
             this.fileSize = null;
             this.error = null;
             this.isHeic = false;
+            this.uploadSuccess = false;
+            this.progress = 0;
             this.$refs.fileInput.value = '';
             
             // Déclencher un événement pour Livewire
             this.$refs.fileInput.dispatchEvent(new Event('change'));
+        },
+        
+        // Gestion des événements Livewire d'upload
+        onUploadStart() {
+            this.uploading = true;
+            this.uploadSuccess = false;
+            this.progress = 0;
+        },
+        onUploadProgress(e) {
+            if (e && e.detail && typeof e.detail.progress === 'number') {
+                this.progress = e.detail.progress;
+            }
+        },
+        onUploadError() {
+            this.uploading = false;
+        },
+        onUploadFinish() {
+            this.uploading = false;
+            this.uploadSuccess = true;
+            this.progress = 100;
         },
         
         formatBytes(bytes) {

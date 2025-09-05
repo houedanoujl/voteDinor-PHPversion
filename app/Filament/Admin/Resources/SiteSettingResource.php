@@ -35,6 +35,13 @@ class SiteSettingResource extends Resource
                     ->label('Upload de photos activé')
                     ->helperText('Désactivez en phase de vote pour bloquer les nouveaux uploads')
                     ->default(true),
+                Forms\Components\TextInput::make('live_url')
+                    ->label('Lien Live Facebook')
+                    ->placeholder('https://www.facebook.com/...')
+                    ->helperText('Saisissez le lien du live Facebook. S’il est renseigné, un bouton “En direct” apparaîtra sur le site.')
+                    ->url()
+                    ->maxLength(255)
+                    ->default('https://www.facebook.com/share/v/172P5EMjL2/'),
             ]);
     }
 
@@ -45,6 +52,12 @@ class SiteSettingResource extends Resource
                 Tables\Columns\IconColumn::make('applications_open')
                     ->boolean()
                     ->label('Candidatures ouvertes'),
+                Tables\Columns\TextColumn::make('live_url')
+                    ->label('Lien Live')
+                    ->wrap()
+                    ->copyable()
+                    ->url(fn ($record) => $record->live_url, true)
+                    ->openUrlInNewTab(),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime('d/m/Y H:i')
                     ->label('Mise à jour'),

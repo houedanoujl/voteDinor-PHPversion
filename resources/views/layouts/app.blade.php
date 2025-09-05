@@ -433,6 +433,7 @@
                     </div>
 
                     <div class="flex items-center space-x-4">
+                        @php($liveUrl = \App\Models\SiteSetting::first()?->live_url)
                         @auth
                             <div class="flex items-center space-x-4">
                                 <a href="{{ route('dashboard') }}" class="flex items-center space-x-2 text-gray-700 hover:text-orange-600 transition-colors">
@@ -447,6 +448,18 @@
                                         Déconnexion
                                     </button>
                                 </form>
+                                @if($liveUrl)
+                                    <a href="{{ $liveUrl }}" target="_blank" rel="noopener"
+                                       class="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-white bg-red-600 animate-pulse hover:bg-red-700 transition-colors">
+                                        <span class="w-2 h-2 bg-white rounded-full"></span>
+                                        <span class="font-semibold">En direct</span>
+                                    </a>
+                                @else
+                                    <span class="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-gray-700 bg-white border border-gray-200">
+                                        <span class="w-2 h-2 bg-gray-300 rounded-full"></span>
+                                        <span class="font-medium">En direct</span>
+                                    </span>
+                                @endif
                             </div>
                         @else
                             <div class="flex space-x-3">
@@ -454,6 +467,18 @@
                                    class="bg-white text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors border border-gray-200">
                                     Connexion
                                 </a>
+                                @if($liveUrl)
+                                    <a href="{{ $liveUrl }}" target="_blank" rel="noopener"
+                                       class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-white bg-red-600 animate-pulse hover:bg-red-700 text-sm font-semibold transition-colors">
+                                        <span class="w-2 h-2 bg-white rounded-full"></span>
+                                        En direct
+                                    </a>
+                                @else
+                                    <span class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-gray-700 bg-white border border-gray-200 text-sm font-medium">
+                                        <span class="w-2 h-2 bg-gray-300 rounded-full"></span>
+                                        En direct
+                                    </span>
+                                @endif
                                 <!-- <a href="{{ route('register') }}"
                                    class="bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-orange-700 transition-colors">
                                     Inscription

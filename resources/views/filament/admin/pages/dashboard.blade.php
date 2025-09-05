@@ -45,7 +45,7 @@
                     <div class="space-y-3">
                         <div class="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
                             <span class="text-sm font-medium">Dernière activité</span>
-                            <span class="text-sm text-blue-600">{{ now()->diffForHumans() }}</span>
+                            <span class="text-sm text-blue-600">{{ now()->locale('fr')->diffForHumans() }}</span>
                         </div>
                         <div class="flex justify-between items-center p-3 bg-green-50 rounded-lg">
                             <span class="text-sm font-medium">Serveur</span>

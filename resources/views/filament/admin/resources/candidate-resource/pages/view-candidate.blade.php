@@ -109,7 +109,7 @@
                                     </span>
                                 </div>
                                 <span class="text-xs text-gray-500">
-                                    {{ $vote->created_at->diffForHumans() }}
+                                    {{ $vote->created_at->locale('fr')->diffForHumans() }}
                                 </span>
                             </div>
                         @endforeach

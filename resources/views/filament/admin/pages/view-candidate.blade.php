@@ -128,7 +128,7 @@
                             </div>
                             <div class="text-sm text-gray-500">
                                 {{ $vote->created_at->format('d/m/Y à H:i') }} 
-                                ({{ $vote->created_at->diffForHumans() }})
+                                ({{ $vote->created_at->locale('fr')->diffForHumans() }})
                             </div>
                         </div>
                         <div class="text-xs text-gray-400 font-mono">
