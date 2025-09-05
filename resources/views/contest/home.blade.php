@@ -25,11 +25,6 @@
                          <img class='contempt align-center justify-center' src="{{asset('images/LOGO_DINOR_monochrome.svg')}}" style="width: 200px; height: 200px;filter: invert(1)" alt="Dinor"/>
 
                         </div>
-
-
-                        <div class="text-lg md:text-xl text-yellow-300 mt-4 font-medium align-center justify-center">
-                            Fais nous vivre ton expérience !
-                        </div>
                     </div>
 
 
@@ -93,7 +88,11 @@
                                         @if($top->get(1))
                                             <a href="{{ route('candidate.detail', $top->get(1)->id) }}" class="block bg-white/15 rounded-xl p-4 border border-white/20">
                                                 <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full mx-auto mb-3 overflow-hidden border-3 border-gray-400 shadow-lg">
-                                                    <img src="{{ $top->get(1)->getPhotoUrl() ?: asset('images/placeholder-avatar.svg') }}" alt="{{ $top->get(1)->full_name }}" class="w-full h-full object-cover">
+                                                    <img
+                                                        src="{{ $top->get(1)->getPhotoUrl() ?: asset('images/placeholder-avatar.svg') }}"
+                                                        alt="{{ $top->get(1)->full_name }}"
+                                                        class="w-full h-full object-cover"
+                                                    >
                                                 </div>
                                                 <div class="text-sm font-semibold text-white truncate max-w-[10rem] mx-auto">{{ Str::limit($top->get(1)->full_name, 18) }}</div>
                                                 <div class="text-xs text-yellow-300 font-medium">{{ $top->get(1)->votes_count }} {{ Str::plural('vote', $top->get(1)->votes_count) }}</div>
@@ -107,7 +106,11 @@
                                         @if($top->get(0))
                                             <a href="{{ route('candidate.detail', $top->get(0)->id) }}" class="block bg-gradient-to-b from-yellow-400/20 to-yellow-600/20 rounded-xl p-4 sm:p-5 border-2 border-yellow-400/40 shadow-2xl sm:transform sm:scale-110">
                                                 <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full mx-auto mb-3 overflow-hidden border-4 border-yellow-400 shadow-xl">
-                                                    <img src="{{ $top->get(0)->getPhotoUrl() ?: asset('images/placeholder-avatar.svg') }}" alt="{{ $top->get(0)->full_name }}" class="w-full h-full object-cover">
+                                                    <img
+                                                        src="{{ $top->get(0)->getPhotoUrl() ?: asset('images/placeholder-avatar.svg') }}"
+                                                        alt="{{ $top->get(0)->full_name }}"
+                                                        class="w-full h-full object-cover"
+                                                    >
                                                 </div>
                                                 <div class="text-sm sm:text-base font-bold text-white truncate max-w-[10rem] mx-auto">{{ Str::limit($top->get(0)->full_name, 18) }}</div>
                                                 <div class="text-xs sm:text-sm text-yellow-300 font-semibold">{{ $top->get(0)->votes_count }} {{ Str::plural('vote', $top->get(0)->votes_count) }}</div>
@@ -121,7 +124,11 @@
                                         @if($top->get(2))
                                             <a href="{{ route('candidate.detail', $top->get(2)->id) }}" class="block bg-white/15 rounded-xl p-4 border border-white/20">
                                                 <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full mx-auto mb-3 overflow-hidden border-3 border-orange-600 shadow-lg">
-                                                    <img src="{{ $top->get(2)->getPhotoUrl() ?: asset('images/placeholder-avatar.svg') }}" alt="{{ $top->get(2)->full_name }}" class="w-full h-full object-cover">
+                                                    <img
+                                                        src="{{ $top->get(2)->getPhotoUrl() ?: asset('images/placeholder-avatar.svg') }}"
+                                                        alt="{{ $top->get(2)->full_name }}"
+                                                        class="w-full h-full object-cover"
+                                                    >
                                                 </div>
                                                 <div class="text-sm font-semibold text-white truncate max-w-[10rem] mx-auto">{{ Str::limit($top->get(2)->full_name, 18) }}</div>
                                                 <div class="text-xs text-yellow-300 font-medium">{{ $top->get(2)->votes_count }} {{ Str::plural('vote', $top->get(2)->votes_count) }}</div>
@@ -371,6 +378,7 @@
             }
         });
     }, observerOptions);
+
 
     // Observer les éléments
     document.addEventListener('DOMContentLoaded', () => {

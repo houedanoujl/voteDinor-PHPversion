@@ -8,13 +8,21 @@ use App\Models\VoteLimit;
 use App\Events\CandidateRegisteredEvent;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class CandidatesGallery extends Component
 {
+    use WithPagination;
+
     public $candidates = [];
     public $userVotesToday = [];
     public $loadingVotes = [];
+    public $perPage = 12;
+    public $page = 1;
+    public $totalCandidates = 0;
+    public $showAuthModal = false;
 
     public function mount()
     {
@@ -24,29 +32,61 @@ class CandidatesGallery extends Component
 
     public function loadCandidates()
     {
-        $this->candidates = Candidate::approved()
-            ->orderByVotes()
-            ->get()
-            ->map(function ($candidate) {
-                return [
-                    'id' => $candidate->id,
-                    'prenom' => $candidate->prenom,
-                    'nom' => $candidate->nom,
-                    'votes_count' => $candidate->votes_count,
-                    'photo_url' => $candidate->getPhotoUrl() ?: '/images/placeholder-avatar.svg',
-                    'description' => $candidate->description,
-                ];
-            })
-            ->toArray();
+        // Mise en cache des candidats avec pagination
+        $cacheKey = "candidates_approved_page_{$this->page}_per_{$this->perPage}";
+        
+        $result = Cache::remember($cacheKey, 300, function () { // 5 minutes
+            $candidates = Candidate::approved()
+                ->orderByVotes()
+                ->select(['id', 'prenom', 'nom', 'votes_count', 'photo_url', 'photo_filename', 'description'])
+                ->skip(($this->page - 1) * $this->perPage)
+                ->take($this->perPage)
+                ->get();
+
+            $total = Candidate::approved()->count();
+
+            return [
+                'candidates' => $candidates->map(function ($candidate) {
+                    // Utiliser les URLs optimisées si disponibles
+                    $photoUrl = $candidate->getPhotoUrl() ?: '/images/placeholder-avatar.svg';
+                    
+                    // Essayer de générer une URL thumbnail optimisée
+                    if ($photoUrl !== '/images/placeholder-avatar.svg') {
+                        // Si l'URL contient déjà une version optimisée, la garder
+                        if (!str_contains($photoUrl, '_thumb') && !str_contains($photoUrl, '_main') && !str_contains($photoUrl, '_small')) {
+                            // Sinon essayer de créer une version thumbnail
+                            $photoUrl = str_replace(['.jpg', '.jpeg', '.png'], '_thumb.jpg', $photoUrl);
+                        }
+                    }
+                    
+                    return [
+                        'id' => $candidate->id,
+                        'prenom' => $candidate->prenom,
+                        'nom' => $candidate->nom,
+                        'votes_count' => $candidate->votes_count,
+                        'photo_url' => $photoUrl,
+                        'description' => $candidate->description,
+                    ];
+                })->toArray(),
+                'total' => $total
+            ];
+        });
+
+        $this->candidates = $result['candidates'];
+        $this->totalCandidates = $result['total'];
     }
 
     public function checkUserVotesToday()
     {
         if (Auth::check()) {
-            $this->userVotesToday = Vote::where('user_id', Auth::id())
-                ->whereDate('created_at', today())
-                ->pluck('candidate_id')
-                ->toArray();
+            // Mise en cache des votes utilisateur d'aujourd'hui
+            $cacheKey = 'user_votes_today_' . Auth::id() . '_' . now()->toDateString();
+            $this->userVotesToday = Cache::remember($cacheKey, 600, function () {
+                return Vote::where('user_id', Auth::id())
+                    ->whereDate('created_at', today())
+                    ->pluck('candidate_id')
+                    ->toArray();
+            });
         }
     }
 
@@ -54,8 +94,9 @@ class CandidatesGallery extends Component
     {
         // Vérifier si l'utilisateur est connecté
         if (!Auth::check()) {
-            session()->flash('error', 'Vous devez être connecté pour voter');
-            return redirect()->route('auth.redirect', 'google');
+            $this->showAuthModal = true;
+            $this->dispatch('show-auth-modal');
+            return;
         }
 
         $user = Auth::user();
@@ -107,6 +148,12 @@ class CandidatesGallery extends Component
                     break;
                 }
             }
+
+            // Invalider les caches liés
+            Cache::forget('user_votes_today_' . $user->id . '_' . now()->toDateString());
+            Cache::forget("candidates_approved_page_{$this->page}_per_{$this->perPage}");
+            Cache::forget('contest_stats');
+            Cache::forget('top_candidates_10');
             
             session()->flash('success', 'Vote enregistré avec succès !');
             
@@ -129,6 +176,12 @@ class CandidatesGallery extends Component
         }
     }
 
+    public function loadMore()
+    {
+        $this->page++;
+        $this->loadCandidates();
+    }
+
     public function hasVotedToday($candidateId)
     {
         return in_array($candidateId, $this->userVotesToday);
@@ -137,6 +190,16 @@ class CandidatesGallery extends Component
     public function isLoading($candidateId)
     {
         return isset($this->loadingVotes[$candidateId]);
+    }
+
+    public function hasMoreCandidates()
+    {
+        return count($this->candidates) < $this->totalCandidates;
+    }
+
+    public function closeAuthModal()
+    {
+        $this->showAuthModal = false;
     }
 
     public function render()

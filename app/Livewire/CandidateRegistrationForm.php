@@ -5,12 +5,15 @@ namespace App\Livewire;
 use App\Models\Candidate;
 use App\Models\User;
 use App\Services\WhatsAppService;
+use App\Services\ImageOptimizationService;
+use App\Events\CandidatePhotoUploaded;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use App\Models\SiteSetting;
 
 class CandidateRegistrationForm extends Component
@@ -121,11 +124,10 @@ class CandidateRegistrationForm extends Component
             $photoPath = null;
             $photoUrl = null;
             $uploadsEnabled = $settings?->uploads_enabled ?? true;
-            if ($uploadsEnabled) {
-                if ($this->photo) {
-                    $photoPath = $this->photo->store('candidates', 'public');
-                    $photoUrl = $photoPath ? asset('storage/' . $photoPath) : null;
-                }
+            if ($uploadsEnabled && $this->photo) {
+                // Stocker l'image originale
+                $photoPath = $this->photo->store('candidates', 'public');
+                $photoUrl = $photoPath ? asset('storage/' . $photoPath) : null;
             }
 
             // whatsapp déjà défini
@@ -150,7 +152,18 @@ class CandidateRegistrationForm extends Component
 
             // Garantir photo_url si photo uploadée
             if ($photoPath) {
-                $candidate->update(['photo_url' => $photoPath]);
+                $candidate->update([
+                    'photo_url' => $photoPath,
+                    'photo_optimization_status' => 'processing'
+                ]);
+                
+                // Déclencher l'événement d'optimisation (asynchrone)
+                CandidatePhotoUploaded::dispatch($candidate, $photoPath);
+                
+                Log::info('Événement d\'optimisation déclenché', [
+                    'candidate_id' => $candidate->id,
+                    'photo_path' => $photoPath
+                ]);
             }
 
             // Envoyer un message WhatsApp de confirmation

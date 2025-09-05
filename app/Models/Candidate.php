@@ -110,6 +110,108 @@ class Candidate extends Model implements HasMedia
         return $this->getFirstMediaUrl('photos', 'thumb') ?: $this->photo_url;
     }
 
+    /**
+     * Retourne les URLs optimisées pour les différentes tailles d'image
+     */
+    public function getOptimizedPhotoUrls(): array
+    {
+        if (!$this->photo_url && !$this->getFirstMediaUrl('photos')) {
+            return [
+                'main' => '/images/placeholder-avatar.svg',
+                'thumb' => '/images/placeholder-avatar.svg',
+                'small' => '/images/placeholder-avatar.svg',
+            ];
+        }
+
+        $imageService = app(\App\Services\ImageOptimizationService::class);
+        $originalPath = $this->photo_url ?? $this->getFirstMediaUrl('photos');
+        
+        // Extraire le chemin relatif pour le service d'optimisation
+        if (str_starts_with($originalPath, 'http')) {
+            $relativePath = str_replace(Storage::disk('public')->url(''), '', $originalPath);
+        } else {
+            $relativePath = $originalPath;
+        }
+
+        return $imageService->getOptimizedUrls($relativePath);
+    }
+
+    /**
+     * Retourne l'URL de la photo principale optimisée
+     */
+    public function getMainPhotoUrl(): string
+    {
+        $urls = $this->getOptimizedPhotoUrls();
+        return $urls['main'] ?? $urls['original'] ?? '/images/placeholder-avatar.svg';
+    }
+
+    /**
+     * Retourne l'URL de la photo thumbnail optimisée
+     */
+    public function getThumbPhotoUrl(): string
+    {
+        $urls = $this->getOptimizedPhotoUrls();
+        return $urls['thumb'] ?? $urls['original'] ?? '/images/placeholder-avatar.svg';
+    }
+
+    /**
+     * Retourne l'URL de la petite photo optimisée
+     */
+    public function getSmallPhotoUrl(): string
+    {
+        $urls = $this->getOptimizedPhotoUrls();
+        return $urls['small'] ?? $urls['original'] ?? '/images/placeholder-avatar.svg';
+    }
+
+    /**
+     * Vérifie si les images optimisées existent pour ce candidat
+     */
+    public function hasOptimizedImages(): bool
+    {
+        if (!$this->photo_url) {
+            return false;
+        }
+
+        $pathInfo = pathinfo($this->photo_url);
+        $filename = $pathInfo['filename'];
+        $extension = $pathInfo['extension'];
+        
+        // Vérifier si au moins le thumbnail existe
+        $thumbPath = "candidates/{$filename}_thumb.{$extension}";
+        
+        return Storage::disk('public')->exists($thumbPath);
+    }
+
+    /**
+     * Déclenche l'optimisation des images pour ce candidat
+     */
+    public function optimizeImages(): bool
+    {
+        if (!$this->photo_url || !Storage::disk('public')->exists($this->photo_url)) {
+            return false;
+        }
+
+        $this->update(['photo_optimization_status' => 'processing']);
+        
+        \App\Events\CandidatePhotoUploaded::dispatch($this, $this->photo_url);
+        
+        return true;
+    }
+
+    /**
+     * Retourne le statut d'optimisation lisible
+     */
+    public function getOptimizationStatusAttribute(): string
+    {
+        return match($this->photo_optimization_status) {
+            'pending' => 'En attente',
+            'processing' => 'En cours...',
+            'completed' => 'Terminé',
+            'failed' => 'Échec',
+            default => 'Inconnu'
+        };
+    }
+
     public function getPhotoUrlAttribute($value): ?string
     {
         if (!$value) {

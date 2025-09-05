@@ -22,18 +22,29 @@
         </div>
     @endif
 
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        @forelse($candidates as $candidate)
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="candidates-grid">
+        @forelse($candidates as $index => $candidate)
             <div class="group relative overflow-hidden cursor-pointer transform hover:scale-105 transition-all duration-300">
-                <!-- Image avec lightbox -->
+                <!-- Image optimisée directe -->
                 <div onclick="openPhotoLightbox('{{ $candidate['photo_url'] }}', '{{ $candidate['prenom'] }} {{ $candidate['nom'] }}')" class="relative">
+                    @php
+                        // Générer l'URL de l'image thumbnail optimisée
+                        $thumbUrl = $candidate['photo_url'];
+                        if ($thumbUrl !== '/images/placeholder-avatar.svg') {
+                            $thumbUrl = str_replace(['.jpg', '.jpeg', '.png'], '_thumb.jpg', $thumbUrl);
+                        }
+                    @endphp
+                    
+                    <!-- Image directe (avec fallback vers originale si optimisée n'existe pas) -->
                     <img
-                        src="{{ $candidate['photo_url'] }}"
+                        src="{{ $thumbUrl }}"
                         alt="Photo de {{ $candidate['prenom'] }} {{ $candidate['nom'] }}"
-                        class="w-full h-[300px] object-cover"
+                        class="w-full h-[300px] object-cover rounded-lg"
+                        onerror="this.src='{{ $candidate['photo_url'] }}'"
                     >
+
                     <!-- Overlay au hover -->
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg"></div>
 
                     <!-- Badge de votes -->
                     <div class="absolute top-2 right-2 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-full text-xs font-semibold text-gray-800 flex items-center">
@@ -41,6 +52,46 @@
                             <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
                         </svg>
                         {{ $candidate['votes_count'] }}
+                    </div>
+
+                    <!-- Bouton de vote rapide -->
+                    <div class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        @auth
+                            @if(!$this->hasVotedToday($candidate['id']))
+                                <button 
+                                    wire:click="vote({{ $candidate['id'] }})" 
+                                    @if($this->isLoading($candidate['id'])) disabled @endif
+                                    class="bg-red-500 hover:bg-red-600 disabled:bg-red-300 text-white p-2 rounded-full transition-colors shadow-lg"
+                                    title="Voter pour {{ $candidate['prenom'] }}"
+                                >
+                                    @if($this->isLoading($candidate['id']))
+                                        <svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg>
+                                    @else
+                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
+                                        </svg>
+                                    @endif
+                                </button>
+                            @else
+                                <div class="bg-green-500 text-white p-2 rounded-full shadow-lg" title="Déjà voté aujourd'hui">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                            @endif
+                        @else
+                            <button 
+                                wire:click="vote({{ $candidate['id'] }})"
+                                class="bg-orange-500 hover:bg-orange-600 text-white p-2 rounded-full transition-colors shadow-lg"
+                                title="Se connecter pour voter"
+                            >
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
+                                </svg>
+                            </button>
+                        @endauth
                     </div>
 
                     <!-- Nom au hover -->
@@ -84,6 +135,51 @@
         @endforelse
     </div>
 
+    <!-- Bouton "Charger plus" -->
+    @if($this->hasMoreCandidates())
+        <div class="text-center mt-8">
+            <button 
+                wire:click="loadMore" 
+                class="bg-orange-600 hover:bg-orange-700 text-white px-8 py-3 rounded-lg font-medium transition-colors inline-flex items-center"
+            >
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                </svg>
+                Voir plus de candidats
+            </button>
+        </div>
+    @endif
+
+    <!-- Modal de connexion -->
+    @if($showAuthModal)
+        <div class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" wire:click="closeAuthModal">
+            <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6" wire:click.stop>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-orange-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                        <svg class="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Connectez-vous pour voter</h3>
+                    <p class="text-gray-600 mb-6">Soutenez vos candidats préférés en vous connectant ou en créant un compte.</p>
+                    
+                    <div class="space-y-3">
+                        <a href="{{ route('login') }}" class="w-full bg-orange-600 hover:bg-orange-700 text-white py-3 px-4 rounded-lg font-medium transition-colors block">
+                            Se connecter
+                        </a>
+                        <a href="{{ route('register') }}" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 py-3 px-4 rounded-lg font-medium transition-colors block">
+                            Créer un compte
+                        </a>
+                    </div>
+                    
+                    <button wire:click="closeAuthModal" class="mt-4 text-gray-500 hover:text-gray-700 text-sm">
+                        Fermer
+                    </button>
+                </div>
+            </div>
+        </div>
+    @endif
+
     <!-- Lightbox simple pour la photo -->
     <div id="photo-lightbox" class="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
         <div class="relative max-w-4xl w-full max-h-full">
@@ -106,10 +202,22 @@
 </div>
 
 <script>
+
     function openPhotoLightbox(photoUrl, candidateName) {
+        // Utiliser l'image principale pour le lightbox (ou originale en fallback)
+        let mainPhotoUrl = photoUrl.replace(/\.(jpg|jpeg|png)$/i, '_main.$1');
+        
         // Update lightbox content
-        document.getElementById('lightbox-photo').src = photoUrl;
-        document.getElementById('lightbox-photo').alt = candidateName;
+        const lightboxImg = document.getElementById('lightbox-photo');
+        lightboxImg.src = mainPhotoUrl;
+        lightboxImg.alt = candidateName;
+        
+        // Fallback vers l'originale si la main n'existe pas
+        lightboxImg.onerror = function() {
+            this.src = photoUrl;
+            this.onerror = null;
+        };
+        
         document.getElementById('lightbox-candidate-name').textContent = candidateName;
 
         // Show lightbox
@@ -139,5 +247,12 @@
         if (event.key === 'Escape') {
             closePhotoLightbox();
         }
+    });
+
+    // Écouter l'événement Livewire pour afficher le modal
+    document.addEventListener('livewire:init', function() {
+        Livewire.on('show-auth-modal', function() {
+            // Le modal sera affiché via la propriété reactive $showAuthModal
+        });
     });
 </script>

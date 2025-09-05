@@ -102,15 +102,27 @@
                         <!-- Section de vote -->
                         <div class="mb-8">
                             @guest
-                                <div class="bg-gray-50 rounded-xl p-6 text-center">
-                                    <svg class="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-                                    </svg>
-                                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Connectez-vous pour voter</h3>
-                                    <p class="text-gray-600 mb-6">Vous devez être connecté pour voter pour ce candidat</p>
-                                    <button onclick="openVoterModal()" class="btn-dinor">
-                                        Voter
-                                    </button>
+                                <div class="bg-gradient-to-br from-orange-50 to-red-50 border-2 border-orange-200 rounded-xl p-6 text-center">
+                                    <div class="w-16 h-16 bg-orange-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                                        <svg class="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                                        </svg>
+                                    </div>
+                                    <h3 class="text-xl font-bold text-gray-900 mb-2">Soutenez {{ $candidate->prenom }} !</h3>
+                                    <p class="text-gray-600 mb-6">Connectez-vous ou créez un compte pour voter et soutenir votre candidat préféré.</p>
+                                    
+                                    <div class="space-y-3">
+                                        <button
+                                            onclick="openAuthModal()"
+                                            class="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-bold py-3 px-6 rounded-xl transition-all transform hover:scale-105 shadow-lg"
+                                        >
+                                            <svg class="w-5 h-5 mr-2 inline-block" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            Voter pour {{ $candidate->prenom }}
+                                        </button>
+                                        <p class="text-xs text-gray-500">En un clic : connexion ou création de compte</p>
+                                    </div>
                                 </div>
                             @else
                                 @if($hasVotedToday)
@@ -238,19 +250,48 @@
         </div>
     </div>
 
-    <!-- Modal Votant (mêmes styles que l'accueil) -->
-    <div id="voterModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
-            <div class="p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl font-bold text-gray-900">Créer un compte votant</h2>
-                    <button onclick="closeVoterModal()" class="text-gray-400 hover:text-gray-600">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+    <!-- Modal de connexion/inscription amélioré -->
+    <div id="authModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-orange-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                    <svg class="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-2">Voter pour {{ $candidate->prenom }}</h3>
+                <p class="text-gray-600 mb-6">Connectez-vous ou créez un compte pour soutenir votre candidat préféré au Concours Photo DINOR.</p>
+                
+                <div class="space-y-3">
+                    <a 
+                        href="{{ route('login') }}?redirect={{ urlencode(request()->url()) }}" 
+                        class="w-full bg-orange-600 hover:bg-orange-700 text-white py-3 px-4 rounded-xl font-medium transition-colors block text-center"
+                    >
+                        <svg class="w-5 h-5 mr-2 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
                         </svg>
+                        Se connecter
+                    </a>
+                    <a 
+                        href="{{ route('register') }}?redirect={{ urlencode(request()->url()) }}" 
+                        class="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 py-3 px-4 rounded-xl font-medium transition-colors block text-center"
+                    >
+                        <svg class="w-5 h-5 mr-2 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-5-4h1a3 3 0 013 3v1M9 9l3 3m-3-3l3-3m0 0h7a3 3 0 013 3v1M3 12h7a3 3 0 013-3V5a3 3 0 00-3-3H5a3 3 0 00-3 3v4z"></path>
+                        </svg>
+                        Créer un compte
+                    </a>
+                </div>
+                
+                <div class="mt-6 pt-4 border-t border-gray-200">
+                    <button onclick="closeAuthModal()" class="text-gray-500 hover:text-gray-700 text-sm font-medium">
+                        Fermer
                     </button>
                 </div>
-                @livewire('voter-registration-form')
+                
+                <div class="mt-4 text-xs text-gray-500">
+                    <p>En vous inscrivant, vous pourrez voter pour tous vos candidats préférés et suivre le classement en temps réel.</p>
+                </div>
             </div>
         </div>
     </div>
@@ -371,29 +412,40 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-// Fonctions pour la modale Votant (alignées sur l'accueil)
-function openVoterModal() {
-    const modal = document.getElementById('voterModal');
+// Fonctions pour la modale d'authentification
+function openAuthModal() {
+    const modal = document.getElementById('authModal');
     if (modal) {
         modal.classList.remove('hidden');
+        modal.classList.add('flex');
         document.body.style.overflow = 'hidden';
     }
 }
 
-function closeVoterModal() {
-    const modal = document.getElementById('voterModal');
+function closeAuthModal() {
+    const modal = document.getElementById('authModal');
     if (modal) {
         modal.classList.add('hidden');
+        modal.classList.remove('flex');
         document.body.style.overflow = 'auto';
     }
 }
 
 // Fermer la modale en cliquant à l'extérieur
 document.addEventListener('click', function(e) {
-    const modal = document.getElementById('voterModal');
+    const modal = document.getElementById('authModal');
     if (!modal || modal.classList.contains('hidden')) return;
+    
+    // Vérifier si le clic est sur le backdrop (pas sur le contenu de la modal)
     if (e.target === modal) {
-        closeVoterModal();
+        closeAuthModal();
+    }
+});
+
+// Fermer avec la touche Échap
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeAuthModal();
     }
 });
 </script>
