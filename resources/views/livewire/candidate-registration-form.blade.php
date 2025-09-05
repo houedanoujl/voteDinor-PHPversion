@@ -49,7 +49,7 @@
             </label>
 
             @if(($settings?->uploads_enabled ?? true) !== false)
-                <x-test-upload wire-model="photo" />
+                <x-ultra-simple-upload wire-model="photo" />
             @else
                 <div class="p-4 bg-gray-100 border border-gray-300 rounded-lg text-center">
                     <p class="text-gray-600">📴 Upload temporairement désactivé</p>
