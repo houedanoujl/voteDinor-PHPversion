@@ -87,7 +87,7 @@
                 <div class="text-white">
                     <div class="classment">
                         @php($top = $stats['top_candidates'])
-                        @if($top->count() > 0)
+                        @if($top->count() > 0 && $top->where('votes_count', '>', 0)->count() > 0)
                             <!-- Fond pour améliorer la lisibilité du classement -->
                             <div class="bg-black/50 rounded-2xl p-4 sm:p-8 mb-8">
 
