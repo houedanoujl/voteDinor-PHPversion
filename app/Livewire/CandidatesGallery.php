@@ -37,18 +37,16 @@ class CandidatesGallery extends Component
 
     public function loadCandidates()
     {
-        // Mise en cache des candidats avec pagination
-        $cacheKey = "candidates_approved_page_{$this->page}_per_{$this->perPage}";
+        // Mise en cache de tous les candidats approuvés
+        $cacheKey = "candidates_approved_all";
         
         $result = Cache::remember($cacheKey, 300, function () { // 5 minutes
             $candidates = Candidate::approved()
                 ->orderByVotes()
                 ->select(['id', 'prenom', 'nom', 'votes_count', 'photo_url', 'photo_filename', 'description'])
-                ->skip(($this->page - 1) * $this->perPage)
-                ->take($this->perPage)
                 ->get();
 
-            $total = Candidate::approved()->count();
+            $total = $candidates->count();
 
             return [
                 'candidates' => $candidates->map(function ($candidate) {
@@ -158,7 +156,7 @@ class CandidatesGallery extends Component
 
             // Invalider les caches liés
             Cache::forget('user_votes_today_' . $user->id . '_' . now()->toDateString());
-            Cache::forget("candidates_approved_page_{$this->page}_per_{$this->perPage}");
+            Cache::forget("candidates_approved_all");
             Cache::forget('contest_stats');
             Cache::forget('top_candidates_10');
             
@@ -183,11 +181,6 @@ class CandidatesGallery extends Component
         }
     }
 
-    public function loadMore()
-    {
-        $this->page++;
-        $this->loadCandidates();
-    }
 
     public function hasVotedToday($candidateId)
     {
@@ -199,10 +192,6 @@ class CandidatesGallery extends Component
         return isset($this->loadingVotes[$candidateId]);
     }
 
-    public function hasMoreCandidates()
-    {
-        return count($this->candidates) < $this->totalCandidates;
-    }
 
     public function closeAuthModal()
     {

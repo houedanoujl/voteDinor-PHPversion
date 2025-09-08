@@ -128,20 +128,6 @@
         @endforelse
     </div>
 
-    <!-- Bouton "Charger plus" -->
-    @if($this->hasMoreCandidates())
-        <div class="text-center mt-8">
-            <button
-                wire:click="loadMore"
-                class="bg-orange-600 hover:bg-orange-700 text-white px-8 py-3 rounded-lg font-medium transition-colors inline-flex items-center"
-            >
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                </svg>
-                Voir plus de candidats
-            </button>
-        </div>
-    @endif
 
     <!-- Modal de connexion -->
     @if($showAuthModal)
